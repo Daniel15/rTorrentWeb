@@ -83,7 +83,7 @@ var SortTable =
 		$A(el.tHead.rows[0].cells).each(function(header)
 		{
 			// Attach the click listener 
-			header.addEvent('click', el.sort.pass(i++));
+			$(header).addEvent('click', el.sort.pass(i++));
 			// Add a little arrow that says if we're sorting by this column
 			new Element('span', {'class': 'sorted'}).inject(header);
 		});
@@ -261,6 +261,12 @@ var List =
 		$('start').addEvent('click', Torrent.start);
 		$('pause').addEvent('click', Torrent.pause);
 		$('stop').addEvent('click', Torrent.stop);
+		$('add').addEvent('click', function()
+		{
+			window.open(this.href, 'AddTorrentWindow', 'location=no,menubar=no,status=no,titlebar=no,toolbar=no,height=400,width=500');
+			// Cancel the click.
+			return false;
+		});
 		
 		// Make the tabs do stuff
 		$$('div#tabs li').addEvent('click', List.show_tab);
@@ -877,9 +883,9 @@ var Log =
 		// TODO: Make this format not hard coded (possibly include date instead of just time)
 		var date = hour + ':' + minute + ':' + second;
 		// First, write it to the log
-		var logEntry = new Element('li', {html: text}).inject($('log').getElement('ul'));
+		var logEntry = new Element('li', {html: text}).inject($('log').getElement('ul'), 'top');
 		// Add the timestamp
-		new Element('span', {class: 'date', 'html': date}).inject(logEntry, 'top');
+		new Element('span', {'class': 'date', 'html': date}).inject(logEntry, 'top');
 		
 		// If it's not only for the log, put it in the status too
 		if (!$defined(logonly) || logonly == false)

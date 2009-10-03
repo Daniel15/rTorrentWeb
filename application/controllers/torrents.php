@@ -159,8 +159,20 @@ class Torrents_Controller extends Base_Controller
 			//$torrent->add($this->user);
 			$torrent->user_id = $this->user->id;
 			$torrent->save();
-			// Now they need to add files for this torrent
-			url::redirect('torrents/add_files/' . $hash);
+			// Are they choosing which files to download?
+			if ($this->input->post('choose_files'))
+				// Better bring them to the right place
+				url::redirect('torrents/add_files/' . $hash);
+			// Otherwise, we're done here!
+			else
+			{
+				$this->rtorrent->start($hash);
+				// TODO: Messy!!
+				$template = new View('template');
+				$template->title = 'Torrent Added Successfully';
+				$template->content = '<script type="text/javascript">window.opener.List.refresh(); self.close();</script>';
+				$template->render(true);
+			}
 		}
 		else
 		{
@@ -203,7 +215,12 @@ class Torrents_Controller extends Base_Controller
 			$this->rtorrent->set_file_priorities($hash, $priorities);
 			// Now, start the torrent
 			$this->rtorrent->start($hash);
-			url::redirect('');
+			//url::redirect('');
+			// TODO: Messy!!
+			$template = new View('template');
+			$template->title = 'Torrent Added Successfully';
+			$template->content = '<script type="text/javascript">window.opener.List.refresh(); self.close();</script>';
+			$template->render(true);
 		}
 		// Get the files in this torrent
 		$results = $this->rtorrent->files_tree($hash);

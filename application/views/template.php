@@ -36,7 +36,9 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 </head>
 
 <body>
-	<h1><?php echo $title; ?></h1>
-	<?php echo $content; ?>
+	<div id="container"><div id="container_inner">
+			<h1><?php echo $title; ?></h1>
+			<?php echo $content; ?>
+	</div></div>
 </body>
 </html>

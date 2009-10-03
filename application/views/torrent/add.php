@@ -25,7 +25,8 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	<p>
 		<label for="torrent_file">Torrent file:</label> <input type="file" name="torrent_file" id="torrent_file" /><br />
 		<!--label for="dir">Download directory:</label> <img src="res/icons16/house.png" alt="<?php echo $homedir; ?>" title="Your home directory - <?php echo $homedir; ?>" /> / <input type="text" name="dir" id="dir" /-->
-		<input type="checkbox" name="private" id="private" /> <label for="private">Private?</label><br />
+		<input type="checkbox" name="private" id="private" /> <label for="private">Private?</label> <small>(tick this if you don't want other users seeing this torrent)</small><br />
+		<input type="checkbox" name="choose_files" id="choose_files" /> <label for="choose_files">Choose files to download?</label> <small>(tick this if you want to choose exactly which files to download from this torrent)</small><br />
 	</p>
 	
 	<p><input name="submit" type="submit" value="Add Torrent" /></p>
