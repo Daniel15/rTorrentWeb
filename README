@@ -1,5 +1,10 @@
 This is an unfinished, rough draft of my (Daniel15's) rTorrent web UI
 
 TODO:
- - Clean up interface
+ - Clean up interface, make it look prettier
  - Create installer
+ - README :P
+ - User management (add/edit/delete)
+ - Private torrents
+ - Delete data on torrent deletion
+ - Set up website
