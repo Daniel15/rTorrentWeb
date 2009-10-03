@@ -1,0 +1,304 @@
+/*
+ * rTorrentWeb version 0.1 prerelease
+ * $Id$
+ * Copyright (C) 2009, Daniel Lo Nigro (Daniel15) <daniel at d15.biz>
+ * 
+ * This file is part of rTorrentWeb.
+ * 
+ * rTorrentWeb is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * rTorrentWeb is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with rTorrentWeb.  If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+*
+{
+	padding: 0;
+	margin: 0;
+}
+
+html, body
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	height: 100%;
+	overflow: hidden;
+}
+
+body
+{
+	background-color: #ECEEEF;
+	padding: 0 0.5%;
+	font-size: small;
+	font-family: Verdana, sans-serif;
+}
+
+a
+{
+	text-decoration: none;
+}
+
+a:visited
+{
+	color: blue;
+}
+
+a img
+{
+	border: 0;
+}	
+
+h1
+{
+	position: absolute;
+	font-size: 1.2em;
+	width: 110px;
+	height: 32px;
+	line-height: 32px;
+	text-align: center;
+}
+
+div#top_pane
+{
+	height: 64%;
+	/*position: absolute;
+	width: 100%;*/
+	overflow: hidden;
+}
+
+div#bottom_pane
+{
+	height: 35%;
+	margin-bottom: 2px;
+	width: 99%;
+	position: absolute;
+	bottom: 0;
+	overflow: hidden;
+}
+
+div#toolbar
+{
+	height: 32px;
+	margin-bottom: 5px;
+	margin-left: 116px;
+}
+
+div#toolbar li
+{
+	margin-top: 2px;
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+}
+
+div#toolbar li img
+{
+	cursor: pointer;
+}
+
+div#toolbar li img.disabled
+{
+	cursor: default;
+	opacity: 0.4;
+}
+
+div#toolbar li.end-section
+{
+	border-right: 1px solid #AAA;
+	padding-right: 3px;
+}
+
+#toolbar_status
+{
+	float: right;
+	height: 32px;
+	line-height: 32px;
+	overflow: hidden;
+}
+
+img#loading
+{
+	vertical-align: middle;
+}
+
+img#loading,
+a#refresh
+{
+	display: none;
+}
+
+a#enable_auto
+{
+	display: none;
+}
+
+div#sidebar
+{
+	background-color: white;
+	border: 1px solid #AAA;
+	height: 100%;
+	float: left;
+	width: 110px;
+	margin-right: 4px;
+}
+
+div#sidebar ul 
+{
+	list-style-type: none;
+}
+
+div#sidebar li
+{
+	padding: 0.1em;
+}
+
+.selected
+{
+	background-color: #CFDEEF;
+}
+
+div#torrents
+{
+	background-color: white;
+	border: 1px solid #AAA;
+	
+	/*margin-left: 120px;*/
+	overflow: auto;
+	height: 100%;
+}
+
+div#torrents thead
+{
+	background-color: #EEE;
+}
+
+div#torrents table th
+{
+	text-align: left;
+	padding-left: 5px;
+	border-bottom: 1px solid black;
+	border-right: 1px solid black;
+}
+
+div#torrents table tr td
+{
+	border-bottom: 1px solid #DDD;
+	border-right: 1px solid #EEE;
+	padding: 0.2em;
+}
+
+div#torrents span.sorted
+{
+	float: right;
+	font-weight: bold;
+}
+
+/* Class is set to "loading" when this torrent is loading something */
+div#torrents tr.loading td.name
+{
+	background: url(loading16.gif) no-repeat left center;
+	padding-left: 20px;
+}
+
+div#torrents tr.loading.selected td.name
+{
+	background-image: url(loadingselected16.gif);
+}
+
+
+div#details
+{
+	background-color: white;
+	border: 1px solid #AAA;
+	
+	overflow: auto;
+	width: 99.5%;
+	height: 100%;
+	padding: 0.2em;
+}
+
+div#tabs
+{
+	padding: 3px 0 2px 0;
+}
+
+div#tabs li
+{
+	cursor: pointer;
+	display: inline;
+	border-left: 1px solid #AAA;
+	border-top: 1px solid #AAA;
+	border-right: 1px solid #AAA;
+	background-color: #EEE;
+	padding: 2px 5px 3px 5px;
+	margin-right: 0.2em;
+}
+
+div#tabs li.selected
+{
+	border-bottom: 1px solid white;
+	background-color: white;
+	cursor: default;
+}
+
+div#tabs li img
+{
+	vertical-align: middle;
+}
+
+div#log ul
+{
+	list-style-type: none;
+}
+
+div#log ul li
+{
+	border-bottom: 1px solid #BBB;
+}
+
+div#log span.date
+{
+	padding-right: 1em;
+	font-weight: bold;
+}
+
+div#files table
+{
+	width: 100%;
+}
+
+div#files table th
+{
+	text-align: left;
+	padding-left: 5px;
+	border-bottom: 1px solid black;
+	border-right: 1px solid black;
+}
+
+div#files table tr td
+{
+	border-bottom: 1px solid #DDD;
+	border-right: 1px solid #EEE;
+	padding: 0.2em;
+}
+
+/* There must be a better way to do this... */
+div#files tr.level-0 td.filename { padding-left: 0 }
+div#files tr.level-1 td.filename { padding-left: 1em }
+div#files tr.level-2 td.filename { padding-left: 2em }
+div#files tr.level-3 td.filename { padding-left: 3em }
+div#files tr.level-4 td.filename { padding-left: 4em }
+div#files tr.level-5 td.filename { padding-left: 5em }
+div#files tr.level-6 td.filename { padding-left: 6em }
+div#files tr.level-7 td.filename { padding-left: 7em }
+div#files tr.level-8 td.filename { padding-left: 8em }
+div#files tr.level-9 td.filename { padding-left: 9em }

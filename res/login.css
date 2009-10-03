@@ -1,0 +1,43 @@
+*
+{
+	padding: 0;
+	margin: 0;
+}
+
+html, body
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	height: 100%;
+	overflow: hidden;
+}
+
+body
+{
+	background-color: #ECEEEF;
+	font-size: small;
+	font-family: Verdana, sans-serif;
+}
+
+div#container
+{
+	border: 1px solid black;
+	background: #CCC;
+	width: 40%;
+	
+	margin: 10% auto;
+	padding: 1em;
+}
+
+h1
+{
+	text-align: center;
+	padding-bottom: 1em;
+}
+
+p#error
+{
+	color: red;
+	font-weight: bold;
+}
