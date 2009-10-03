@@ -58,10 +58,10 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 			<!--div id="sidebar_resize"></div-->
 			<ul>
 				<li id="sidebar_all" class="selected">All (<span>x</span>)</li>
-				<li id="sidebar_seed">Seeding (<span>x</span>)</li>
-				<li id="sidebar_down">Downloading (<span>x</span>)</li>
-				<li id="sidebar_fin">Finished (<span>x</span>)</li>
-				<li id="sidebar_stop">Stopped (<span>x</span>)</li>
+				<li id="sidebar_seeding">Seeding (<span>x</span>)</li>
+				<li id="sidebar_downloading">Downloading (<span>x</span>)</li>
+				<li id="sidebar_finished">Finished (<span>x</span>)</li>
+				<li id="sidebar_stopped">Stopped (<span>x</span>)</li>
 				<li id="sidebar_paused">Paused (<span>x</span>)</li>
 			</ul>
 		</div>

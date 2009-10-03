@@ -215,6 +215,10 @@ var List =
 {	
 	'init': function()
 	{
+		// Start a refresh before we do everything else (it can go in the background
+		// while we initialise)
+		List.refresh();
+		
 		// Initialise some stuff
 		List.refresh_count = Settings.autorefresh_interval;
 		
@@ -300,12 +304,7 @@ var List =
 		topPane.makeResizable({
 			'handle': paneResizer,
 			'modifiers': {'y': 'height', 'x': null},
-			'onDrag': function(el, event)
-			{
-				//console.log($('top_pane').getStyle('height'));
-				//console.log($('bottom_pane').getStyle('height') + '=' + $('bottom_pane').getStyle('height').toInt());
-				List.resize_window();
-			}
+			'onDrag': List.resize_window
 		});
 		
 		$('bottom_pane').makeResizable({
@@ -314,8 +313,33 @@ var List =
 			'invert': true
 		});
 		
-		// Do a refresh
-		List.refresh();
+		// Add the handlers for the sidebar
+		$('sidebar').getElements('li').each(function(el)
+		{
+			el.addEvent('click', function()
+			{
+				List.change_view(el.get('id').substring(8));
+			});
+		});
+	},
+	
+	/**
+	 * The current view (selected by sidebar)
+	 */
+	'view': 'all',
+	
+	/**
+	 * Change the view
+	 */
+	'change_view': function(new_view)
+	{
+		// Deselect the old one
+		$('sidebar_' + List.view).removeClass('selected');
+		// Set the new one
+		List.view = new_view;
+		$('sidebar_' + List.view).addClass('selected');
+		// Filter the table
+		List.filter();
 	},
 	
 	/**
@@ -443,16 +467,18 @@ var List =
 		
 		// Set the data for the sidebar
 		$('sidebar_all').getElement('span').set('html', data.getLength());
-		$('sidebar_seed').getElement('span').set('html', cnt_seed);
-		$('sidebar_down').getElement('span').set('html', cnt_down);
-		$('sidebar_fin').getElement('span').set('html', cnt_fin);
-		$('sidebar_stop').getElement('span').set('html', cnt_stop);
+		$('sidebar_seeding').getElement('span').set('html', cnt_seed);
+		$('sidebar_downloading').getElement('span').set('html', cnt_down);
+		$('sidebar_finished').getElement('span').set('html', cnt_fin);
+		$('sidebar_stopped').getElement('span').set('html', cnt_stop);
 		$('sidebar_paused').getElement('span').set('html', cnt_paused);
 		
 		// Do we have a torrent currently selected? Better update its data
 		if (List.selected != null)
 			List.click.bind(List.selected)();
 		
+		// Filter the table
+		List.filter();
 		// Sort the table
 		$('torrents').getElement('table').sort();
 
@@ -489,6 +515,30 @@ var List =
 		// Aww, not there yet
 		else
 			List.refresh_count--;
+	},
+	
+	/**
+	 * Filter the table based on the selected view
+	 */
+	'filter': function()
+	{
+		var rows = $A($('torrents').getElement('table').tBodies[0].rows);
+		// Just showing all?
+		if (List.view == 'all')
+		{
+			rows.each(function(row)
+			{
+				row.setStyle('display', '');
+			});
+			return;
+		}
+		
+		rows.each(function(row)
+		{
+			var data = row.retrieve('data');
+			// Do we show this one?
+			row.setStyle('display', data.state == List.view ? '' : 'none');
+		});
 	},
 	
 	/**
