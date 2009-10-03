@@ -271,6 +271,12 @@ div#log span.date
 	font-weight: bold;
 }
 
+div#general div
+{
+	width: 49%;
+	float: left;
+}
+
 div#files table
 {
 	width: 100%;

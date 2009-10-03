@@ -162,7 +162,7 @@ class Rtorrent_Core
 					'up' => $torrentInfo['d.get_up_rate='],
 				),
 				'total' => array(
-					'down' => $torrentInfo['d.get_down_total='],
+					'down' => $done,//$torrentInfo['d.get_down_total='],
 					//'up' => $torrentInfo['d.get_up_total='],
 					'up' => $total_up,
 					

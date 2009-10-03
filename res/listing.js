@@ -481,6 +481,14 @@ var List =
 		List.filter();
 		// Sort the table
 		$('torrents').getElement('table').sort();
+		
+		// No selected torrent? Select the first one.
+		if (List.selected == null)
+		{
+			var first_row = table.getElement('tr');
+			if (first_row != null)
+				List.click.bind(first_row)();
+		}
 
 		$('loading').setStyle('display', 'none');
 		$('toolbar_message').set('html', '');
@@ -561,7 +569,16 @@ var List =
 		
 		// Set its data
 		var data = this.retrieve('data');
-		$('general').set('html', JSON.encode(data));
+		// Transfer
+		$('elapsed').set('html', 'TODO');
+		$('remaining').set('html', 'TODO');
+		$('download_speed').set('html', data.rate.down.format_size());
+		$('upload_speed').set('html', data.rate.up.format_size());
+		$('total_down').set('html', data.done.format_size());
+		$('total_up').set('html', data.total.up.format_size());
+		// General
+		$('hash').set('html', this.retrieve('hash'));
+		
 		// Now, enable the buttons that we need
 		$('delete').removeClass('disabled');
 		// Seeding or downloading? Stop and pause are needed.
@@ -626,7 +643,7 @@ var List =
 		else
 		{
 			// Hide all the tabs
-			$$('div#details div').setStyle('display', 'none');
+			$$('div#details > div').setStyle('display', 'none');
 			// Make them all deselected
 			$$('div#tabs li').removeClass('selected');
 		}
