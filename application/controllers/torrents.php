@@ -214,7 +214,7 @@ class Torrents_Controller extends Base_Controller
 			{
 				$this->rtorrent->start($hash);
 				// TODO: Messy!!
-				$template = new View('template');
+				$template = new View('template_popup');
 				$template->title = 'Torrent Added Successfully';
 				$template->content = '<script type="text/javascript">window.opener.List.refresh(); self.close();</script>';
 				$template->render(true);
@@ -222,7 +222,7 @@ class Torrents_Controller extends Base_Controller
 		}
 		else
 		{
-			$template = new View('template');
+			$template = new View('template_popup');
 			$template->title = 'Add New Torrent';
 			$template->content = new View('torrent/add');
 			$template->content->homedir = $this->user->homedir;
@@ -263,7 +263,7 @@ class Torrents_Controller extends Base_Controller
 			$this->rtorrent->start($hash);
 			//url::redirect('');
 			// TODO: Messy!!
-			$template = new View('template');
+			$template = new View('template_popup');
 			$template->title = 'Torrent Added Successfully';
 			$template->content = '<script type="text/javascript">window.opener.List.refresh(); self.close();</script>';
 			$template->render(true);
@@ -271,7 +271,7 @@ class Torrents_Controller extends Base_Controller
 		// Get the files in this torrent
 		$results = $this->rtorrent->files_tree($hash);
 		
-		$template = new View('template');
+		$template = new View('template_popup');
 		$template->title = 'Add New Torrent &mdash; Step 2';
 		$template->content = new View('torrent/add_files');
 		$template->content->dirs = $results['dirs'];

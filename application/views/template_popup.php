@@ -26,13 +26,13 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	<title><?php echo $title ?></title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<base href="<?php echo url::base(false, 'http'); ?>" />
-	<link rel="stylesheet" href="res/style.css" type="text/css" />
+	<link rel="stylesheet" href="res/popup.css" type="text/css" />
 	<script type="text/javascript" src="res/mootools-1.2.3-core-yc.js"></script>
 	<script type="text/javascript" src="res/mootools-1.2.3.1-more.js"></script>
 	<script type="text/javascript">
 		var base_url = '<?php echo url::base(true); ?>';
 	</script>
-	<script type="text/javascript" src="res/script.js"></script>
+	<script type="text/javascript" src="res/popup.js"></script>
 </head>
 
 <body>

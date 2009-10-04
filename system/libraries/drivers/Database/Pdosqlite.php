@@ -338,7 +338,8 @@ class Pdosqlite_Result extends Database_Result {
 		else
 		{
 			// SQL error
-			throw new Kohana_Database_Exception('database.error', $link->errorInfo().' - '.$sql);
+			//throw new Kohana_Database_Exception('database.error', $link->errorInfo().' - '.$sql);
+			throw new Kohana_Database_Exception('database.error', end($link->errorInfo()).' - '.$sql);
 		}
 
 		// Set result type
