@@ -20,6 +20,29 @@
  */
  
 /**
+ * Adding a new torrent
+ */
+var Add = 
+{
+	'init': function()
+	{
+		// Hide URL download section by default...
+		$('url').setStyle('display', 'none');
+		// ...but let them choose what to do!
+		$('type_file').addEvent('click', function()
+		{
+			$('file').setStyle('display', 'block');
+			$('url').setStyle('display', 'none');
+		});
+		$('type_url').addEvent('click', function()
+		{
+			$('file').setStyle('display', 'none');
+			$('url').setStyle('display', 'block');
+		});
+	}
+}
+ 
+/**
  * Scripts for when we're adding a new torrent, selecting the files to download
  */
 var AddFiles = 

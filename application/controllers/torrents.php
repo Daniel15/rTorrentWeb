@@ -124,33 +124,79 @@ class Torrents_Controller extends Base_Controller
 	
 	/** 
 	 * Add a new torrent
+	 * TODO: This  function is a MESS. Improve it! :D
 	 */
 	public function add()
 	{
 		// Did they actually submit the form?
 		if (isset($_POST['submit']))
 		{
-			// Let's try this upload
-			$_FILES = Validation::factory($_FILES)->
-				add_rules('torrent_file', 'upload::valid', 'upload::type[torrent]')->
-				add_callbacks('torrent_file', array($this, '_unique_torrent'));
-			if (!$_FILES->validate())
+			// Are they uploading a torrent via file upload?
+			if ($this->input->post('type') == 'file')
 			{
-				// TODO: Proper error handling
-				echo 'Some errors were encountered while adding your torrent:<br />
-<ul>
-	<li>', implode('</li>
-	<li>', $_FILES->errors()), '</li>
-</ul>';
-				die();
+				// Let's try this upload
+				$_FILES = Validation::factory($_FILES)->
+					add_rules('torrent_file', 'required', 'upload::valid', 'upload::type[torrent]')->
+					add_callbacks('torrent_file', array($this, '_unique_torrent'));
+				if (!$_FILES->validate())
+				{
+					// TODO: Proper error handling
+					echo 'Some errors were encountered while adding your torrent:<br />
+	<ul>
+		<li>', implode('</li>
+		<li>', $_FILES->errors()), '</li>
+	</ul>';
+					die();
+				}
+				
+				// Better save it to a proper location
+				$filename = upload::save('torrent_file', null, Kohana::config('config.metadata_dir'));
+				$hash = $_FILES->torrent_file['hash'];
+			}
+			else
+			{
+				// Better validate some stuffs
+				$post = Validation::factory($_POST)->
+					add_rules('torrent_url', 'required', 'valid::url_ok');
+					
+				if (!$post->validate())
+				{
+					// TODO: Proper error handling
+					echo 'Some errors were encountered while adding your torrent:<br />
+	<ul>
+		<li>', implode('</li>
+		<li>', $post->errors()), '</li>
+	</ul>';
+					die();
+				}
+				
+				// Now we can try loading the torrent, since we know the URL is
+				// valid. It might be an evil URl though, so later we check
+				// if it's actually a torrent!
+				// Temp filename = [time]-[user id]
+				$filename = Kohana::config('config.metadata_dir') . '/' . time() . '-' . $this->user->id . '.torrent';
+				$buffer = file_get_contents($this->input->post('torrent_url'));
+				file_put_contents($filename, $buffer);
+				
+				// Check that it's not a duplicate
+				// Calculate the hash of the torrent
+				// Hash = SHA1 of the encoded torrent info
+				// It's stored so we don't need to calculate it twice
+				$torrent_data = new BDecode($filename);
+				$bencode = new BEncode();
+				$hash = strtoupper(bin2hex(sha1($bencode->encode($torrent_data->result['info']), true)));
+				// Check this torrent
+				if ($this->rtorrent->exists($hash))
+					die('Torrent already exists on the server');
+				
 			}
 			
-			// Better save it to a proper location
-			$filename = upload::save('torrent_file', null, Kohana::config('config.metadata_dir'));
-			$hash = $_FILES->torrent_file['hash'];			
 			// Try to add it to rTorrent
-			// TODO: Error checking
 			$this->rtorrent->add($filename, $this->user->homedir);
+			// Check that the torrent was added properly
+			if (!$this->rtorrent->exists($hash))
+				die('Torrent seems invalid');
+				
 			// Add this torrent into the database
 			$torrent = ORM::factory('torrent');
 			$torrent->hash = $hash;
