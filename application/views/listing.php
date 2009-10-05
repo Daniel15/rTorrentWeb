@@ -55,7 +55,6 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 		</div>
 		
 		<div id="sidebar">
-			<!--div id="sidebar_resize"></div-->
 			<ul>
 				<li id="sidebar_all" class="selected">All (<span>x</span>)</li>
 				<li id="sidebar_seeding">Seeding (<span>x</span>)</li>
@@ -76,8 +75,6 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 						<th>Done</th>
 						<th>DL rate</th>
 						<th>UL rate</th>
-						<!--th>Seeds</th>
-						<th>Peers</th-->
 						<th>Ratio</th>
 					</tr>
 				</thead>

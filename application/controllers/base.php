@@ -23,6 +23,12 @@ defined('SYSPATH') OR die('No direct access allowed.');
 
 abstract class Base_Controller extends Controller
 {
+	// Template view name - Default to none
+	//public $template = 'template';
+	public $template = null;
+	// Default to do auto-rendering
+	public $auto_render = true;
+	
 	// OM NOM NOM NOM
 	public function __construct()
 	{
@@ -47,6 +53,26 @@ abstract class Base_Controller extends Controller
 		
 		// This might be helpful ^_^
 		$this->user = $this->auth->get_user();
+		
+		// Load the template, if we're using one
+		if ($this->template != null)
+		{
+			$this->template = new View($this->template);
+			// Render the template immediately after the controller method
+			Event::add('system.post_controller', array($this, '_render'));
+		}
+	}
+
+	/**
+	 * Render the loaded template.
+	 */
+	public function _render()
+	{
+		if ($this->auto_render == TRUE)
+		{
+			// Render the template when the class is destroyed
+			$this->template->render(TRUE);
+		}
 	}
 }
 ?>
