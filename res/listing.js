@@ -921,7 +921,6 @@ var Torrent =
 				// Is this torrent still selected (they could have changed torrent by the time we get the reply)?
 				if (List.selected.retrieve('hash') == response.hash)
 				{
-					$('peers').getElement('tbody').empty();
 					// Here we go!
 					Torrent.peers_process(response);
 				}
@@ -942,6 +941,8 @@ var Torrent =
 	'peers_process': function(data)
 	{
 		var tbody = $('peers').getElement('tbody');
+		
+		$('peers').getElement('tbody').empty();
 		
 		// Go through all the peers
 		data.peers.each(function(peer)
