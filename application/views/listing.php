@@ -45,7 +45,8 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 		<div id="toolbar">
 			<ul>
 				<li><img id="refresh" src="res/icons/refresh.png" alt="Refresh" title="Refresh" class="disabled" /></li>
-				<li class="end-section"><a id="add" href="<?php echo url::site('torrents/add'); ?>"><img src="res/icons/add.png" alt="Add New Torrent" title="Add New Torrent" /></a></li>
+				<li><a id="add" href="<?php echo url::site('torrents/add'); ?>"><img src="res/icons/add.png" alt="Add New Torrent" title="Add New Torrent" /></a></li>
+				<li class="end-section"><a id="rss" href="<?php echo url::site('feed/manage'); ?>"><img src="res/icons/rss.png" alt="Manage RSS" title="Manage RSS" /></a></li>
 				<li><img id="start" src="res/icons/play.png" alt="Start Torrent" title="Start Torrent" class="disabled" /></li>
 				<li><img id="pause" src="res/icons/pause.png" alt="Pause Torrent" title="Pause Torrent" class="disabled" /></li>
 				<li><img id="stop" src="res/icons/stop.png" alt="Stop Torrent" title="Stop Torrent" class="disabled" /></li>
@@ -126,7 +127,22 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 				</table>
 			</div>
 			<div id="peers">
-				Peers inner
+				<span>Loading peer listing for [x]...</span>
+				<table cellpadding="0" cellspacing="0">
+					<thead>
+						<tr>
+							<th>IP Address</th>
+							<th>Client Version</th>
+							<th>Down Rate</th>
+							<th>Up Rate</th>
+							<th>Down Total</th>
+							<th>Up Total</th>
+							<th>Seeder/Leacher</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
 			</div>
 			<div id="log">
 				<ul>

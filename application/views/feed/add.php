@@ -2,7 +2,7 @@
 /*
  * rTorrentWeb version 0.1 prerelease
  * $Id$
- * Copyright (C) 2009, Daniel Lo Nigro (Daniel15) <daniel at d15.biz>
+ * Copyright (C) 2009, Joseph Stubberfield (stubbers101) <stubbers at stubbers101.net>
  * 
  * This file is part of rTorrentWeb.
  * 
@@ -19,10 +19,13 @@
  * You should have received a copy of the GNU General Public License
  * along with rTorrentWeb.  If not, see <http://www.gnu.org/licenses/>.
  */
-defined('SYSPATH') OR die('No direct access allowed.');
+defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-class User_Model extends Auth_User_Model
-{
-	protected $has_many = array('user_tokens', 'torrents', 'feeds');
-}
-?>
+<?php echo form::open_multipart('feed/add') ?>
+	<p>
+		<label for="feed_name">Feed Name:</label> <input type="text" name="feed_name" id="feed_name" /><br />
+		<label for="feed_url">Feed URL:</label> <input type="text" name="feed_url" id="feed_url" /><br />
+	</p>
+	
+	<p><input name="submit" type="submit" value="Add Feed" /></p>
+</form>

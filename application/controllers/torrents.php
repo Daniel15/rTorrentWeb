@@ -71,6 +71,24 @@ class Torrents_Controller extends Base_Controller
 	}
 	
 	/**
+	 * Get a list of the peers for a particular torrent
+	 */
+	public function peers($hash)
+	{
+		if (!($results = $this->rtorrent->peers($hash)))
+			die(json_encode(array(
+				'error' => true,
+				'message' => $this->rtorrent->error()
+			)));
+		
+		echo json_encode(array(
+			'error' => false,
+			'hash' => $hash,
+			'peers' => $results,
+		));
+	}
+	
+	/**
 	 * A few simple actions (pause, stop, start)
 	 */
 	public function action($action, $hash)

@@ -268,6 +268,14 @@ var List =
 			return false;
 		});
 		
+		// Add the rss button
+		$('rss').addEvent('click', function()
+		{
+			window.open(this.href, 'ManageRSSWindow', 'location=no,menubar=no,status=no,titlebar=no,toolbar=no,height=800,width=700');
+			// Cancel the click.
+			return false;
+		});
+		
 		// Make the tabs do stuff
 		$$('div#tabs li').addEvent('click', List.show_tab);
 		// Set the tab to general (the default)
@@ -617,6 +625,9 @@ var List =
 		}
 		// Retrieve the file list for this torrent
 		Torrent.files.bind(this)();
+		
+		// Retrieve the peer list for this torrent
+		Torrent.peers.bind(this)();
 	},	
 	/**
 	 * Stuff that runs when the window is resized. Make sure the torrent listing
@@ -857,6 +868,93 @@ var Torrent =
 			var cell = new Element('td', {'colspan': 4, 'html': '<img src="res/icons16/folder.png" alt="Directory" title="' + dir + ' [Directory]" /> ' + dir, 'class': 'filename'}).inject(row);			
 			
 			Torrent.files_process(contents, level + 1);
+		});
+	},
+		
+	/**
+	 * Get a list of peers for the torrent
+	 */
+	'peers': function()
+	{
+		//console.log(this.retrieve('hash'));
+		var hash = this.retrieve('hash');
+		var data = this.retrieve('data');
+		
+		// Do we already have a peer listing for this torrent?
+		var peers = this.retrieve('peers');
+		if (peers != null)
+		{
+			// Since this takes a long time, we run it asynchronously by delaying by 10ms
+			Torrent.peers_process.pass([peers, 0]).delay(10);
+			return;
+		}
+		
+		// Otherwise, if we get to here, we need to load the listing.
+		//$(document.body).setStyle('cursor', 'progress');
+		$('loading').setStyle('display', 'inline');
+		Log.write('Retrieving peer listing for ' + data.name + '...');
+		
+		$('peers').getElement('span').set('html', 'Loading peer listing for ' +  data.name + '...');
+		$('peers').getElement('table').setStyle('display', 'none');
+		
+		// Send the request
+		var myRequest = new Request({
+			method: 'post',
+			url: base_url + 'torrents/peers/' + hash,
+			onSuccess: function(data_text)
+			{
+				// JSON decode the data
+				var response = JSON.decode(data_text);
+				// Was there an error?
+				if (response.error)
+				{
+					Log.write('An error occurred while refreshing: ' + response.message);
+					$('loading').setStyle('display', 'none');
+					$(document.body).setStyle('cursor', 'default');
+					return;
+				}
+				
+				// Store the peer listing for later
+				$('tor_' + response.hash).store('peers', response);
+				
+				// Actually process the peers now. 
+				// Is this torrent still selected (they could have changed torrent by the time we get the reply)?
+				if (List.selected.retrieve('hash') == response.hash)
+				{
+					$('peers').getElement('tbody').empty();
+					// Here we go!
+					Torrent.peers_process(response);
+				}
+				// Alllll done! :D
+				$('peers').getElement('span').set('html', '');
+				$('peers').getElement('table').setStyle('display', '');
+				$('loading').setStyle('display', 'none');
+				//$(document.body).setStyle('cursor', 'default');
+				$('toolbar_message').set('html', '');
+			}
+		}).send();
+	},
+	
+	/**
+	 * Process a listing of peers
+	 * @param hash The directory data (a hash containing "peers")
+	 */
+	'peers_process': function(data)
+	{
+		var tbody = $('peers').getElement('tbody');
+		
+		// Go through all the peers
+		data.peers.each(function(peer)
+		{
+			// Add this peer
+			var row = new Element('tr').inject(tbody);
+			new Element('td', {'html': peer.address}).inject(row);
+			new Element('td', {'html': peer.client_version}).inject(row);
+			new Element('td', {'html': peer.down_rate}).inject(row);
+			new Element('td', {'html': peer.up_rate}).inject(row);
+			new Element('td', {'html': peer.down_total}).inject(row);
+			new Element('td', {'html': peer.up_total}).inject(row);
+			new Element('td', {'html': peer.is_seeder}).inject(row);
 		});
 	}
 };

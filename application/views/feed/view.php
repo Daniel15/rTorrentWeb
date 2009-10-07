@@ -2,7 +2,7 @@
 /*
  * rTorrentWeb version 0.1 prerelease
  * $Id$
- * Copyright (C) 2009, Daniel Lo Nigro (Daniel15) <daniel at d15.biz>
+ * Copyright (C) 2009, Joseph Stubberfield (stubbers101) <stubbers at stubbers101.net>
  * 
  * This file is part of rTorrentWeb.
  * 
@@ -19,10 +19,26 @@
  * You should have received a copy of the GNU General Public License
  * along with rTorrentWeb.  If not, see <http://www.gnu.org/licenses/>.
  */
-defined('SYSPATH') OR die('No direct access allowed.');
+defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-class User_Model extends Auth_User_Model
-{
-	protected $has_many = array('user_tokens', 'torrents', 'feeds');
-}
-?>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<thead>
+		<tr>
+			<th>Torrent Name</th>
+			<th>Actions</th>
+		<tr>
+	</thead>
+	<tbody>
+	<?php 
+	foreach ($feed as $feed_item)
+	{
+		echo '<tr>';
+		echo '<td>' . $feed_item['title'] . '</td>';
+		echo '<td><a href="' . url::site('torrents/add/?url=' . $feed_item['link']) . '">Add Torrent</a><br/></td>'; // TODO : Link correct
+		echo '</tr>';
+	}
+	?>
+	</tbody>
+</table>
+
+<p><?php echo '<a href="' . url::site('feed/delete/' . $feed_id) . '">Delete feed</a>'; ?></p>

@@ -2,7 +2,7 @@
 /*
  * rTorrentWeb version 0.1 prerelease
  * $Id$
- * Copyright (C) 2009, Daniel Lo Nigro (Daniel15) <daniel at d15.biz>
+ * Copyright (C) 2009, Joseph Stubberfield (stubbers101) <stubbers at stubbers101.net>
  * 
  * This file is part of rTorrentWeb.
  * 
@@ -21,8 +21,8 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.');
 
-class User_Model extends Auth_User_Model
+class Feed_Model extends ORM
 {
-	protected $has_many = array('user_tokens', 'torrents', 'feeds');
+	protected $has_one = array('user');
 }
 ?>

@@ -82,7 +82,7 @@ class Rtorrent_Core
 		// Shift the parameters if we have a view as the first one (so we just have actual parameters)
 		if ($type == 'd')
 			array_shift($params);
-		elseif ($type == 'f')
+		elseif ($type == 'f' || $type == 'p')
 		{
 			array_shift($params);
 			array_shift($params);
@@ -307,6 +307,39 @@ class Rtorrent_Core
 		
 		// All done now!
 		return $root;
+	}
+	
+	/**
+	 * Get peers from a torrent
+	 */
+	public function peers($hash)
+	{
+		if (false === ($response = $this->do_multicall('p', array($hash, '',
+			'p.get_address=',
+			'p.get_client_version=',
+			'p.get_down_rate=',
+			'p.get_down_total=',
+			'p.get_up_rate=',
+			'p.get_up_total=',
+			'p.is_incoming=',
+		))))
+			return false;
+		
+		$results = array();
+		foreach ($response as $peer)
+		{
+			$results[] = array(
+				'address' => $peer['p.get_address='],
+				'client_version' => $peer['p.get_client_version='],
+				'down_rate' => $peer['p.get_down_rate='],
+				'down_total' => $peer['p.get_down_total='],
+				'up_rate' => $peer['p.get_up_rate='],
+				'up_total' => $peer['p.get_up_total='],
+				'is_incoming' => $peer['p.is_incoming='],
+			);
+		}
+		
+		return $results;
 	}
 
 	/**
