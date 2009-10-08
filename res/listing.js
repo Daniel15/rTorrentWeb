@@ -880,17 +880,6 @@ var Torrent =
 		var hash = this.retrieve('hash');
 		var data = this.retrieve('data');
 		
-		// Do we already have a peer listing for this torrent?
-		var peers = this.retrieve('peers');
-		if (peers != null)
-		{
-			// Since this takes a long time, we run it asynchronously by delaying by 10ms
-			Torrent.peers_process.pass([peers, 0]).delay(10);
-			return;
-		}
-		
-		// Otherwise, if we get to here, we need to load the listing.
-		//$(document.body).setStyle('cursor', 'progress');
 		$('loading').setStyle('display', 'inline');
 		Log.write('Retrieving peer listing for ' + data.name + '...');
 		
@@ -913,9 +902,6 @@ var Torrent =
 					$(document.body).setStyle('cursor', 'default');
 					return;
 				}
-				
-				// Store the peer listing for later
-				$('tor_' + response.hash).store('peers', response);
 				
 				// Actually process the peers now. 
 				// Is this torrent still selected (they could have changed torrent by the time we get the reply)?
