@@ -21,7 +21,7 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.');
 
-class Feed_Model extends ORM
+class Ext_feed_Model extends ORM
 {
 	protected $has_one = array('user');
 }

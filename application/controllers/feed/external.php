@@ -21,7 +21,7 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.');
 
-class Feed_Controller extends Base_Controller
+class External_Controller extends Base_Controller
 {
 	/**
 	 * Add a new RSS feed
@@ -47,19 +47,19 @@ class Feed_Controller extends Base_Controller
 				die();
 			}
 			
-			$feed = ORM::factory('feed');
+			$feed = ORM::factory('ext_feed');
 			$feed->url = $this->input->post('feed_url');
 			$feed->name = $this->input->post('feed_name');
 			$feed->user_id = $this->user->id;
 			$feed->save();
 			
-			url::redirect('/feed/manage/'); // TODO : Ajax Options
+			url::redirect('/feed/external/manage/'); // TODO : Ajax Options
 		}
 		else
 		{
 			$template = new View('template_popup');
 			$template->title = 'Add New Feed';
-			$template->content = new View('feed/add');
+			$template->content = new View('feed/external/add');
 			$template->render(true);
 		}
 	}
@@ -75,9 +75,9 @@ class Feed_Controller extends Base_Controller
 		if (!$this->_check_owner($id))
 			url::redirect('');
 		
-		ORM::factory('feed', $id)->delete();
+		ORM::factory('ext_feed', $id)->delete();
 		
-		url::redirect('/feed/manage/'); // TODO : Ajax Options
+		url::redirect('/feed/external/manage/'); // TODO : Ajax Options
 	}
 	
 	/**
@@ -91,13 +91,13 @@ class Feed_Controller extends Base_Controller
 		if (!$this->_check_owner($id))
 			url::redirect('');
 		
-		$feed = ORM::factory('feed', $id);
+		$feed = ORM::factory('ext_feed', $id);
 		
 		// TODO : Feed Error Checking
 		
 		$template = new View('template_popup');
 		$template->title = 'RSS Entries For : ' . $feed->name;
-		$template->content = new View('feed/view');
+		$template->content = new View('feed/external/view');
 		$template->content->feed = feed::parse($feed->url);
 		$template->content->feed_id = $id;
 		$template->render(true);
@@ -110,8 +110,8 @@ class Feed_Controller extends Base_Controller
 	{
 		$template = new View('template_popup');
 		$template->title = 'Manage RSS Feeds';
-		$template->content = new View('feed/manage');
-		$template->content->feeds = ORM::factory('feed')->where('user_id', $this->user->id)->find_all();
+		$template->content = new View('feed/external/manage');
+		$template->content->feeds = ORM::factory('ext_feed')->where('user_id', $this->user->id)->find_all();
 		$template->render(true);
 	}
 	
@@ -120,7 +120,7 @@ class Feed_Controller extends Base_Controller
 	 */
 	private function _check_owner($id)
 	{
-		$feed = ORM::factory('feed', $id);
+		$feed = ORM::factory('ext_feed', $id);
 		
 		return ($feed->user_id == $this->user->id);
 	}
@@ -130,7 +130,7 @@ class Feed_Controller extends Base_Controller
 	 */
 	private function _check_exists($id)
 	{
-		return ORM::factory('feed', $id)->loaded;
+		return ORM::factory('ext_feed', $id)->loaded;
 	}
 }
 ?>

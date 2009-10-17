@@ -41,4 +41,4 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	</tbody>
 </table>
 
-<p><?php echo '<a href="' . url::site('feed/delete/' . $feed_id) . '">Delete feed</a>'; ?></p>
+<p><?php echo '<a href="' . url::site('feed/external/delete/' . $feed_id) . '">Delete feed</a>'; ?></p>

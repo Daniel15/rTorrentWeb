@@ -21,11 +21,24 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<?php echo form::open_multipart('feed/add') ?>
-	<p>
-		<label for="feed_name">Feed Name:</label> <input type="text" name="feed_name" id="feed_name" /><br />
-		<label for="feed_url">Feed URL:</label> <input type="text" name="feed_url" id="feed_url" /><br />
-	</p>
-	
-	<p><input name="submit" type="submit" value="Add Feed" /></p>
-</form>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<thead>
+		<tr>
+			<th>Feed Name</th>
+			<th>Actions</th>
+		<tr>
+	</thead>
+	<tbody>
+		<?php
+		foreach ($feeds as $feed)
+		{
+			echo '<tr>';
+			echo '<td>' . $feed->name . '</td>';
+			echo '<td><center><a href="' . url::site('feed/external/view/' . $feed->id) . '">View Feed</a> | <a href="' . url::site('feed/external/delete/' . $feed->id) . '">Delete Feed</a></center></td>'; // TODO : Yes dan, this is wrong, but i'm tired...
+			echo '</tr>';
+		}
+		?>
+	</tbody>
+</table>
+
+<p><a href="<?php echo url::site('feed/external/add'); ?>">Add new feed</a></p>
