@@ -21,13 +21,15 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
+<script type="text/javascript">window.addEvent('domready', Users.init);</script>
+
 <h2>Current Users</h2>
 <ul>
 <?php
 foreach ($users as $user)
 {
 	echo '
-	<li><a href="', url::site('admin/users/edit/' . $user->id), '">', $user->username, '</a></li>';
+	<li><a class="delete" href="', url::site('admin/users/delete/' . $user->id), '"><img src="res/icons16/bin_closed.png" alt="Delete" title="Delete" /></a> ', $user->username, '</li>';
 }
 ?>
 </ul>
@@ -55,6 +57,19 @@ if (!empty($add_errors))
 		<label for="password_confirm">Confirm Password:</label> <input type="password" name="password_confirm" id="password_confirm" /><br />
 		<label for="email">E-mail Address:</label> <input type="text" name="email" id="email" /><br />
 	</p>
+	
+	<h3>Roles</h3>
+<?php
+foreach ($roles as $role)
+{
+	echo '
+	<p>
+		<input type="checkbox" name="roles[]" value="', $role->id, '" id="role_', $role->id, '" ', $role->name == 'login' ? 'checked="checked" ' : '', '/>
+		<label for="role_', $role->id, '">', ucfirst($role->name), '</label>
+		<small>', $role->description, '</small>
+	</p>';
+}
+?>
 	
 	<p><input type="submit" name="submit" value="Submit" /></p>
 </form>

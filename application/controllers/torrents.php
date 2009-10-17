@@ -267,13 +267,7 @@ class Torrents_Controller extends Base_Controller
 			
 			// Now we go through and see exactly what we have to enable
 			foreach ($file_info as $file_id => &$file)
-			{
 				$priorities[$file_id] = isset($_POST['files'][$file_id]) ? 1 : 0;
-				/*if (isset($_POST['files'][$file_id]))
-					echo 'Enable ', $file['name'], '<br />';
-				else
-					echo 'Disable ', $file['name'], '<br />';*/
-			}
 
 			// Actually set the priorities
 			$this->rtorrent->set_file_priorities($hash, $priorities);

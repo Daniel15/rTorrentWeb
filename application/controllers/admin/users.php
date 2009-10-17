@@ -25,34 +25,31 @@ class Users_Controller extends Admin_Controller
 {
 	public function __construct()
 	{
+		// This handles permissions!
 		parent::__construct();
-		// Check if they're allowed here
-		// TODO: Handle this better
-		if (!$this->auth->logged_in('admin'))
-			die('Error: No permission to access this area! You\'re not an admin.');
 	}
 	
 	public function index()
 	{
-		$this->template->title = 'User Administration';
-		
 		$userpage = new View('admin/users/index');
+		$this->template->title = 'User Administration';
+
 		$userpage->add_errors = $this->session->get('add_errors', array());
-		$this->template->content = $userpage;
 		// Get a list of all the current users
 		$userpage->users = ORM::factory('user')->orderby('username')->find_all();
+		// Get a list of all the roles
+		$userpage->roles = ORM::factory('role')->find_all();
+		$this->template->content = $userpage;
 	}
 	
 	/**
 	 * Adding a user
-	 * TODO: FINISH THIS LOL
 	 */
 	public function add()
 	{
 		// No POST data? Go to the index page
 		if (empty($_POST['submit']))
 			url::redirect('admin/users');
-		//$this->session->set_flash('errors', array('1','2','3'));
 		// Let's see if our data is valid
 		$user = ORM::factory('user');
 		$post = $_POST;
@@ -61,8 +58,10 @@ class Users_Controller extends Admin_Controller
 		{
 			// TODO: Should be configurable
 			$user->homedir = Kohana::config('config.torrent_dir') . '/' . $user->username;
-			$user->add(ORM::factory('role', 'login'));
+			// TODO: More validation
+			$user->roles = $_POST['roles'];
 			$user->save();
+			$this->session->set_flash('top_message', 'Added user ' . $user->id);
 		}
 		else
 		{
@@ -70,6 +69,20 @@ class Users_Controller extends Admin_Controller
 		}
 		
 		url::redirect('admin/users');
+	}
+	
+	/**
+	 * Deleting a user
+	 */
+	public function delete($id)
+	{
+		// Easy as pie
+		ORM::factory('user', $id)->delete();
+		// TODO: Delete their directory?
+		// TODO: Delete their torrents?
+		$this->session->set_flash('top_message', 'Deleted user ' . $id);
+		url::redirect('admin/users');
+		
 	}
 }
 ?>

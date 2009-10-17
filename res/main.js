@@ -18,34 +18,18 @@
  * You should have received a copy of the GNU General Public License
  * along with rTorrentWeb.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-body
+ 
+/**
+ * User administration page
+ */
+var Users = 
 {
-	padding: 0;
-	margin: 0 10px;
-	font-size: small;
-	font-family: Verdana, sans-serif;
-}
-
-p
-{
-	margin: 0.2em;
-}
-
-h1
-{
-	text-align: center;
-}
-
-a img
-{
-	border: 0;
-}
-
-p#top_message
-{
-	background-color: #FFF3DE;
-	border: 1px solid #C14400;
-	font-weight: bold;
-	padding: 1em;
+	'init': function()
+	{
+		// Attach all the delete handlers
+		$$('a.delete').addEvent('click', function()
+		{
+			return confirm('Are you SURE you want to delete this user?');
+		});
+	}
 }

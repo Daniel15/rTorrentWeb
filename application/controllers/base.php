@@ -58,6 +58,8 @@ abstract class Base_Controller extends Controller
 		if ($this->template != null)
 		{
 			$this->template = new View($this->template);
+			// Might have a top message :o
+			$this->template->top_message = $this->session->get('top_message', null);
 			// Render the template immediately after the controller method
 			Event::add('system.post_controller', array($this, '_render'));
 		}
