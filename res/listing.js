@@ -311,7 +311,7 @@ var List =
 				'float': 'left',
 				'width': '100%',
 				'height': '10px',
-				'cursor': 'n-resize',
+				'cursor': 'n-resize'
 			}
 		}).inject(topPane, 'bottom');
 		
@@ -449,7 +449,7 @@ var List =
 			new Element('td', {'html': torrent.state}).inject(row);
 			new Element('td', {'html': torrent.size.format_size()}).inject(row);
 			//new Element('td', {'html': torrent.done.format_size()}).inject(row);
-			new Element('td', {'html': (torrent.done / torrent.size * 100) + "%"}).inject(row);
+			new Element('td', {'html': (torrent.done / torrent.size * 100).toFixed(2) + "%"}).inject(row);
 			new Element('td', {'html': torrent.rate.down.format_size() + '/s'}).inject(row);
 			new Element('td', {'html': torrent.rate.up.format_size() + '/s'}).inject(row);
 			new Element('td', {'html': torrent.ratio}).inject(row);

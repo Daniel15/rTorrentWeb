@@ -113,6 +113,7 @@ class Rtorrent_Core
 			'd.get_up_total=', 
 			'd.is_open=',
 			'd.is_active=',
+			'd.is_hash_checking=',
 			'd.get_ratio=',
 			
 			'd.get_chunk_size=',
@@ -174,8 +175,14 @@ class Rtorrent_Core
 			);
 			
 			// Get the state of this torrent
+			// Is it hash checking?
+			if ($torrentInfo['d.is_hash_checking='])
+			{
+				$torrent['state'] = 'hashing';
+				// TODO: Should also use get_chunks_hashed to get how many chunks have been hashed. Not necessary for now though.
+			}
 			// Is it open and active?
-			if ($torrentInfo['d.is_open='] && $torrentInfo['d.is_active='])
+			elseif ($torrentInfo['d.is_open='] && $torrentInfo['d.is_active='])
 			{
 				// If it's complete, it's seeding
 				if ($torrent['complete'])
