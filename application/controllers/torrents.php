@@ -39,15 +39,33 @@ class Torrents_Controller extends Base_Controller
 	 */
 	public function refresh()
 	{
-		if (false === ($results = $this->rtorrent->listing()))
+		if (false === ($torrents = $this->rtorrent->listing()))
 			die(json_encode(array(
 				'error' => true,
 				'message' => $this->rtorrent->error()
 			)));
+		
+		// We have to add owner information to all the torrents now...
+		// Get database stuff
+		$rows = ORM::factory('torrent')->find_all();
+		foreach ($rows as $row)
+		{
+			// Do we not have this torrent?
+			if (!isset($torrents[$row->hash]))
+				continue;
+				
+			// Is it private and not ours? If so, remove it from our listing
+			if ($row->private && $row->user_id != $this->user->id)
+				unset($torrents[$row->hash]);
+			// Otherwise, we have to add its owners name
+			else
+				$torrents[$row->hash]['owner'] = $row->user->username;
+			
+		}
 			
 		echo json_encode(array(
 			'error' => false,
-			'data' => $results,
+			'data' => $torrents,
 		));
 	}
 	
@@ -93,6 +111,15 @@ class Torrents_Controller extends Base_Controller
 	 */
 	public function action($action, $hash)
 	{
+		//Check that this user owns this torrent before we allow this!
+		if (!$this->_check_owner($hash))
+		{
+			die(json_encode(array(
+				'error' => true,
+				'message' => 'You don\'t own that torrent!',
+				'hash' => $hash,
+			)));
+		}
 		// The really simple ones with no return values. We just call directly
 		// through to the rTorrent library
 		if (in_array($action, array('pause', 'start', 'stop')))
@@ -200,8 +227,8 @@ class Torrents_Controller extends Base_Controller
 				// Calculate the hash of the torrent
 				// Hash = SHA1 of the encoded torrent info
 				// It's stored so we don't need to calculate it twice
-				$torrent_data = new BDecode($filename);
-				$bencode = new BEncode();
+				$torrent_data = new Bdecode($filename);
+				$bencode = new Bencode();
 				$hash = strtoupper(bin2hex(sha1($bencode->encode($torrent_data->result['info']), true)));
 				// Check this torrent
 				if ($this->rtorrent->exists($hash))
@@ -316,8 +343,8 @@ class Torrents_Controller extends Base_Controller
 		// Calculate the hash of the torrent
 		// Hash = SHA1 of the encoded torrent info
 		// It's stored so we don't need to calculate it twice
-		$torrent_data = new BDecode($file['tmp_name']);
-		$bencode = new BEncode();
+		$torrent_data = new Bdecode($file['tmp_name']);
+		$bencode = new Bencode();
 		$file['hash'] = strtoupper(bin2hex(sha1($bencode->encode($torrent_data->result['info']), true)));
 		// Check this torrent
 		if ($this->rtorrent->exists($file['hash']))

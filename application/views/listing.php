@@ -108,6 +108,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 					<h3>General</h3>
 					<p>						
 						Hash: <span id="hash"></span><br />
+						Owner: <span id="owner"></span><br />
 					</p>
 				</div>
 			</div> 
