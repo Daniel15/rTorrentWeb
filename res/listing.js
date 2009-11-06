@@ -880,6 +880,13 @@ var Torrent =
 		var hash = this.retrieve('hash');
 		var data = this.retrieve('data');
 		
+		if (data.state!='seeding' && data.state!='downloading')
+		{
+			$('peers').getElement('tbody').empty();
+			$('peers').getElement('table').setStyle('display', '');
+			return;
+		}
+		
 		$('loading').setStyle('display', 'inline');
 		Log.write('Retrieving peer listing for ' + data.name + '...');
 		
@@ -900,8 +907,9 @@ var Torrent =
 					Log.write('An error occurred while refreshing: ' + response.message);
 					$('loading').setStyle('display', 'none');
 					$(document.body).setStyle('cursor', 'default');
+					$('peers').getElement('span').set('html', 'An error occured while retrieving peer listing for ' + data.name + ', it is possible your rTorrent build doesn\'t support this feature.');
 					return;
-				}
+					}
 				
 				// Actually process the peers now. 
 				// Is this torrent still selected (they could have changed torrent by the time we get the reply)?
@@ -928,7 +936,7 @@ var Torrent =
 	{
 		var tbody = $('peers').getElement('tbody');
 		
-		$('peers').getElement('tbody').empty();
+		$('peers').getElement('tbody').empty();		
 		
 		// Go through all the peers
 		data.peers.each(function(peer)
@@ -937,10 +945,10 @@ var Torrent =
 			var row = new Element('tr').inject(tbody);
 			new Element('td', {'html': peer.address}).inject(row);
 			new Element('td', {'html': peer.client_version}).inject(row);
-			new Element('td', {'html': peer.down_rate}).inject(row);
-			new Element('td', {'html': peer.up_rate}).inject(row);
-			new Element('td', {'html': peer.down_total}).inject(row);
-			new Element('td', {'html': peer.up_total}).inject(row);
+			new Element('td', {'html': peer.down_rate.format_size() + '/s'}).inject(row);
+			new Element('td', {'html': peer.up_rate.format_size() + '/s'}).inject(row);
+			new Element('td', {'html': peer.down_total.format_size()}).inject(row);
+			new Element('td', {'html': peer.up_total.format_size()}).inject(row);
 			new Element('td', {'html': peer.is_seeder}).inject(row);
 		});
 	}
