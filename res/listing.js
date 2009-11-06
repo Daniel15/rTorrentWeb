@@ -904,7 +904,6 @@ var Torrent =
 				// Was there an error?
 				if (response.error)
 				{
-					Log.write('An error occurred while refreshing: ' + response.message);
 					$('loading').setStyle('display', 'none');
 					$(document.body).setStyle('cursor', 'default');
 					$('peers').getElement('span').set('html', 'An error occured while retrieving peer listing for ' + data.name + ', it is possible your rTorrent build doesn\'t support this feature.');
