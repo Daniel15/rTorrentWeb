@@ -880,6 +880,7 @@ var Torrent =
 		var hash = this.retrieve('hash');
 		var data = this.retrieve('data');
 		
+		// If we aren't dowlnoading, or uploading there can be no peers can there :P
 		if (data.state!='seeding' && data.state!='downloading')
 		{
 			$('peers').getElement('tbody').empty();
