@@ -24,6 +24,7 @@
  */
 var Add = 
 {
+	'file_count': 0,
 	'init': function()
 	{
 		// Hide URL download section by default...
@@ -38,6 +39,35 @@ var Add =
 		{
 			$('file').setStyle('display', 'none');
 			$('url').setStyle('display', 'block');
+		});
+		
+		// Make the "add another?" buttons actually work
+		$('another').addEvent('click', function()
+		{
+			// What type is chosen?
+			if ($('type_file').checked)
+			{
+				new Element('input',
+				{
+					'type': 'file',
+					'name': 'torrent_file_' + ++Add.file_count,
+					'id': 'torrent_file_' + Add.file_count,
+					'size': 40
+				}).inject($('file'));
+			}
+			else
+			{
+				new Element('input',
+				{
+					'type': 'text',
+					'name': 'torrent_url[' + ++Add.file_count + ']',
+					'id': 'torrent_url_' + Add.file_count,
+					'size': 50
+				}).inject($('url'));
+			}
+			
+			// They can't choose the files individually any more.
+			$('choose_files_span').setStyle('display', 'none');
 		});
 	}
 }

@@ -173,97 +173,158 @@ class Torrents_Controller extends Base_Controller
 	 */
 	public function add()
 	{
+		$all_errors = array();
+		$torrents = array();
+		
 		// Did they actually submit the form?
 		if (isset($_POST['submit']))
 		{
 			// Are they uploading a torrent via file upload?
 			if ($this->input->post('type') == 'file')
-			{
-				// Let's try this upload
+			{				
 				$_FILES = Validation::factory($_FILES)->
-					add_rules('torrent_file', 'required', 'upload::valid', 'upload::type[torrent]')->
-					add_callbacks('torrent_file', array($this, '_unique_torrent'));
+					add_rules('*', 'required', 'upload::valid', 'upload::type[torrent]')->
+					add_callbacks('*', array($this, '_unique_torrent'));
+					
 				if (!$_FILES->validate())
-				{
-					// TODO: Proper error handling
-					echo 'Some errors were encountered while adding your torrent:<br />
-	<ul>
-		<li>', implode('</li>
-		<li>', $_FILES->errors()), '</li>
-	</ul>';
-					die();
+				{					
+					// Better check which torrents had errors
+					foreach ($_FILES->errors() as $torrent_file => $error)
+					{
+						// Better save this error
+						$all_errors[] = htmlspecialchars($_FILES[$torrent_file]['name']) . ': ' . $error;
+						// This torrent is BAD! Remove it!
+						unset($_FILES[$torrent_file]);
+					}
 				}
 				
-				// Better save it to a proper location
-				$filename = upload::save('torrent_file', null, Kohana::config('config.metadata_dir'));
-				$hash = $_FILES->torrent_file['hash'];
+				// So now we're left with all the good files. Better go through
+				// them.
+				foreach ($_FILES as $torrent_file => $file_info)
+				{
+					// Save this one
+					$torrents[$file_info['hash']] = upload::save($torrent_file, null, Kohana::config('config.metadata_dir'));
+				}
 			}
 			else
 			{
-				// Better validate some stuffs
-				$post = Validation::factory($_POST)->
-					add_rules('torrent_url', 'required', 'valid::url_ok');
+				// TODO: Handle this better
+				if (!isset($_POST['torrent_url']) || !is_array($_POST['torrent_url']))
+					die('Invalid POST');
+					
+				// Better validate the URLs
+				$urls = $_POST['torrent_url'];
+				$post = Validation::factory($urls)->
+					add_rules('*', 'valid::url_ok');
 					
 				if (!$post->validate())
 				{
-					// TODO: Proper error handling
-					echo 'Some errors were encountered while adding your torrent:<br />
-	<ul>
-		<li>', implode('</li>
-		<li>', $post->errors()), '</li>
-	</ul>';
-					die();
+					foreach ($post->errors() as $url_id => $error)
+					{
+						$all_errors[] = htmlspecialchars($urls[$url_id]) . ': ' . $error;
+						// This one is BAD! Remove it :o
+						unset($urls[$url_id]);
+					}
+					
 				}
 				
-				// Now we can try loading the torrent, since we know the URL is
-				// valid. It might be an evil URl though, so later we check
-				// if it's actually a torrent!
-				// Temp filename = [time]-[user id]
-				$filename = Kohana::config('config.metadata_dir') . '/' . time() . '-' . $this->user->id . '.torrent';
-				$buffer = file_get_contents($this->input->post('torrent_url'));
-				file_put_contents($filename, $buffer);
-				
-				// Check that it's not a duplicate
-				// Calculate the hash of the torrent
-				// Hash = SHA1 of the encoded torrent info
-				// It's stored so we don't need to calculate it twice
-				$torrent_data = new Bdecode($filename);
-				$bencode = new Bencode();
-				$hash = strtoupper(bin2hex(sha1($bencode->encode($torrent_data->result['info']), true)));
-				// Check this torrent
-				if ($this->rtorrent->exists($hash))
-					die('Torrent already exists on the server');
-				
+				/* Now we can try loading the torrents, since we know the URLs are
+				 * valid. It might be an evil URL though, so later we check
+				 * if it's actually a torrent!
+				 * Temp filename = [time]-[user id]-[url id]
+				 */
+				foreach ($urls as $id => $url)
+				{
+					$filename = Kohana::config('config.metadata_dir') . '/' . time() . '-' . $this->user->id . '-' . $id . '.torrent';
+					$buffer = file_get_contents($url);
+					file_put_contents($filename, $buffer);
+
+					// Check that it's not a duplicate
+					// Calculate the hash of the torrent
+					// Hash = SHA1 of the encoded torrent info
+					$torrent_data = new Bdecode($filename);
+					if (empty($torrent_data->result['info']))
+					{
+						$all_errors[] = htmlspecialchars($url) . ': Torrent appears to be invalid';
+						continue;
+					}
+					$bencode = new Bencode();
+					$hash = strtoupper(bin2hex(sha1($bencode->encode($torrent_data->result['info']), true)));
+					// Check this torrent
+					if ($this->rtorrent->exists($hash))
+					{
+						$all_errors[] = htmlspecialchars($url) . ': Torrent already exists on the server';
+						continue;
+					}
+					
+					// If we get here, it should (hopefully) be valid!
+					$torrents[$hash] = $filename;
+				}
 			}
 			
-			// Try to add it to rTorrent
-			$this->rtorrent->add($filename, $this->user->homedir);
-			// Check that the torrent was added properly
-			if (!$this->rtorrent->exists($hash))
-				die('Torrent seems invalid');
-				
-			// Add this torrent into the database
-			$torrent = ORM::factory('torrent');
-			$torrent->hash = $hash;
-			$torrent->private = (bool)$this->input->post('private');
-			// This marks it as our torrent - Adds the torrent->user relation
-			//$torrent->add($this->user);
-			$torrent->user_id = $this->user->id;
-			$torrent->save();
-			// Are they choosing which files to download?
-			if ($this->input->post('choose_files'))
-				// Better bring them to the right place
-				url::redirect('torrents/add_files/' . $hash);
-			// Otherwise, we're done here!
-			else
+			// Do we not have any torrents left? O_o
+			if (count($torrents) == 0)
 			{
-				$this->rtorrent->start($hash);
-				// TODO: Messy!!
-				$template = new View('template_popup');
-				$template->title = 'Torrent Added Successfully';
-				$template->content = '<script type="text/javascript">window.opener.List.refresh(); self.close();</script>';
-				$template->render(true);
+				echo 'None of the torrents you uploaded could be added:<br />
+	<ul>
+		<li>', implode('</li>
+		<li>', $all_errors), '</li>
+	</ul>';
+				die();
 			}
+			
+			// Now let's go through all our torrents
+			foreach ($torrents as $hash => $filename)
+			{
+				// Try to add it to rTorrent
+				$this->rtorrent->add($filename, $this->user->homedir);
+				// Check that the torrent was added properly
+				if (!$this->rtorrent->exists($hash))
+				{
+					$all_errors[] = htmlspecialchars($filename) . ': Torrent seems invalid';
+					// Better go to the next one, and ignore this one.
+					continue;
+				}
+			
+				// Add this torrent into the database
+				$torrent = ORM::factory('torrent');
+				$torrent->hash = $hash;
+				$torrent->private = (bool)$this->input->post('private');
+				// This marks it as our torrent - Adds the torrent->user relation
+				//$torrent->add($this->user);
+				$torrent->user_id = $this->user->id;
+				$torrent->save();
+			}
+			
+			// Are they choosing files, and did they only upload one torrent?
+			if ($this->input->post('choose_files') && count($torrents) == 1)
+			{
+				// Better bring them to the right place
+				url::redirect('torrents/add_files/' . array_shift(array_keys($torrents)));
+			}
+			
+			// Otherwise, we start all the torrents
+			foreach ($torrents as $hash => $filename)
+				$this->rtorrent->start($hash);
+			
+			// TODO: Messy!!
+			$template = new View('template_popup');
+			$template->title = 'Torrents Added Successfully';
+			$template->content = '<script type="text/javascript">window.opener.List.refresh();</script>';
+			// Did we have any errors?
+			if (count($all_errors) > 0)
+			{
+				$template->content .= 'However, the following errors were encountered:<br />
+	<ul>
+		<li>' . implode('</li>
+		<li>', $all_errors) . '</li>
+	</ul><br />
+	<a href="javascript:self.close();">Close this window</a>';
+			}
+			else
+				$template->content .= '<script type="text/javascript">self.close();</script>';
+				
+			$template->render(true);
 		}
 		else
 		{
@@ -297,14 +358,17 @@ class Torrents_Controller extends Base_Controller
 				$priorities[$file_id] = isset($_POST['files'][$file_id]) ? 1 : 0;
 
 			// Actually set the priorities
-			$this->rtorrent->set_file_priorities($hash, $priorities);
+			if (false === $this->rtorrent->set_file_priorities($hash, $priorities))
+			{
+				die('An error occured while setting the file priorities.');
+			}
 			// Now, start the torrent
 			$this->rtorrent->start($hash);
 			//url::redirect('');
 			// TODO: Messy!!
 			$template = new View('template_popup');
 			$template->title = 'Torrent Added Successfully';
-			$template->content = '<script type="text/javascript">window.opener.List.refresh(); self.close();</script>';
+			$template->content = '<script type="text/javascript">window.opener.List.refresh(); //self.close();</script>';
 			$template->render(true);
 		}
 		// Get the files in this torrent
@@ -344,6 +408,12 @@ class Torrents_Controller extends Base_Controller
 		// Hash = SHA1 of the encoded torrent info
 		// It's stored so we don't need to calculate it twice
 		$torrent_data = new Bdecode($file['tmp_name']);
+		// If there's no info, assume it's invalid and bail
+		if (empty($torrent_data->result['info']))
+		{
+			$validation->add_error($field, 'torrent_invalid');
+			return;
+		}
 		$bencode = new Bencode();
 		$file['hash'] = strtoupper(bin2hex(sha1($bencode->encode($torrent_data->result['info']), true)));
 		// Check this torrent

@@ -73,11 +73,21 @@ class Rtorrent_Core
 	 */
 	public function do_multicall($type, $params)
 	{
-		// Actually do the call
-		if (($response = $this->do_call($type . '.multicall', $params)) === false)
+		/* Sometimes rTorrent returns NULL, but works fine the next request. For example,
+		 * on my test development server, getting the file listing fails about 1/10 of the
+		 * time, and refreshing the page works fine in fixing it. This loop is a horrible 
+		 * terrible UGLY HACK, but I guess it works for now. Really have to figure out
+		 * the proper solution to this, as this could cause serious issues (infinite loop,
+		 * anyone?)
+		 */
+		do
 		{
-			return false;
-		}
+			// Actually do the call
+			if (($response = $this->do_call($type . '.multicall', $params)) === false)
+			{
+				return false;
+			}
+		} while (is_null($response)); // See big comment above
 			
 		// Shift the parameters if we have a view as the first one (so we just have actual parameters)
 		if ($type == 'd')
@@ -405,19 +415,32 @@ class Rtorrent_Core
 	public function set_file_priorities($hash, $priorities)
 	{
 		$calls = array();
-		// We need to construct a multicall to set all the priorities
+		// We need to construct a multicall to set all the priorities.
+		// Better just do 100 at a time, rTorrent seems to not like doing too
+		// many at once.
 		foreach ($priorities as $file_id => $priority)
 		{
 			$calls[] = array(
 				'methodName' => 'f.set_priority',
 				'params' => array($hash, $file_id, $priority)
 			);
+			
+			if (count($calls) == 100)
+			{
+				// If a call fails, just bail! TODO: Make this nicer
+				if (false === $this->do_call('system.multicall', array($calls)))
+					return false;
+				$calls = array();
+			}
 		}
 		
-		// This actually sets the priorities
-		$this->do_call('system.multicall', array($calls));
+		// Better do any remaining calls
+		if (count($calls) != 0)
+			$this->do_call('system.multicall', array($calls));
+			
 		// And this tells rTorrent that they've changed (so it can update internally)
 		$this->do_call('d.update_priorities', array($hash));
+		return true;
 	}
 	
 	/**

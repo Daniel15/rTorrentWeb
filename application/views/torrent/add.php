@@ -31,17 +31,19 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 		<label for="type_url">Specify torrent URL</label>
 	</p>
 	<p id="file">
-		<label for="torrent_file">Torrent file:</label> <input type="file" name="torrent_file" id="torrent_file" /><br />
-		<!--label for="dir">Download directory:</label> <img src="res/icons16/house.png" alt="<?php echo $homedir; ?>" title="Your home directory - <?php echo $homedir; ?>" /> / <input type="text" name="dir" id="dir" /-->
+		<label for="torrent_file_0">Torrent file:</label><br />
+		<input type="file" name="torrent_file_0" id="torrent_file_0" size="40" /><br />
 	</p>
 	
 	<p id="url">
-		<label for="torrent_url">Torrent URL:</label> <input type="text" name="torrent_url" id="torrent_url" /><br />
+		<label for="torrent_url_0">Torrent URL:</label><br />
+		<input type="text" name="torrent_url[0]" id="torrent_url_0"  size="50" /><br />
 	</p>
 	
 	<p>
+		<input id="another" type="button" value="Add another one?" /><br /><br />
 		<input type="checkbox" name="private" id="private" /> <label for="private">Private?</label> <small>(tick this if you don't want other users seeing this torrent)</small><br />
-		<input type="checkbox" name="choose_files" id="choose_files" /> <label for="choose_files">Choose files to download?</label> <small>(tick this if you want to choose exactly which files to download from this torrent)</small><br />
+		<span id="choose_files_span"><input type="checkbox" name="choose_files" id="choose_files" /> <label for="choose_files">Choose files to download?</label> <small>(tick this if you want to choose exactly which files to download from this torrent. Only works if you upload only one torrent)</small><br /></span>
 	</p>
 	
 	<p><input name="submit" type="submit" value="Add Torrent" /></p>

@@ -452,7 +452,8 @@ var List =
 			new Element('td', {'html': (torrent.done / torrent.size * 100).toFixed(2) + "%"}).inject(row);
 			new Element('td', {'html': torrent.rate.down.format_size() + '/s'}).inject(row);
 			new Element('td', {'html': torrent.rate.up.format_size() + '/s'}).inject(row);
-			new Element('td', {'html': torrent.ratio}).inject(row);
+			new Element('td', {'html': torrent.ratio}).inject(row);	
+
 			// All the other details
 			row.store('hash', hash);
 			row.store('data', torrent);
@@ -480,7 +481,8 @@ var List =
 		});
 		
 		// Set the data for the sidebar
-		$('sidebar_all').getElement('span').set('html', data.getLength());
+		// TODO: Work around weird bug that when data length is 0, data.getLength() returns 17. O_O
+		$('sidebar_all').getElement('span').set('html', response.data.length == 0 ? 0 : data.getLength());
 		$('sidebar_seeding').getElement('span').set('html', cnt_seed);
 		$('sidebar_downloading').getElement('span').set('html', cnt_down);
 		$('sidebar_finished').getElement('span').set('html', cnt_fin);
@@ -592,6 +594,7 @@ var List =
 		$('total_up').set('html', data.total.up.format_size());
 		// General
 		$('hash').set('html', this.retrieve('hash'));
+		$('owner').set('html', data.owner ? data.owner : '[unknown]');
 		
 		// Now, enable the buttons that we need
 		$('delete').removeClass('disabled');
@@ -708,6 +711,7 @@ var Torrent =
 				if (response.error)
 				{
 					Log.write('An error occurred: ' + response.message);
+					alert('An error occurred: ' + response.message);
 					$(document.body).setStyle('cursor', 'default');
 					$('loading').setStyle('display', 'none');
 					return;
