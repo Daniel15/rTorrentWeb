@@ -993,11 +993,11 @@ var Log =
 		var minute = dateObj.getMinutes();
 		var second = dateObj.getSeconds();
 		// Format the numbers nicely
-		if (hour < 9)
+		if (hour <= 9)
 			hour = "0" + hour;
-		if (minute < 9)
+		if (minute <= 9)
 			minute = "0" + minute;
-		if (second < 0)
+		if (second <= 9)
 			second = "0" + second;
 			
 		// TODO: Make this format not hard coded (possibly include date instead of just time)
