@@ -266,6 +266,12 @@ div#tabs li img
 	vertical-align: middle;
 }
 
+div#tabs li.disabled
+{
+	cursor: default;
+	background-color: #AAA;
+}
+
 div#log ul
 {
 	list-style-type: none;

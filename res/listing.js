@@ -598,12 +598,15 @@ var List =
 		
 		// Now, enable the buttons that we need
 		$('delete').removeClass('disabled');
+		$('tab_peers').addClass('disabled');
+		
 		// Seeding or downloading? Stop and pause are needed.
 		if (data.state == 'seeding' || data.state == 'downloading')
 		{
 			$('start').addClass('disabled');
 			$('pause').removeClass('disabled');
 			$('stop').removeClass('disabled');
+			$('tab_peers').removeClass('disabled');
 		}
 		// Paused? Start and stop are needed
 		else if (data.state == 'paused')
@@ -626,6 +629,7 @@ var List =
 			$('pause').removeClass('disabled');
 			$('stop').removeClass('disabled');
 		}
+		
 		// Update the current tab
 		List.update_tab();
 	},	
@@ -650,6 +654,9 @@ var List =
 	'show_tab': function()
 	{
 		var tab = this.id.substring(4);
+		// Make sure the tab they clicked is enabled
+		if (this.hasClass('disabled'))
+			return;
 		
 		// If we have a selected tab, deselect it. If we don't, hide all.
 		if (List.current_tab)
@@ -899,11 +906,13 @@ var Torrent =
 		var hash = this.retrieve('hash');
 		var data = this.retrieve('data');
 		
+		// Hide the table initially.
+		$('peers').getElement('table').setStyle('display', 'none');
+		
 		// If we aren't dowlnoading, or uploading there can be no peers can there :P
-		if (data.state!='seeding' && data.state!='downloading')
+		if (data.state != 'seeding' && data.state != 'downloading')
 		{
-			$('peers').getElement('tbody').empty();
-			$('peers').getElement('table').setStyle('display', '');
+			$('peers').getElement('span').set('html', data.name + ' is stopped');
 			return;
 		}
 		
@@ -911,7 +920,6 @@ var Torrent =
 		Log.write('Retrieving peer listing for ' + data.name + '...');
 		
 		$('peers').getElement('span').set('html', 'Loading peer listing for ' +  data.name + '...');
-		$('peers').getElement('table').setStyle('display', 'none');
 		
 		// Send the request
 		var myRequest = new Request({
