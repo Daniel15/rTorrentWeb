@@ -626,11 +626,8 @@ var List =
 			$('pause').removeClass('disabled');
 			$('stop').removeClass('disabled');
 		}
-		// Retrieve the file list for this torrent
-		Torrent.files.bind(this)();
-		
-		// Retrieve the peer list for this torrent
-		Torrent.peers.bind(this)();
+		// Update the current tab
+		List.update_tab();
 	},	
 	/**
 	 * Stuff that runs when the window is resized. Make sure the torrent listing
@@ -672,6 +669,24 @@ var List =
 		List.current_tab = tab;
 		$(tab).setStyle('display', 'block');
 		$('tab_' + tab).addClass('selected');
+		// Better do an update
+		List.update_tab();
+	},
+	
+	/**
+	 * Update the information in the current tab
+	 */
+	'update_tab': function()
+	{
+		// If there's no torrent, there's no data we have to load
+		if (List.selected == null)
+			return;
+			
+		// Is there a function for this tab?
+		if ($defined(Torrent[List.current_tab]))
+		{
+			Torrent[List.current_tab].bind(List.selected)();
+		}
 	}
 };
 
