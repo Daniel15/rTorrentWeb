@@ -189,7 +189,7 @@ class Torrents_Controller extends Base_Controller
 				if (!$_FILES->validate())
 				{					
 					// Better check which torrents had errors
-					foreach ($_FILES->errors() as $torrent_file => $error)
+					foreach ($_FILES->errors('torrent_add_errors') as $torrent_file => $error)
 					{
 						// Better save this error
 						$all_errors[] = htmlspecialchars($_FILES[$torrent_file]['name']) . ': ' . $error;
@@ -219,7 +219,7 @@ class Torrents_Controller extends Base_Controller
 					
 				if (!$post->validate())
 				{
-					foreach ($post->errors() as $url_id => $error)
+					foreach ($post->errors('torrent_add_errors') as $url_id => $error)
 					{
 						$all_errors[] = htmlspecialchars($urls[$url_id]) . ': ' . $error;
 						// This one is BAD! Remove it :o
@@ -245,7 +245,7 @@ class Torrents_Controller extends Base_Controller
 					$torrent_data = new Bdecode($filename);
 					if (empty($torrent_data->result['info']))
 					{
-						$all_errors[] = htmlspecialchars($url) . ': Torrent appears to be invalid';
+						$all_errors[] = htmlspecialchars($url) . ': ' . Kohana::lang('torrent_add_errors.default.torrent_invalid');
 						continue;
 					}
 					$bencode = new Bencode();
@@ -253,7 +253,7 @@ class Torrents_Controller extends Base_Controller
 					// Check this torrent
 					if ($this->rtorrent->exists($hash))
 					{
-						$all_errors[] = htmlspecialchars($url) . ': Torrent already exists on the server';
+						$all_errors[] = htmlspecialchars($url) . ': ' . Kohana::lang('torrent_add_errors.default.torrent_exists');
 						continue;
 					}
 					
@@ -281,7 +281,7 @@ class Torrents_Controller extends Base_Controller
 				// Check that the torrent was added properly
 				if (!$this->rtorrent->exists($hash))
 				{
-					$all_errors[] = htmlspecialchars($filename) . ': Torrent seems invalid';
+					$all_errors[] = htmlspecialchars($filename) . ': ' . Kohana::lang('torrent_add_errors.default.torrent_invalid');
 					// Better go to the next one, and ignore this one.
 					continue;
 				}
