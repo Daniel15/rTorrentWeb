@@ -21,24 +21,34 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
+<?php echo form::open('torrents/add') ?>
+<input type="hidden" name="type" value="url" />
+
 <table width="100%" cellpadding="0" cellspacing="0">
 	<thead>
 		<tr>
 			<th>Torrent Name</th>
-			<th>Actions</th>
+			<th>Add?</th>
 		<tr>
 	</thead>
+	<tfoot>
+		<tr>
+			<td>&nbsp;</td>
+			<td><input type="submit" name="submit" value="Add Torrents" /></td>
+		</tr>
+	</tfoot>
 	<tbody>
 	<?php 
 	foreach ($feed as $feed_item)
 	{
 		echo '<tr>';
 		echo '<td>' . $feed_item['title'] . '</td>';
-		echo '<td><a href="' . url::site('torrents/add/?url=' . $feed_item['link']) . '">Add Torrent</a><br/></td>'; // TODO : Link correct
+		echo '<td><input type="checkbox" name="torrent_url[]" value="' . $feed_item['link'] . '" /></td>'; 
 		echo '</tr>';
 	}
 	?>
 	</tbody>
 </table>
+</form>
 
 <p><?php echo '<a href="' . url::site('feed/external/delete/' . $feed_id) . '">Delete feed</a>'; ?></p>

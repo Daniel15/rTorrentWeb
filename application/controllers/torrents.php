@@ -303,9 +303,12 @@ class Torrents_Controller extends Base_Controller
 				url::redirect('torrents/add_files/' . array_shift(array_keys($torrents)));
 			}
 			
-			// Otherwise, we start all the torrents
-			foreach ($torrents as $hash => $filename)
-				$this->rtorrent->start($hash);
+			// Otherwise, we start all the torrents, if we're starting them
+			if ($this->input->post('start'))
+			{
+				foreach ($torrents as $hash => $filename)
+					$this->rtorrent->start($hash);
+			}
 			
 			// TODO: Messy!!
 			$template = new View('template_popup');

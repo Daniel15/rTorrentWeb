@@ -60,7 +60,7 @@ var Add =
 				new Element('input',
 				{
 					'type': 'text',
-					'name': 'torrent_url[' + ++Add.file_count + ']',
+					'name': 'torrent_url[]',
 					'id': 'torrent_url_' + Add.file_count,
 					'size': 50
 				}).inject($('url'));

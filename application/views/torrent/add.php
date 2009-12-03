@@ -37,12 +37,14 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	
 	<p id="url">
 		<label for="torrent_url_0">Torrent URL:</label><br />
-		<input type="text" name="torrent_url[0]" id="torrent_url_0"  size="50" /><br />
+		<input type="text" name="torrent_url[]" id="torrent_url_0"  size="50" /><br />
 	</p>
 	
 	<p>
 		<input id="another" type="button" value="Add another one?" /><br /><br />
 		<input type="checkbox" name="private" id="private" /> <label for="private">Private?</label> <small>(tick this if you don't want other users seeing this torrent)</small><br />
+		<input type="checkbox" name="start" id="start" checked="checked" /> <label for="start">Start Torrent?</label> <small>(untick this if you don't want to start the torrent after adding it)</small><br />
+		
 		<span id="choose_files_span"><input type="checkbox" name="choose_files" id="choose_files" /> <label for="choose_files">Choose files to download?</label> <small>(tick this if you want to choose exactly which files to download from this torrent. Only works if you upload only one torrent)</small><br /></span>
 	</p>
 	
