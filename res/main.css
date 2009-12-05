@@ -19,12 +19,29 @@
  * along with rTorrentWeb.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+html
+{
+	padding: 0;
+	margin: 0;
+}
+
 body
 {
 	padding: 0;
-	margin: 0 10px;
+	margin: 0;
 	font-size: small;
 	font-family: Verdana, sans-serif;
+	background-color: #CCC;
+}
+
+a
+{
+	text-decoration: none;
+}
+
+a:hover
+{
+	text-decoration: underline;
 }
 
 p
@@ -48,4 +65,74 @@ p#top_message
 	border: 1px solid #C14400;
 	font-weight: bold;
 	padding: 1em;
+}
+
+div#container
+{
+	border-style: solid;
+	border-color: #AAA;
+	border-width: 0 2px 2px 2px;
+	margin: 0 8%;
+	padding: 0.5em;
+	background-color: white;
+}
+
+div#header
+{
+	border-bottom: 1px solid #DDD;
+	overflow: hidden; /* Clear the floats */
+}
+
+div#footer
+{
+	text-align: right;
+	font-size: x-small;
+	border-top: 1px solid #DDD;
+}
+
+ul#nav
+{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+ul#nav li
+{
+	display: inline;
+	float: left;
+	border-color: #DDD;
+	border-style: solid;
+	border-width: 1px 1px 0 1px;
+	margin: 0 0.5em;
+}
+
+ul#nav li a
+{
+	display: block;
+	text-decoration: none;
+	padding: 0.5em;
+	color: black;
+}
+
+ul#nav li:hover
+{
+	background-color: #EEE;
+}
+
+ul#nav li.selected
+{
+	font-weight: bold;
+}
+
+ul#nav li.selected a
+{
+	cursor: default;
+}
+
+
+/* Settings page */
+form#settings p
+{
+	margin-bottom: 1em;
 }

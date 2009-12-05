@@ -51,6 +51,9 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 				<li><img id="pause" src="res/icons/pause.png" alt="Pause Torrent" title="Pause Torrent" class="disabled" /></li>
 				<li><img id="stop" src="res/icons/stop.png" alt="Stop Torrent" title="Stop Torrent" class="disabled" /></li>
 				<li class="end-section"><img id="delete" src="res/icons/trash.png" alt="Delete Torrent" title="Delete Torrent" class="disabled" /></li>
+<?php if ($this->auth->logged_in('admin')) : ?>
+				<li class="end-section"><a href="<?php echo url::site('admin'); ?>"><img src="res/icons/admin.png" alt="Administration" title="Administration" /></a></li>
+<?php endif; ?>
 				<li><a href="<?php echo url::site('user/logout'); ?>"><img src="res/icons/logout.png" alt="Log Out" title="Log Out" /></a></li>
 			</ul>
 		</div>

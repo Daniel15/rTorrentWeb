@@ -36,6 +36,7 @@ abstract class Base_Controller extends Controller
 		// Let's load the session and auth libraries
 		$this->session = Session::instance();
 		$this->auth = new Auth();
+		$this->config = Config::instance();
 		
 		//  Make sure we're logged in!
 		if (!$this->auth->logged_in() && url::current() != 'user/login')

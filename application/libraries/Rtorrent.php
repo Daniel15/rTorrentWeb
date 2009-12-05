@@ -46,7 +46,7 @@ class Rtorrent_Core
 		)));
 		
 		// Actually try the request
-		if (!($xml = @file_get_contents(Kohana::config('config.rpc_url'), false, $context)))
+		if (!($xml = @file_get_contents(Config::instance()->get('rpcurl'), false, $context)))
 		{
 			// Didn't work?
 			$this->_rpcerror = 'Could not connect to rTorrent XMLRPC';
@@ -406,7 +406,7 @@ class Rtorrent_Core
 		// if the hash was added successfully?
 		$this->do_call('load', $torrent);
 		// Change back to the default directory
-		$this->do_call('set_directory', Kohana::config('config.torrent_dir'));
+		$this->do_call('set_directory', $this->config->get('torrent_dir'));
 	}
 	
 	/**

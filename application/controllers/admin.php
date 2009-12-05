@@ -18,10 +18,13 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with rTorrentWeb.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * This file contains basic administration actions. More advanced stuff is in the
+ * "admin" directory.
  */
 defined('SYSPATH') OR die('No direct access allowed.');
 
-abstract class Admin_Controller extends Base_Controller
+/*abstract */class Admin_Controller extends Base_Controller
 {
 	public $template = 'template';
 	public function __construct()
@@ -31,6 +34,40 @@ abstract class Admin_Controller extends Base_Controller
 		// TODO: Handle this better
 		if (!$this->auth->logged_in('admin'))
 			die('Error: No permission to access this area! You\'re not an admin.');
+	}
+	
+	/**
+	 * General settings
+	 */
+	public function index()
+	{
+		// Did they submit the page?
+		if ($this->input->post('submit'))
+		{
+			// Let's go through all the possible settings
+			foreach (array('rpcurl', 'metadata_dir', 'torrent_dir') as $key)
+			{
+				// If it's not set, skip it
+				if (null === ($value = $this->input->post($key)))
+					continue;
+				// Save it
+				// TODO: Validation
+				$this->config->set($key, $value);
+			}
+			$this->template->top_message = 'Your changes were saved';
+		}
+		
+		$this->template->title = 'General Settings';
+		$this->template->content = View::factory('admin/index');
+	}
+	
+	/**
+	 * Show the rTorrentWeb "About" page
+	 */
+	public function about()
+	{
+		$this->template->title = 'About rTorrentWeb';
+		$this->template->content = View::factory('admin/about');
 	}
 }
 ?>

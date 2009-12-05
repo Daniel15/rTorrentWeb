@@ -35,13 +35,40 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 </head>
 
 <body>
-	<h1><?php echo $title; ?></h1>
+	<div id="container">
+		<div id="header">
+			<h1><?php echo $title; ?></h1>
+			<ul id="nav"><?php
+// Here comes the menu
+$menu_items = array(
+	'admin' => 'General Settings',
+	'admin/users' => 'User Administration',
+	'admin/about' => 'About rTorrentWeb',
+	'' => 'Back to rTorrentWeb Home',
+);
+foreach ($menu_items as $uri => $title)
+{
+	echo '
+				<li', url::current() == $uri ? ' class="selected"': '', '><a href="', url::site($uri), '">', $title, '</a></li>';
+}
+?>
+
+			</ul>
+		</div>
+		<div id="content">
 <?php
 if (!empty($top_message))
 	echo '
-	<p id="top_message">', $top_message, '</p>
+			<p id="top_message">', $top_message, '</p>
 ';
 ?>
-	<?php echo $content; ?>
+<?php echo $content; ?>
+	
+		</div>
+		
+		<div id="footer">
+			<p>Powered by <a href="http://rtorrentweb.com/">rTorrentWeb</a> <?php echo VERSION; ?></p>
+		</div>
+	</div>
 </body>
 </html>

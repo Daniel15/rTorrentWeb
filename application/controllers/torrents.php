@@ -203,7 +203,7 @@ class Torrents_Controller extends Base_Controller
 				foreach ($_FILES as $torrent_file => $file_info)
 				{
 					// Save this one
-					$torrents[$file_info['hash']] = upload::save($torrent_file, null, Kohana::config('config.metadata_dir'));
+					$torrents[$file_info['hash']] = upload::save($torrent_file, null, $this->config->get('metadata_dir'));
 				}
 			}
 			else
@@ -235,7 +235,7 @@ class Torrents_Controller extends Base_Controller
 				 */
 				foreach ($urls as $id => $url)
 				{
-					$filename = Kohana::config('config.metadata_dir') . '/' . time() . '-' . $this->user->id . '-' . $id . '.torrent';
+					$filename = $this->config->get('metadata_dir') . '/' . time() . '-' . $this->user->id . '-' . $id . '.torrent';
 					$buffer = file_get_contents($url);
 					file_put_contents($filename, $buffer);
 

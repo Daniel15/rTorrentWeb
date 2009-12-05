@@ -57,7 +57,7 @@ class Users_Controller extends Admin_Controller
 		if ($user->validate($post))
 		{
 			// TODO: Should be configurable
-			$user->homedir = Kohana::config('config.torrent_dir') . '/' . $user->username;
+			$user->homedir = $this->config->get('torrent_dir') . '/' . $user->username;
 			// TODO: More validation
 			$user->roles = $_POST['roles'];
 			$user->save();

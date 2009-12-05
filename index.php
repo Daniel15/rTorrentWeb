@@ -29,6 +29,11 @@
  *
  * @see http://kohanaphp.com
  */
+ 
+/**
+ * rTorrentWeb version information
+ */
+define('VERSION', '0.1 Beta');
 
 /**
  * Define the website environment status. When this flag is set to TRUE, some
@@ -94,7 +99,7 @@ define('EXT', '.php');
 //
 // DO NOT EDIT BELOW THIS LINE, UNLESS YOU FULLY UNDERSTAND THE IMPLICATIONS.
 // ----------------------------------------------------------------------------
-// $Id: index.php 3915 2009-01-20 20:52:20Z zombor $
+// $Id$
 //
 
 $kohana_pathinfo = pathinfo(__FILE__);
