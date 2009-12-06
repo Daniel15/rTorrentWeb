@@ -24,20 +24,13 @@
  
 defined('SYSPATH') OR die('No direct access allowed.');
 
-// Begin rTorrent-specific settings
-$config['rpc_url'] = 'http://' . $_SERVER['HTTP_HOST'] . '/RPC2/';
-// Directory to store .torrent files in
-$config['metadata_dir'] = APPPATH . '../torrent_metadata';
-// Directory to store actual torrents in
-$config['torrent_dir'] = APPPATH . '../torrents';
-// End rTorrent-specific settings
-
 /**
  * Base path of the web site. If this includes a domain, eg: localhost/kohana/
  * then a full URL will be used, eg: http://localhost/kohana/. If it only includes
  * the path, and a site_protocol is specified, the domain will be auto-detected.
  */
-$config['site_domain'] = '/rtorrent/';
+$config['site_domain'] = dirname($_SERVER['SCRIPT_NAME']);
+//$config['site_domain'] = '/rtorrent/';
 
 /**
  * Force a default protocol to be used by the site. If no site_protocol is
