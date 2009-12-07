@@ -23,7 +23,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<title><?php echo $title ?></title>
+	<title><?php echo $title ?> &mdash; rTorrentWeb</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<base href="<?php echo url::base(false, 'http'); ?>" />
 	<link rel="stylesheet" href="res/main.css" type="text/css" />
@@ -41,10 +41,22 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 			<ul id="nav"><?php
 // Here comes the menu
 $menu_items = array(
-	'admin' => 'General Settings',
-	'admin/users' => 'User Administration',
-	'admin/about' => 'About rTorrentWeb',
-	'' => 'Back to rTorrentWeb Home',
+	'' => 'Go Back Home',
+	'profile/labels' => 'Labels'
+);
+
+// Admins are SPECIAL
+if ($this->auth->logged_in('admin'))
+{
+	$menu_items += array(
+		'admin' => 'General Settings',
+		'admin/users' => 'Users',
+		'admin/about' => 'About',
+	);
+}
+
+$menu_items += array(
+	'user/logout' => 'Logout',
 );
 foreach ($menu_items as $uri => $title)
 {

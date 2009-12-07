@@ -39,24 +39,6 @@ Number.implement({
 });
 
 /**
- * TODO: MOve this elsewhere
- */
-var Settings = 
-{
-	// Is auto-refresh enabled?
-	'autorefresh': false,
-	// How many seconds before auto refreshing?
-	'autorefresh_interval': 10
-};
-
-/**
- * TODO: Move this elsewhere
- */
-var Lang = 
-{
-};
-
-/**
  * Sortable table stuff
  */
 var SortTable = 
@@ -371,6 +353,29 @@ var List =
 			List.update_filter_counts();
 			// And actually update the filter
 			List.filter();
+		});
+		
+		var sidebar_ul = $('sidebar').getElement('ul');
+		// Add all the labels to the sidebar
+		Settings.labels.each(function(label)
+		{
+			//console.log(label);
+			new Element('li',
+			{
+				'html': label.name,
+				'class': 'filter',
+				'styles':
+				{
+					'background-image': 'url(res/label_icons/' + label.icon + '.png)',
+				},
+				'events':
+				{
+					'click': function()
+					{
+						alert('TODO: Clicked ' + this.retrieve('id') + ' (' + this.get('html') + ')');
+					}
+				}
+			}).store('id', label.id).inject(sidebar_ul);
 		});
 	},
 		

@@ -33,7 +33,7 @@
 /**
  * rTorrentWeb version information
  */
-define('VERSION', '0.1 Beta');
+define('VERSION', '0.1 Alpha');
 
 /**
  * Define the website environment status. When this flag is set to TRUE, some

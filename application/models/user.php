@@ -23,6 +23,6 @@ defined('SYSPATH') OR die('No direct access allowed.');
 
 class User_Model extends Auth_User_Model
 {
-	protected $has_many = array('user_tokens', 'torrents', 'feeds');
+	protected $has_many = array('user_tokens', 'torrents', 'feeds', 'labels');
 }
 ?>

@@ -19,15 +19,19 @@
  * You should have received a copy of the GNU General Public License
  * along with rTorrentWeb.  If not, see <http://www.gnu.org/licenses/>.
  */
-defined('SYSPATH') or die('No direct script access.');
-
-class Torrent_model extends ORM
-{
-	protected $primary_key = 'hash';
-	protected $foreign_key = array(
-		'user' => 'user_id'
-	);
-	protected $belongs_to = array('user');
-	protected $has_and_belongs_to_many = array('labels');
-}
+defined('SYSPATH') OR die('No direct access allowed.');
+header('Content-type: text/javascript');
+header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+header('Cache-Control: no-store, no-cache, must-revalidate');
 ?>
+var Settings = 
+{
+	// TODO: Make these configurable
+	// Is auto-refresh enabled?
+	'autorefresh': false,
+	// How many seconds before auto refreshing?
+	'autorefresh_interval': 10,
+	
+	'labels': new Hash(<?php echo json_encode($labels); ?>)
+
+};

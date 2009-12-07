@@ -52,6 +52,7 @@ p
 h1
 {
 	text-align: center;
+	text-shadow: 0 -1px #FFF, 1px 0 #FFF, 0 1px #FFF, -1px 0 #FFF, 2px 2px 3px #999;
 }
 
 a img
@@ -71,8 +72,8 @@ div#container
 {
 	border-style: solid;
 	border-color: #AAA;
-	border-width: 0 2px 2px 2px;
-	margin: 0 8%;
+	border-width: 2px;
+	margin: 1em 8%;
 	padding: 0.5em;
 	background-color: white;
 }

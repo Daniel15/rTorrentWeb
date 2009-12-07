@@ -51,7 +51,7 @@ class Config_Core
 		
 		// Here are the default settings.
 		$defaults = array(
-			'rpcurl' => 'http://' . $_SERVER['HTTP_HOST'] . '/RPC2/',
+			'rpcurl' => 'http://localhost/RPC2/',
 			'metadata_dir' => APPPATH . '../torrent_metadata',
 			'torrent_dir' => APPPATH . '../torrents',
 		);

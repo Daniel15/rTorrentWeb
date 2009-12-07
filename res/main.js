@@ -32,4 +32,22 @@ var Users =
 			return confirm('Are you SURE you want to delete this user?');
 		});
 	}
-}
+};
+
+/**
+ * Label administration page
+ */
+var Labels = 
+{
+	'init': function()
+	{
+		$('icon').addEvent('change', Labels.change_icon);
+		// Firefox doesn't fire the change event when changing via the keyboard.
+		$('icon').addEvent('keypress', Labels.change_icon);
+	},
+	
+	'change_icon': function()
+	{
+		$('label_icon').set('src', 'res/label_icons/' + this.value + '.png');
+	},
+};

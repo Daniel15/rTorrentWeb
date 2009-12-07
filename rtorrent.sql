@@ -74,3 +74,16 @@ CREATE TABLE ext_feeds (
 	url TEXT  NULL,
 	last_seen_guid TEXT  NULL
 );
+
+CREATE TABLE labels (
+	id INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT,
+	name TEXT  NOT NULL,
+	internal BOOLEAN DEFAULT '0' NOT NULL,
+	user_id INTEGER NOT NULL,
+	icon TEXT DEFAULT 'blank.png' NULL
+);
+
+CREATE TABLE labels_torrents (
+	torrent_hash TEXT  NOT NULL,
+	label_id INTEGER  NOT NULL
+)

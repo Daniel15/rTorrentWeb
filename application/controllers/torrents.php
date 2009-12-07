@@ -431,6 +431,10 @@ class Torrents_Controller extends Base_Controller
 	 */
 	private function _check_owner($hash)
 	{
+		// Admins can do ANYTHING :o
+		if ($this->auth->logged_in('admin'))
+			return true;
+			
 		// Load this torrent
 		$torrent = ORM::factory('torrent', $hash);
 		// Does it even exist in the database? If not, assume we can do stuff 

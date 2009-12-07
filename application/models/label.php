@@ -21,13 +21,27 @@
  */
 defined('SYSPATH') or die('No direct script access.');
 
-class Torrent_model extends ORM
+class Label_model extends ORM
 {
-	protected $primary_key = 'hash';
-	protected $foreign_key = array(
-		'user' => 'user_id'
-	);
 	protected $belongs_to = array('user');
-	protected $has_and_belongs_to_many = array('labels');
+	protected $has_and_belongs_to_many = array('torrents');
+	
+	/**
+	 * Validates and optionally saves a new label record from an array.
+	 *
+	 * @param  array    values to check
+	 * @param  boolean  save the record when validation succeeds
+	 * @return boolean
+	 */
+	public function validate(array &$array, $save = false)
+	{
+		// TODO: Validate icon?
+		$array = Validation::factory($array)
+			->pre_filter('trim', 'title')
+			->add_rules('icon', 'required', 'alpha_dash')
+			->add_rules('name', 'required', 'standard_text');
+
+		return parent::validate($array, $save);
+	}
 }
 ?>

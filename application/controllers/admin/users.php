@@ -80,7 +80,16 @@ class Users_Controller extends Admin_Controller
 			// TODO: More validation
 			$user->roles = $_POST['roles'];
 			$user->save();
-			$this->session->set_flash('top_message', 'Added user ' . $user->id);
+			$message = 'Added user ' . $user->id . '.';
+			
+			// Create a directory for this user. If there's an error, tell the admin.
+			// TODO: Security?
+			if (!@mkdir($user->homedir, null, true))
+			{
+				$message .= 'The directory ' . $user->homedir . ' could not be created automatically. Please create it manually, otherwise this user will not be able to start any downloads!';
+			}
+			
+			$this->session->set_flash('top_message', $message);
 		}
 		else
 		{

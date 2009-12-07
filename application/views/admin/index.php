@@ -27,17 +27,17 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	<p>
 		<label for="rpcurl">rTorrent RPC URL:</label>
 		<input type="text" name="rpcurl" id="rpcurl" size="50" value="<?php echo $this->config->get('rpcurl'); ?>" /><br />
-		<small>This is the URL to rTorrent's XMLRPC. If you followed the XMLRPC setup instructions, this will usually be at /RPC2/.</small>
+		<small>This is the URL to rTorrent's XMLRPC. If you followed the XMLRPC setup instructions, this will usually be at http://localhost/RPC2/.</small>
 	</p>
 	<p>
 		<label for="metadata_dir">Metadata Directory:</label>
 		<input type="text" name="metadata_dir" id="metadata_dir" size="80" value="<?php echo $this->config->get('metadata_dir'); ?>" /><br />
-		<small>This is the directory .torrent files are stored in</small>
+		<small>This is the directory .torrent files are stored in.</small>
 	</p>
 	<p>
 		<label for="torrent_dir">Torrent Directory:</label>
 		<input type="text" name="torrent_dir" id="torrent_dir" size="80" value="<?php echo $this->config->get('torrent_dir'); ?>" /><br />
-		<small>This is the directory the torrent data (ie. the files actually inside the torrent) is stored in</small>
+		<small>This is the directory the torrent data (ie. the files actually inside the torrent) is stored in. Each user will get their own directory underneath here.</small>
 	</p>
 	
 	<p><input type="submit" name="submit" value="Save Changes" /></p>
