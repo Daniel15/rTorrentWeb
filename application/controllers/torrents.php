@@ -374,7 +374,7 @@ class Torrents_Controller extends Base_Controller
 			// TODO: Messy!!
 			$template = new View('template_popup');
 			$template->title = 'Torrent Added Successfully';
-			$template->content = '<script type="text/javascript">window.opener.List.refresh(); //self.close();</script>';
+			$template->content = '<script type="text/javascript">window.opener.List.refresh(); self.close();</script>';
 			$template->render(true);
 		}
 		// Get the files in this torrent
@@ -423,6 +423,103 @@ class Torrents_Controller extends Base_Controller
 			'error' => false,
 			'hash' => $this->input->post('hash'),
 			'username' => $this->input->post('username'),
+		));
+	}
+	
+	/**
+	 * Get a list of labels for a torrent
+	 */
+	public function labels($hash)
+	{
+		// Check that this user owns this torrent before we allow this!
+		if (!$this->_check_owner($hash))
+		{
+			die(json_encode(array(
+				'error' => true,
+				'message' => 'You don\'t own that torrent!',
+				'hash' => $hash,
+			)));
+		}
+		
+		$torrent = ORM::factory('torrent', $hash);
+		// No torrent?
+		if (!$torrent->loaded)
+			die(json_encode(array(
+				'error' => false,
+				'labels' => array(),
+				'hash' => $hash,
+			)));
+		
+		// Let's get all its labels
+		$labels = array();
+		foreach ($torrent->orderby('name')->labels as $label)
+		{
+			//$labels[$label->id] = $label->as_array();
+			// Only get aruff we need
+			$labels[$label->id] = array(
+				'name' => $label->name,
+				'icon' => $label->icon,
+			);
+		}
+		
+		echo json_encode(array(
+			'error' => false,
+			'labels' => $labels,
+			'hash' => $hash
+		));
+	}
+	
+	/**
+	 * Delete a label from a torrent
+	 */
+	public function del_label()
+	{
+		// Check that this user owns this torrent before we allow this!
+		if (!$this->_check_owner($this->input->post('hash')))
+		{
+			die(json_encode(array(
+				'error' => true,
+				'message' => 'You don\'t own that torrent!'
+			)));
+		}
+		
+		// Get the torrent
+		$torrent = ORM::factory('torrent', $this->input->post('hash'));
+		// Delete the relationship
+		$torrent->remove(ORM::factory('label', $this->input->post('label_id')));
+		$torrent->save();
+		
+		echo json_encode(array(
+			'error' => false,
+			'hash' => $this->input->post('hash'),
+			'label_id' => $this->input->post('label_id'),
+		));
+	}
+	
+	/**
+	 * Add a label to a torrent
+	 */
+	public function add_label()
+	{
+		// Check that this user owns this torrent before we allow this!
+		if (!$this->_check_owner($this->input->post('hash')))
+		{
+			die(json_encode(array(
+				'error' => true,
+				'message' => 'You don\'t own that torrent!'
+			)));
+		}
+		
+		// Get the torrent
+		$torrent = ORM::factory('torrent', $this->input->post('hash'));
+		// Add the relationship
+		$torrent->add(ORM::factory('label', $this->input->post('label_id')));
+		$torrent->save();
+		
+		echo json_encode(array(
+			'error' => false,
+			'hash' => $this->input->post('hash'),
+			'label_id' => $this->input->post('label_id'),
 		));
 	}
 	

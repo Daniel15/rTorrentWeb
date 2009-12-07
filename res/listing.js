@@ -206,6 +206,7 @@ var List =
 		List.init_tabs();
 		List.init_sidebar();
 		List.init_resize();
+		List.init_labels();
 		// Make the table sortable
 		SortTable.init($('torrents').getElement('table'));
 		// And if they're an admin, they have special things!
@@ -354,12 +355,20 @@ var List =
 			// And actually update the filter
 			List.filter();
 		});
-		
+	},
+	
+	/**
+	 * Initialise labelling stuff
+	 */
+	'init_labels': function()
+	{
+	
 		var sidebar_ul = $('sidebar').getElement('ul');
+		var label_dropdown = $('label_dropdown');
 		// Add all the labels to the sidebar
 		Settings.labels.each(function(label)
 		{
-			//console.log(label);
+			// Add the filter
 			new Element('li',
 			{
 				'html': label.name,
@@ -377,6 +386,9 @@ var List =
 				}
 			}).store('id', label.id).inject(sidebar_ul);
 		});
+		
+		// Make the "add label" button work
+		$('label_add').addEvent('click', Torrent.add_label);
 	},
 		
 	/**
@@ -649,18 +661,7 @@ var List =
 		List.selected = this;
 		this.addClass('selected');
 		
-		// Set its data
 		var data = this.retrieve('data');
-		// Transfer
-		$('elapsed').set('html', 'TODO');
-		$('remaining').set('html', 'TODO');
-		$('download_speed').set('html', data.rate.down.format_size());
-		$('upload_speed').set('html', data.rate.up.format_size());
-		$('total_down').set('html', data.done.format_size());
-		$('total_up').set('html', data.total.up.format_size());
-		// General
-		$('hash').set('html', this.retrieve('hash'));
-		$('owner').set('html', data.owner ? data.owner.name : '[unknown]');
 		
 		// Now, enable the buttons that we need
 		$('delete').removeClass('disabled');
@@ -865,6 +866,186 @@ var Torrent =
 		if (!confirm('Are you SURE you want to delete ' + List.selected.retrieve('data').name + '?'))
 			return;
 		Torrent.action(List.selected, 'delete');
+	},
+	
+	/**
+	 * Display general information about the torrent
+	 */
+	'general': function()
+	{
+		var data = this.retrieve('data');
+		var hash = this.retrieve('hash');
+		// Transfer
+		$('elapsed').set('html', 'TODO');
+		$('remaining').set('html', 'TODO');
+		$('download_speed').set('html', data.rate.down.format_size());
+		$('upload_speed').set('html', data.rate.up.format_size());
+		$('total_down').set('html', data.done.format_size());
+		$('total_up').set('html', data.total.up.format_size());
+		// General
+		$('hash').set('html',  hash);
+		$('owner').set('html', data.owner ? data.owner.name : '[unknown]');
+		
+		// Now to update the labels
+		$('labels').empty();
+		new Element('li', {'html': 'Loading...'}).inject($('labels'));
+		
+		var labels = this.retrieve('labels');
+		// Do we have some already? Awesome
+		if (labels != null)
+		{
+			Torrent.show_labels();
+			return;
+		}
+		
+		// Otherwise, need to get them
+		// Send the request
+		var myRequest = new Request({
+			method: 'post',
+			url: base_url + 'torrents/labels/' + hash,
+			onSuccess: function(data_text)
+			{
+				// JSON decode the data
+				var response = JSON.decode(data_text);
+				// Was there an error?
+				if (response.error)
+				{
+					Log.write('An error occurred while getting the label list: ' + response.message);
+					return;
+				}
+				
+				// Store the data
+				$('tor_' + response.hash).store('labels', $H(response.labels));
+				// And update it
+				Torrent.show_labels();
+			}
+		}).send();
+	},
+	
+	/**
+	 * Update the label display for a torrent
+	 */
+	'show_labels': function()
+	{
+		// Labels this torrent currently has.
+		var labels_on_torrent = new Array();
+		
+		var labels = $('labels');
+		labels.empty();
+		List.selected.retrieve('labels').each(function(label, id)
+		{
+			// TODO: Why is this not an integer initially? O_o
+			id = parseInt(id);
+			var labelEl = new Element('li',
+			{
+				'id': 'label-' + id,
+				'html': ' ' + label.name //'<img alt="Label icon" src="res/label_icons/' + label.icon + '.png" width="16" height="16" /> ' + 
+			}).inject(labels);
+			
+			// Delete button
+			new Element('img', 
+			{
+				'class': 'icon',
+				'alt': 'Delete',
+				'title': 'Delete',
+				'src': 'res/icons16/bin_closed.png',
+				'events':
+				{
+					'click': Torrent.delete_label
+				}
+			}).inject(labelEl, 'top');
+			
+			labels_on_torrent.push(id);
+		});
+		
+		// Now we have to fill the dropdown list
+		var label_dropdown = $('label_dropdown');
+		label_dropdown.empty();
+		Settings.labels.each(function(label)
+		{
+			// Also add it to the labelling dropdown
+			if (!label.internal && !labels_on_torrent.contains(label.id))
+			{
+				new Element('option', 
+				{
+					'html': label.name,
+					'value': label.id
+				}).inject(label_dropdown);
+			}
+		});
+	},
+	
+	/**
+	 * Delete a label
+	 */
+	'delete_label': function()
+	{
+		// Show a deleting icon
+		this.src = 'res/loading16.gif';
+		var id = this.getParent().get('id').substring(6);
+		// TODO: Possible race conditions, if they change torrent?
+		var hash = List.selected.retrieve('hash');
+		
+		// Send the request
+		var myRequest = new Request({
+			method: 'post',
+			url: base_url + 'torrents/del_label',
+			data: Hash.toQueryString({'label_id': id, 'hash': hash}),
+			onSuccess: function(data_text)
+			{
+				// JSON decode the data
+				var response = JSON.decode(data_text);
+				// Was there an error?
+				if (response.error)
+				{
+					Log.write('An error occurred while deleting the label: ' + response.message);
+					alert('An error occurred while deleting the label: ' + response.message);
+					return;
+				}
+				
+				// Do stuff
+				// TODO: refresh just the labels, not the whole listing! :o
+				// Our label listing is now old!
+				$('tor_' + response.hash).store('labels', null);
+				List.refresh();
+			}
+		}).send();
+	},
+	
+	/**
+	 * Add a label
+	 */
+	'add_label': function()
+	{
+		$('label_add').set('value', 'Adding...').disabled = true;
+		Log.write('Adding label to ' + List.selected.retrieve('data').name + '...');
+		
+		var hash = List.selected.retrieve('hash');
+		var id = $('label_dropdown').value;
+		
+		// Actually send the change request
+		var myRequest = new Request({
+			method: 'post',
+			url: base_url + 'torrents/add_label',
+			data: Hash.toQueryString({'label_id': id, 'hash': hash}),
+			onSuccess: function(data_text)
+			{
+				var response = JSON.decode(data_text);
+				// Was there an error?
+				if (response.error)
+				{
+					Log.write('An error occurred: ' + response.message);
+					alert('An error occurred: ' + response.message);
+					return;
+				}
+				
+				$('label_add').set('value', 'Add').disabled = false;
+				// Our label listing is now old!
+				$('tor_' + response.hash).store('labels', null);
+				// TODO: Should just refresh this torrent!!!
+				List.refresh();			
+			}
+		}).send();
 	},
 	
 	/**
@@ -1176,9 +1357,8 @@ var Admin =
 	 */
 	'change_owner': function()
 	{
-		$('owner_save').set('value', 'Saving...');
-		$('owner_save').disabled = true;
-		
+		$('owner_save').set('value', 'Saving...').disabled = true;
+		Log.write('Changing owner for ' + List.selected.retrieve('data').name + '...');
 		// Actually send the change request
 		var myRequest = new Request({
 			method: 'post',

@@ -80,7 +80,7 @@ CREATE TABLE labels (
 	name TEXT  NOT NULL,
 	internal BOOLEAN DEFAULT '0' NOT NULL,
 	user_id INTEGER NOT NULL,
-	icon TEXT DEFAULT 'blank.png' NULL
+	icon TEXT DEFAULT 'blank' NULL
 );
 
 CREATE TABLE labels_torrents (

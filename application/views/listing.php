@@ -105,14 +105,6 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 		<div id="details">
 			<div id="general">
 				<div>
-					<h3>Transfer</h3>
-					<p>
-						Time: <span id="elapsed"></span> elapsed, <span id="remaining"></span> remaining<br />
-						Speed: <span id="download_speed"></span> down, <span id="upload_speed"></span> up<br />
-						Totals: <span id="total_down"></span> downloaded, <span id="total_up"></span> uploaded<br />
-					</p>
-				</div>
-				<div>
 					<h3>General</h3>
 					<p>						
 						Hash: <span id="hash"></span><br />
@@ -127,6 +119,23 @@ if ($this->auth->logged_in('admin')) :
 						<input id="owner_change" type="button" value="Change" />
 						<input id="owner_save" type="button" value="Save" />
 <?php endif; ?><br />
+					</p>
+					<p>
+						Labels: 
+						<ul id="labels">
+							<li>Loading...</li>
+						</ul>
+						Attach a label: 
+						<select id="label_dropdown" name="label_dropdown"></select>
+						<input id="label_add" type="button" value="Add" />
+					</p>
+				</div>
+				<div>
+					<h3>Transfer</h3>
+					<p>
+						Time: <span id="elapsed"></span> elapsed, <span id="remaining"></span> remaining<br />
+						Speed: <span id="download_speed"></span> down, <span id="upload_speed"></span> up<br />
+						Totals: <span id="total_down"></span> downloaded, <span id="total_up"></span> uploaded<br />
 					</p>
 				</div>
 			</div> 
