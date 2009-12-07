@@ -95,7 +95,7 @@ class External_Controller extends Base_Controller
 		
 		// TODO : Feed Error Checking
 		
-		$feed_items = feed::parse($feed->url);
+		$feed_items = torrent_feed::get_torrents($feed->url);
 		
 		$template = new View('template_popup');
 		$template->title = 'RSS Entries For : ' . $feed->name;

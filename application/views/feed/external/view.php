@@ -54,7 +54,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 			echo ' - <strong>NEW</strong>';
 		?>
 		</td>
-		<td><input type="checkbox" name="torrent_url[]" value="<?php echo $feed_item['link']; ?>" /></td> 
+		<td><input type="checkbox" name="torrent_url[]" value="<?php echo $feed_item['torrent_url']; ?>" /></td> 
 	</tr>
 	<?php
 	}
