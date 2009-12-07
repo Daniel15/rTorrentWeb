@@ -23,7 +23,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<title>rTorrent</title>
+	<title>rTorrentWeb - Logged in as <?php echo $this->user->username; ?></title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<base href="<?php echo url::base(false, 'http'); ?>" />
 	<link rel="stylesheet" href="res/listing.css" type="text/css" />
@@ -33,6 +33,10 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	<script type="text/javascript">
 		var base_url = '<?php echo url::base(true); ?>';
 		var current_user = <?php echo $this->user->id; ?>;
+		/* This is not for security; it's just for convenience (only attempting
+		 * certain things if we're an admin). Everything is checked server-side,
+		 * so messing with it will just produce an error anyways. :P */
+		var is_admin = <?php echo $this->auth->logged_in('admin') ? 'true' : 'false'; ?>;
 	</script>
 	<script type="text/javascript" src="res/listing.js"></script>
 </head>
@@ -114,7 +118,17 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 					<h3>General</h3>
 					<p>						
 						Hash: <span id="hash"></span><br />
-						Owner: <span id="owner"></span><br />
+						Owner: <span id="owner"></span><?php
+// If they're an admin, they can change the owner
+if ($this->auth->logged_in('admin')) :
+?>
+
+						<select id="owner_dropdown" name="owner_dropdown">
+							<option>Loading...</option>
+						</select>
+						<input id="owner_change" type="button" value="Change" />
+						<input id="owner_save" type="button" value="Save" />
+<?php endif; ?><br />
 					</p>
 				</div>
 			</div> 

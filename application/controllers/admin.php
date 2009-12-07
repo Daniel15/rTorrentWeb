@@ -29,11 +29,25 @@ defined('SYSPATH') OR die('No direct access allowed.');
 	public $template = 'template';
 	public function __construct()
 	{
+		// AJAX requests don't have a template
+		if (request::is_ajax())
+			$this->template = null;
+			
 		parent::__construct();
 		// Check if they're allowed here
 		// TODO: Handle this better
 		if (!$this->auth->logged_in('admin'))
-			die('Error: No permission to access this area! You\'re not an admin.');
+		{
+			if (request::is_ajax())
+				die(json_encode(array(
+					'error' => true,
+					'message' => 'No permission to access this area! You\'re not an admin.'
+				)));
+			else
+				die('Error: No permission to access this area! You\'re not an admin.');
+			
+		}
+		
 	}
 	
 	/**

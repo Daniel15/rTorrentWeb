@@ -320,6 +320,13 @@ div#general div
 	float: left;
 }
 
+/* Stuff that's only shown when requested */
+select#owner_dropdown,
+input#owner_save
+{
+	display: none;
+}
+
 div#files table
 {
 	width: 100%;

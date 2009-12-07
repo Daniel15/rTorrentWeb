@@ -389,6 +389,44 @@ class Torrents_Controller extends Base_Controller
 	}
 	
 	/**
+	 * Change the owner of the torrent. Requires admin permission
+	 */
+	public function change_owner()
+	{
+		// Better make sure they're an admin
+		if (!$this->auth->logged_in('admin'))
+		{
+			die(json_encode(array(
+				'error' => true,
+				'message' => 'No permission to access this area! You\'re not an admin.'
+				)));
+		}
+		
+		// Try to get this torrent
+		$torrent = ORM::factory('torrent', $this->input->post('hash'));
+		// If it doesn't exist, it was added before rTorrentWeb was installed.
+		// We can add it here.
+		if (!$torrent->loaded)
+		{
+			// Add this torrent into the database
+			$torrent->hash = $this->input->post('hash');
+			// TODO: Don't assume this?
+			$torrent->private = false;
+		}
+		
+		// Set the owner
+		// TODO: Validation
+		$torrent->user_id = $this->input->post('user_id');
+		$torrent->save();
+		
+		echo json_encode(array(
+			'error' => false,
+			'hash' => $this->input->post('hash'),
+			'username' => $this->input->post('username'),
+		));
+	}
+	
+	/**
 	 * Check if we own a torrent
 	 */
 	private function _check_owner($hash)

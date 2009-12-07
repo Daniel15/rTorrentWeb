@@ -43,6 +43,25 @@ class Users_Controller extends Admin_Controller
 	}
 	
 	/**
+	 * Get a list of users
+	 */
+	public function get_list()
+	{
+		$this->auto_render = false;
+		// Get a list of all the current users
+		$user_rows = ORM::factory('user')->orderby('username')->find_all();
+		$users = array();
+		
+		foreach ($user_rows as $user)
+			$users[$user->id] = $user->username;
+		
+		echo json_encode(array(
+			'error' => false,
+			'users' => $users
+		));
+	}
+	
+	/**
 	 * Adding a user
 	 */
 	public function add()

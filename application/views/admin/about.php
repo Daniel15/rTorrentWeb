@@ -25,7 +25,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <p>
 	<strong>Version</strong>: <?php echo VERSION; ?><br />
 	<strong>Database version:</strong> <?php echo $this->config->get('db_version'); ?><br />
-	Updates and support for rTorrent can be found at the <a href="http://rtorrent.com/">official rTorrent website</a>.
+	Updates and support for rTorrentWeb can be found at the <a href="http://rtorrentweb.com/">official rTorrent website</a>.
 </p>
 
 <h2>Special thanks to</h2>

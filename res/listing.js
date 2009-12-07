@@ -218,14 +218,23 @@ var List =
 		// Start a refresh before we do everything else (it can go in the background
 		// while we initialise)
 		List.refresh();
-		
 		// Initialise some stuff
 		List.refresh_count = Settings.autorefresh_interval;
-		
-		// Set the sizes of the pane stuff correctly
-		List.resize_window();
-		// Also, let's do that every resize
-		window.addEvent('resize', List.resize_window);
+		List.init_toolbar();
+		List.init_tabs();
+		List.init_sidebar();
+		List.init_resize();
+		// Make the table sortable
+		SortTable.init($('torrents').getElement('table'));
+		// And if they're an admin, they have special things!
+		Admin.init();
+	},
+	
+	/**
+	 * Initialise the toolbar
+	 */
+	'init_toolbar': function()
+	{
 		// Make the "Refresh" link work, and handle refreshing stuff
 		$('refresh').addEvent('click', List.refresh);
 		// Links to disable and enable automatic refreshing
@@ -275,16 +284,18 @@ var List =
 			// Cancel the click.
 			return false;
 		});
+	},
+	
+	/**
+	 * Initialise the resize handles
+	 */
+	'init_resize': function()
+	{
+		// Set the sizes of the pane stuff correctly
+		List.resize_window();
+		// Also, let's do that every resize
+		window.addEvent('resize', List.resize_window);
 		
-		// Make the tabs do stuff
-		$$('div#tabs li').addEvent('click', List.show_tab);
-		// Set the tab to general (the default)
-		List.show_tab.bind($('tab_general'))();
-		
-		// TODO: delete
-		//$$('div#torrents th').makeResizable({modifiers: {y: 'top'}});
-		// Make the table sortable
-		SortTable.init($('torrents').getElement('table'));
 		// Add the resize handle for the sidebar
 		var sidebar = $('sidebar');
 		var sidebarResizer = new Element('div', {
@@ -326,7 +337,24 @@ var List =
 			'modifiers': {'y': 'height', 'x': null},
 			'invert': true
 		});
-		
+	},
+
+	/**
+	 * Initialise the bottom tabs
+	 */
+	'init_tabs': function()
+	{
+		// Make the tabs do stuff
+		$$('div#tabs li').addEvent('click', List.show_tab);
+		// Set the tab to general (the default)
+		List.show_tab.bind($('tab_general'))();
+	},
+	
+	/**
+	 * Initialise the sidebar
+	 */
+	'init_sidebar': function()
+	{
 		// Add the handlers for the sidebar filters
 		$('sidebar').getElements('li.filter').each(function(el)
 		{
@@ -345,7 +373,7 @@ var List =
 			List.filter();
 		});
 	},
-	
+		
 	/**
 	 * The current view (selected by sidebar)
 	 */
@@ -521,6 +549,7 @@ var List =
 	'update_filter_counts': function()
 	{
 		// Start with 0 rows
+		var cnt_all = 0;
 		var cnt_seed = 0;
 		var cnt_down = 0;
 		var cnt_fin = 0;
@@ -536,6 +565,7 @@ var List =
 			if ($('only_mine').checked && data.owner.id != current_user)
 				return;
 			
+			cnt_all++;
 			
 			// Add it to our counts
 			switch (data.state)
@@ -559,7 +589,7 @@ var List =
 		});
 		
 		// Set the data for the sidebar
-		$('sidebar_all').getElement('span').set('html', rows.length);
+		$('sidebar_all').getElement('span').set('html', cnt_all);
 		$('sidebar_seeding').getElement('span').set('html', cnt_seed);
 		$('sidebar_downloading').getElement('span').set('html', cnt_down);
 		$('sidebar_finished').getElement('span').set('html', cnt_fin);
@@ -600,10 +630,15 @@ var List =
 	 */
 	'click': function()
 	{
+		// Did it actually change? Let's assume YES for now.
+		var torrent_changed = true;
+		
 		// Unselect the currently selected one
 		if (List.selected != null)
 		{
 			List.selected.removeClass('selected');
+			// Now we can check if it changed :o
+			torrent_changed = List.selected.retrieve('hash') != this.retrieve('hash');
 		}
 		// Set the currently selected one
 		List.selected = this;
@@ -658,6 +693,13 @@ var List =
 		
 		// Update the current tab
 		List.update_tab();
+		// Do any admin stuff
+		if (is_admin)
+		{
+			// If it changed, hide this.
+			if (torrent_changed)
+				Admin.hide_owner_change();
+		}
 	},	
 	/**
 	 * Stuff that runs when the window is resized. Make sure the torrent listing
@@ -1008,6 +1050,156 @@ var Torrent =
 };
 
 /**
+ * Administration stuff
+ */
+var Admin = 
+{
+	/**
+	 * Initialise stuff that only admins can access
+	 */
+	'init': function()
+	{
+		// If they're not an admin, they don't need this. :P
+		if (!$defined(is_admin) || !is_admin)
+			return;
+			
+		// Make the "change owner" button work
+		$('owner_change').addEvent('click', Admin.show_owner_change);
+		// And the save button, too
+		$('owner_save').addEvent('click', Admin.change_owner);
+	},
+	
+	/**
+	 * Load a list of users for the owner dropdown
+	 */
+	'load_users': function()
+	{
+		// Delete all the currently listed users
+		var dropdown = $('owner_dropdown')
+		dropdown.empty();
+		// Add a "now loading"
+		new Element('option', 
+		{
+			html: 'Loading...',
+			selected: 'selected'
+		}).inject(dropdown);
+		
+		$('owner_save').disabled = true;
+		$('owner_save').set('value', 'Save');
+		
+		// Now let's load the users
+		var myRequest = new Request({
+			method: 'post',
+			url: base_url + 'admin/users/get_list',
+			onSuccess: function(data_text)
+			{
+				var response = JSON.decode(data_text);
+				// Was there an error?
+				if (response.error)
+				{
+					Log.write('An error occurred: ' + response.message);
+					alert('An error occurred: ' + response.message);
+					return;
+				}
+				
+				var dropdown = $('owner_dropdown');
+				// Clear the current list
+				dropdown.empty();
+				var current_user = $('owner').get('html');
+				// Fill the users list
+				$each(response.users, function(username, id)
+				{
+					new Element('option', 
+					{
+						value: id,
+						html: username,
+						selected: current_user == username ? 'selected' : ''
+					}).inject(dropdown);
+				});
+				
+				$('owner_save').disabled = false;
+			}
+		}).send();
+	},
+	
+	/**
+	 * Show the owner change stuff
+	 */
+	'show_owner_change': function()
+	{
+		// Hide this button, and show the stuff to change
+		$('owner_change').setStyle('display', 'none');
+		$('owner').setStyle('display', 'none');
+		$('owner_dropdown').setStyle('display', 'inline');
+		$('owner_save').setStyle('display', 'inline');
+		// Load a list of users
+		Admin.load_users();
+	},
+	
+	/**
+	 * Hide the owner change stuff
+	 */
+	'hide_owner_change': function()
+	{
+		$('owner_change').setStyle('display', '');
+		$('owner').setStyle('display', '');
+		$('owner_dropdown').setStyle('display', '');
+		$('owner_save').setStyle('display', '');
+	},
+	
+	/**
+	 * Change the owner of a torrent
+	 */
+	'change_owner': function()
+	{
+		$('owner_save').set('value', 'Saving...');
+		$('owner_save').disabled = true;
+		
+		// Actually send the change request
+		var myRequest = new Request({
+			method: 'post',
+			url: base_url + 'torrents/change_owner',
+			data: Hash.toQueryString({
+				'hash': List.selected.retrieve('hash'),
+				'user_id': $('owner_dropdown').value,
+				'username': $('owner_dropdown').getSelected().get('html')
+			}),
+			onSuccess: function(data_text)
+			{
+				var response = JSON.decode(data_text);
+				// Was there an error?
+				if (response.error)
+				{
+					Log.write('An error occurred: ' + response.message);
+					alert('An error occurred: ' + response.message);
+					return;
+				}
+				
+				// Do stuff.
+				$('owner').set('html', response.username);
+				Admin.hide_owner_change();
+				// TODO: Should just refresh this torrent. Need to fix some stuff.
+				List.refresh();
+				/*// Set the owner of this torrent
+				var torrent = $('tor_' + response.hash);
+				// Get its data
+				var data = torrent.retrieve('data');
+				data.owner.name = response.username
+				data.owner.id = response.user_id
+				// And now set the new data
+				torrent.store('data', data);
+				
+				// Need to re-filter
+				// Update the filter counts
+				List.update_filter_counts();
+				// And actually update the filter
+				List.filter();*/			
+			}
+		}).send();
+	}
+};
+
+/**
  * Simple logging
  */
 var Log = 
@@ -1034,7 +1226,7 @@ var Log =
 		new Element('span', {'class': 'date', 'html': date}).inject(logEntry, 'top');
 		
 		// If it's not only for the log, put it in the status too
-		if (!$defined(logonly) || logonly == false)
+		if (!$defined(logonly) || !logonly)
 			$('toolbar_message').set('html', text);
 	}
 };
