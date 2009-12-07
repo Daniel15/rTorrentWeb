@@ -68,5 +68,27 @@ class torrent_feed
 		
 		return $formatted_feed;
 	}
+	
+	/**
+	 * Is a particular site supported by RTWeb at this stage
+	 */
+	public static function _is_feed_supported($url)
+	{
+		$supported_hosts = array(
+			'rss.torrentleech.org',
+			'www.rss.torrentleech.org',
+			'www.legaltorrents.com',
+			'legaltorrents.com',
+			'www.mininova.org',
+			'mininova.org',
+			'www.ezrss.it',
+			'ezrss.it',
+		);
+		
+		if (in_array(parse_url($url, PHP_URL_HOST), $supported_hosts))
+			return true;
+			
+		return false;
+	}
 }
 ?>

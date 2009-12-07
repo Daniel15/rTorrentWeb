@@ -47,6 +47,17 @@ class External_Controller extends Base_Controller
 				die();
 			}
 			
+			if (!(torrent_feed::_is_feed_supported($this->input->post('feed_url')) && $this->input->post('confirmed')))
+			{
+				$template = new View('template_popup');
+				$template->title = 'Confirm Adding Unsupported Feed';
+				$template->content = new View('feed/external/add_unsup_confirm');
+				$template->content->feed_url = $this->input->post('feed_url');
+				$template->content->feed_name = $this->input->post('feed_name');
+				$template->render(true);
+				die();
+			}
+			
 			$feed = ORM::factory('ext_feed');
 			$feed->url = $this->input->post('feed_url');
 			$feed->name = $this->input->post('feed_name');
