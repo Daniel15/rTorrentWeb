@@ -74,5 +74,14 @@ defined('SYSPATH') OR die('No direct access allowed.');
 		$this->template->title = 'General Settings';
 		$this->template->content = View::factory('admin/index');
 	}
+	
+	/** 
+	 * Show the rTorrentWeb "About" page 
+	 */ 
+	public function about() 
+	{ 
+		$this->template->title = 'About rTorrentWeb'; 
+		$this->template->content = View::factory('admin/about'); 
+	} 
 }
 ?>
