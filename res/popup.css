@@ -89,3 +89,125 @@ ul.files li.dir img.toggle
 {
 	width: 8px;
 }
+
+ul.feeds
+{
+	list-style-type: none;
+	border-top: 4px solid #CCC;
+	border-bottom: 2px solid #CCC;
+	margin-top: 1em;
+	padding: 0;
+}
+
+ul.feeds li.feed
+{
+	padding-top: 1em;
+	padding-bottom: 1em;
+	border-bottom: 2px solid #CCC;
+}
+
+ul.feed_options
+{
+	list-style-type: none;
+	margin: 1em 0 0 0;
+	padding: 0;
+	font-size: x-small;
+}
+
+ul.feed_options li
+{
+	display: inline;
+}
+
+ul.feed_options li:after
+{
+	content: ' | ';
+}
+
+ul.feed_options li img
+{
+	vertical-align: middle;
+}
+
+ul.action_buttons
+{
+	margin-top: .5em;
+	padding: 0;
+	list-style-type: none;
+}
+
+ul.action_buttons li
+{
+	display: inline;
+}
+
+ul.action_buttons li a
+{
+	width: 120px;
+	background-color: #EEE;
+	text-align: center;
+	display: inline-block;
+	padding: 5px;
+	margin-right: .5 em;
+	border: 1px solid #CCC;
+}
+
+ul.action_buttons li a:link, ul.action_buttons li a:visited
+{
+	color: #000;
+	text-decoration: none;
+}
+
+ul.action_buttons li a:hover
+{
+	background-color: #DDD;
+}
+
+table.feed_items
+{
+	margin-top: 1em;
+}
+
+table.feed_items th
+{
+	border-bottom: 2px solid #CCC;
+}
+
+table.feed_items tr.normal td
+{
+	border-bottom: 1px solid #CCC;
+}
+
+table.feed_items td
+{
+	padding-bottom: .3em;
+	padding-top: .3em;
+}
+
+table.feed_items td.add_col
+{
+	text-align: center;
+}
+
+div.message
+{
+	margin-top: 1em;
+	margin-bottom: 1em;
+	padding: 1em;
+	background-color: #FF9;
+	border: 1px solid #CC0;
+}
+
+div.error
+{
+	margin-top: 1em;
+	margin-bottom: 1em;
+	padding: 1em;
+	background-color: #F99;
+	border: 1px solid #C00;
+}
+
+div.error ul
+{
+	margin-left: 2em;
+}

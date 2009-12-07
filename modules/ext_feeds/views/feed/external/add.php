@@ -23,9 +23,8 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <?php echo form::open_multipart('feed/external/add') ?>
 	<p>
-		<label for="feed_name">Feed Name:</label> <input type="text" name="feed_name" id="feed_name" /><br />
-		<label for="feed_url">Feed URL:</label> <input type="text" name="feed_url" id="feed_url" /><br />
+		<label for="feed_name">Feed Name:</label><?php echo form::input('feed_name',$feed_name); ?><br />
+		<label for="feed_url">Feed URL:</label><?php echo form::input('feed_url',$feed_url); ?><br />
 	</p>
-	
-	<p><input name="submit" type="submit" value="Add Feed" /></p>
+	<p><?php echo form::submit('submit','Add Feed'); ?></p>
 </form>

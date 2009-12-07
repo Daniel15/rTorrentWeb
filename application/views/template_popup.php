@@ -38,6 +38,13 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <body>
 	<div id="container"><div id="container_inner">
 			<h1><?php echo $title; ?></h1>
+			<?php
+			if (isset($message))
+			{
+				echo '
+				<div class="' . $message_class . '">' . $message . '</div>';
+			}
+			?>
 			<?php echo $content; ?>
 	</div></div>
 </body>

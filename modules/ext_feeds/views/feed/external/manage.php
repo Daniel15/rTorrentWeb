@@ -21,24 +21,25 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<table width="100%" cellpadding="0" cellspacing="0">
-	<thead>
-		<tr>
-			<th>Feed Name</th>
-			<th>Actions</th>
-		<tr>
-	</thead>
-	<tbody>
-		<?php
-		foreach ($feeds as $feed)
-		{
-			echo '<tr>';
-			echo '<td>' . $feed->name . '</td>';
-			echo '<td><center><a href="' . url::site('feed/external/view/' . $feed->id) . '">View Feed</a> | <a href="' . url::site('feed/external/delete/' . $feed->id) . '">Delete Feed</a></center></td>'; // TODO : Yes dan, this is wrong, but i'm tired...
-			echo '</tr>';
-		}
-		?>
-	</tbody>
-</table>
+<ul class="feeds">
+	<?php
+	foreach ($feeds as $feed)
+	{
+	echo '
+	<li class="feed"><a href="' . url::site('feed/external/view/' . $feed->id) . '">' . $feed->name . '</a>
+	<ul class="feed_options">
+		<li>' . $feed->url . '</li>
+		<li><a href="' . url::site('feed/external/delete/' . $feed->id) . '"><img src="res/icons16/feed_delete.png" alt="Delete Feed" title="Delete Feed"/></a></li>
+		<li><a href=""><img src="res/icons16/feed_key.png" alt="Edit Feed Label" title="Edit Feed Label"/></a></li>
+	</ul>
+	</li>';
+	}
+	?>
+</ul>
 
-<p><a href="<?php echo url::site('feed/external/add'); ?>">Add new feed</a></p>
+<ul class="action_buttons">
+	<?php
+	echo '
+	<li><a href="' . url::site('feed/external/add') . '">Add new feed</a></li>';
+	?>
+</ul>

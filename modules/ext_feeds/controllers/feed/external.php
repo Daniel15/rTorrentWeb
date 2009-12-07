@@ -31,46 +31,54 @@ class External_Controller extends Base_Controller
 		// Did they actually submit the form?
 		if (isset($_POST['submit']))
 		{
+			$template = new View('template_popup');
+			
 			// Validation
 			$post = Validation::factory($_POST)->
 				add_rules('feed_url', 'required', 'valid::url_ok')->
 				add_rules('feed_name', 'required', 'standard_text');
 			
-			if (!$post->validate())
+			if (!$post->validate()) // there are validation errors
 			{
-				// TODO : Proper error handling
-				echo 'Some errors were encountered while adding your torrent:<br />
-<ul>
-	<li>', implode('</li>
-	<li>', $post->errors()), '</li>
-</ul>';
-				die();
+				$template->title = 'Add New Feed';
+				$template->message = 'Some errors where encountered while handling your torrent:
+				<ul>
+					<li>' . implode('</li>
+					<li>', $post->errors()) . '</li>
+				</ul>';
+				
+				$template->message_class = 'error';
+				$template->content = new View('feed/external/add');
+				$template->content->feed_name = $this->input->post('feed_name');
+				$template->content->feed_url = $this->input->post('feed_url');
+				$template->render(true);				
 			}
-			
-			if (!(torrent_feed::_is_feed_supported($this->input->post('feed_url')) && $this->input->post('confirmed')))
+			elseif (!(torrent_feed::_is_feed_supported($this->input->post('feed_url'))) && !($this->input->post('confirmed'))) // the feed is unsupported and no confirmation is received
 			{
-				$template = new View('template_popup');
 				$template->title = 'Confirm Adding Unsupported Feed';
 				$template->content = new View('feed/external/add_unsup_confirm');
 				$template->content->feed_url = $this->input->post('feed_url');
 				$template->content->feed_name = $this->input->post('feed_name');
 				$template->render(true);
-				die();
 			}
-			
-			$feed = ORM::factory('ext_feed');
-			$feed->url = $this->input->post('feed_url');
-			$feed->name = $this->input->post('feed_name');
-			$feed->user_id = $this->user->id;
-			$feed->save();
-			
-			url::redirect('/feed/external/manage/'); // TODO : Ajax Options
+			else // everything is ok
+			{
+				$feed = ORM::factory('ext_feed');
+				$feed->url = $this->input->post('feed_url');
+				$feed->name = $this->input->post('feed_name');
+				$feed->user_id = $this->user->id;
+				$feed->save();
+				
+				url::redirect('/feed/external/manage/'); // TODO : Message options
+			}
 		}
 		else
 		{
 			$template = new View('template_popup');
 			$template->title = 'Add New Feed';
 			$template->content = new View('feed/external/add');
+			$template->content->feed_name = '';
+			$template->content->feed_url = '';
 			$template->render(true);
 		}
 	}
@@ -111,12 +119,22 @@ class External_Controller extends Base_Controller
 		$template = new View('template_popup');
 		$template->title = 'RSS Entries For : ' . $feed->name;
 		$template->content = new View('feed/external/view');
-		$template->content->feed_items = $feed_items;
-		$template->content->last_seen_guid = $feed->last_seen_guid;
 		$template->content->feed_id = $id;
-		$template->render(true);
 		
-		$this->_reset_seen_guid($feed, $feed_items[0]['guid']);
+		if (count($feed_items) < 1) // are there items in the feed
+		{
+			$template->message_class = 'message';
+			$template->message = 'There are currently no items in this RSS feed. There may be a problem with your feed provider. Please check the url ' . $feed->url . ' in your browser.';
+		}
+		else
+		{
+			$template->content->feed_items = $feed_items;
+			$template->content->last_seen_guid = $feed->last_seen_guid;
+
+			$this->_reset_seen_guid($feed, $feed_items[0]['guid']);
+		}
+		
+		$template->render(true);
 	}
 	
 	/**

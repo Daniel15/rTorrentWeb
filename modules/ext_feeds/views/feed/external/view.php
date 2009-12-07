@@ -21,10 +21,13 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<?php echo form::open('torrents/add') ?>
+<?php
+if(isset($feed_items))
+{
+echo form::open('torrents/add'); ?>
 <input type="hidden" name="type" value="url" />
 
-<table id="feed_items" width="100%" cellpadding="0" cellspacing="0">
+<table class="feed_items" width="100%" cellpadding="0" cellspacing="0">
 	<thead>
 		<tr>
 			<th>Torrent Name</th>
@@ -34,7 +37,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	<tfoot>
 		<tr>
 			<td>&nbsp;</td>
-			<td><input type="submit" name="submit" value="Add Torrents" /></td>
+			<td class="add_col"><input type="submit" name="submit" value="Add Torrents" /></td>
 		</tr>
 	</tfoot>
 	<tbody>
@@ -47,14 +50,14 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 			$feed_item_is_new = false;
 		
 	?>
-	<tr>
+	<tr class="normal">
 		<td><?php echo $feed_item['title']?>
 		<?php
 		if ($feed_item_is_new)
 			echo ' - <strong>NEW</strong>';
 		?>
 		</td>
-		<td><input type="checkbox" name="torrent_url[]" value="<?php echo $feed_item['torrent_url']; ?>" /></td> 
+		<td class="add_col"><input type="checkbox" name="torrent_url[]" value="<?php echo $feed_item['torrent_url']; ?>" /></td> 
 	</tr>
 	<?php
 	}
@@ -62,5 +65,13 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	</tbody>
 </table>
 </form>
+<?php
+}
+?>
 
-<p><?php echo '<a href="' . url::site('feed/external/delete/' . $feed_id) . '">Delete feed</a>'; ?></p>
+<ul class="action_buttons">
+	<?php
+	echo '
+	<li><a href="' . url::site('feed/external/delete/' . $feed_id) . '">Delete feed</a></li>
+	<li><a href="">Edit feed label</a></li>';
+	?>
