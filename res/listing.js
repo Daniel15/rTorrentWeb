@@ -1074,8 +1074,28 @@ var Admin =
 	 */
 	'load_users': function()
 	{
-		// Delete all the currently listed users
+		// They can't save while we're loading!
+		$('owner_save').disabled = true;
+		$('owner_save').set('value', 'Save');
+		// This is the dropdown of users
 		var dropdown = $('owner_dropdown')
+		// If it's loaded already, we don't need to re-load it.
+		if (dropdown.retrieve('loaded'))
+		{
+			$('owner_save').disabled = false;
+			// We need to select the current user
+			var current_user = $('owner').get('html');
+			$each(dropdown.options, function(option)
+			{
+				// Is it this user?
+				// We could return here, but we have to disable "selected" on all the other items :(
+				option.set('selected', (option.get('html') == current_user) ? 'selected' : '');
+			});
+			
+			return;
+		}
+		
+		// Delete all the currently listed users	
 		dropdown.empty();
 		// Add a "now loading"
 		new Element('option', 
@@ -1083,9 +1103,6 @@ var Admin =
 			html: 'Loading...',
 			selected: 'selected'
 		}).inject(dropdown);
-		
-		$('owner_save').disabled = true;
-		$('owner_save').set('value', 'Save');
 		
 		// Now let's load the users
 		var myRequest = new Request({
@@ -1117,6 +1134,8 @@ var Admin =
 					}).inject(dropdown);
 				});
 				
+				// All loaded now!
+				dropdown.store('loaded', true);
 				$('owner_save').disabled = false;
 			}
 		}).send();
