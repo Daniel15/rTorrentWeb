@@ -34,7 +34,7 @@ class External_Controller extends Base_Controller
 			// Validation
 			$post = Validation::factory($_POST)->
 				add_rules('feed_url', 'required', 'valid::url_ok')->
-				add_rules('feed_name', 'required', 'alpha_numeric');
+				add_rules('feed_name', 'required', 'standard_text');
 			
 			if (!$post->validate())
 			{
@@ -95,12 +95,17 @@ class External_Controller extends Base_Controller
 		
 		// TODO : Feed Error Checking
 		
+		$feed_items = feed::parse($feed->url);
+		
 		$template = new View('template_popup');
 		$template->title = 'RSS Entries For : ' . $feed->name;
 		$template->content = new View('feed/external/view');
-		$template->content->feed = feed::parse($feed->url);
+		$template->content->feed_items = $feed_items;
+		$template->content->last_seen_guid = $feed->last_seen_guid;
 		$template->content->feed_id = $id;
 		$template->render(true);
+		
+		$this->_reset_seen_guid($feed, $feed_items[0]['guid']);
 	}
 	
 	/**
@@ -131,6 +136,15 @@ class External_Controller extends Base_Controller
 	private function _check_exists($id)
 	{
 		return ORM::factory('ext_feed', $id)->loaded;
+	}
+	
+	/**
+	 * Set a new last seen GUID for the feed
+	 */
+	private function _reset_seen_guid($feed, $new_guid)
+	{
+		$feed->last_seen_guid = $new_guid;
+		$feed->save();
 	}
 }
 ?>

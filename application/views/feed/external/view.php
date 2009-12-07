@@ -24,7 +24,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php echo form::open('torrents/add') ?>
 <input type="hidden" name="type" value="url" />
 
-<table width="100%" cellpadding="0" cellspacing="0">
+<table id="feed_items" width="100%" cellpadding="0" cellspacing="0">
 	<thead>
 		<tr>
 			<th>Torrent Name</th>
@@ -39,12 +39,24 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	</tfoot>
 	<tbody>
 	<?php 
-	foreach ($feed as $feed_item)
+	$feed_item_is_new = true;
+	
+	foreach ($feed_items as $feed_item)
 	{
-		echo '<tr>';
-		echo '<td>' . $feed_item['title'] . '</td>';
-		echo '<td><input type="checkbox" name="torrent_url[]" value="' . $feed_item['link'] . '" /></td>'; 
-		echo '</tr>';
+		if ($feed_item['guid'] == $last_seen_guid)
+			$feed_item_is_new = false;
+		
+	?>
+	<tr>
+		<td><?php echo $feed_item['title']?>
+		<?php
+		if ($feed_item_is_new)
+			echo ' - <strong>NEW</strong>';
+		?>
+		</td>
+		<td><input type="checkbox" name="torrent_url[]" value="<?php echo $feed_item['link']; ?>" /></td> 
+	</tr>
+	<?php
 	}
 	?>
 	</tbody>
