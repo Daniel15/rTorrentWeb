@@ -59,7 +59,10 @@ class Torrents_Controller extends Base_Controller
 				unset($torrents[$row->hash]);
 			// Otherwise, we have to add its owners name
 			else
-				$torrents[$row->hash]['owner'] = $row->user->username;
+			{
+				$torrents[$row->hash]['owner']['name'] = $row->user->username;
+				$torrents[$row->hash]['owner']['id'] = $row->user->id;
+			}
 			
 		}
 			

@@ -406,7 +406,7 @@ class Rtorrent_Core
 		// if the hash was added successfully?
 		$this->do_call('load', $torrent);
 		// Change back to the default directory
-		$this->do_call('set_directory', $this->config->get('torrent_dir'));
+		$this->do_call('set_directory', Config::instance()->get('torrent_dir'));
 	}
 	
 	/**

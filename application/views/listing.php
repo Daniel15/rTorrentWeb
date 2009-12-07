@@ -32,6 +32,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	<script type="text/javascript" src="res/mootools-1.2.3.1-more.js"></script>
 	<script type="text/javascript">
 		var base_url = '<?php echo url::base(true); ?>';
+		var current_user = <?php echo $this->user->id; ?>;
 	</script>
 	<script type="text/javascript" src="res/listing.js"></script>
 </head>
@@ -60,12 +61,14 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 		
 		<div id="sidebar">
 			<ul>
-				<li id="sidebar_all" class="selected">All (<span>x</span>)</li>
-				<li id="sidebar_seeding">Seeding (<span>x</span>)</li>
-				<li id="sidebar_downloading">Downloading (<span>x</span>)</li>
-				<li id="sidebar_finished">Finished (<span>x</span>)</li>
-				<li id="sidebar_stopped">Stopped (<span>x</span>)</li>
-				<li id="sidebar_paused">Paused (<span>x</span>)</li>
+				<li id="sidebar_all" class="selected filter">All (<span>x</span>)</li>
+				<li id="sidebar_seeding" class="filter">Seeding (<span>x</span>)</li>
+				<li id="sidebar_downloading" class="filter">Downloading (<span>x</span>)</li>
+				<li id="sidebar_finished" class="filter">Finished (<span>x</span>)</li>
+				<li id="sidebar_stopped" class="filter">Stopped (<span>x</span>)</li>
+				<li id="sidebar_paused" class="filter end-section">Paused (<span>x</span>)</li>
+				
+				<li><input type="checkbox" name="only_mine" id="only_mine" /> <label for="only_mine" title="If selected, only shows your torrents, instead of showing all public torrents">Only my torrents</label></li>
 			</ul>
 		</div>
 		

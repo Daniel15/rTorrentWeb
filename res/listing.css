@@ -65,6 +65,7 @@ h1
 	height: 32px;
 	line-height: 32px;
 	text-align: center;
+	text-shadow: 0 -1px #FFF, 1px 0 #FFF, 0 1px #FFF, -1px 0 #FFF, 2px 2px 3px #999;
 }
 
 div#top_pane
@@ -149,6 +150,7 @@ div#sidebar
 	float: left;
 	width: 180px;
 	margin-right: 4px;
+	overflow: auto;
 }
 
 div#sidebar ul 
@@ -159,10 +161,23 @@ div#sidebar ul
 div#sidebar li
 {
 	/* Padding on the left is for the icon */
-	padding: 0.1em 0.1em 0.1em 18px;
+	padding: 0.1em;
 	height: 18px;
 	background-position: 1px center;
 	background-repeat: no-repeat;
+}
+
+/* Filters have an icons :o */
+div#sidebar li.filter
+{
+	padding-left: 18px;
+}
+
+/* And we might have sections, too */
+div#sidebar li.end-section 
+{
+	border-bottom: 1px solid #AAA;
+	margin-bottom: 0.2em;
 }
 
 /* All the different icons for the sidebar */
@@ -242,6 +257,11 @@ div#tabs
 	padding: 3px 0 2px 0;
 }
 
+div#tabs ul
+{
+	height: 17px;
+}
+
 div#tabs li
 {
 	cursor: pointer;
@@ -252,6 +272,12 @@ div#tabs li
 	background-color: #EEE;
 	padding: 2px 5px 3px 5px;
 	margin-right: 0.2em;
+	
+	/* TODO: Update this once Opera gains support for it :-) */
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
 }
 
 div#tabs li.selected
