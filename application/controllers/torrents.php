@@ -535,7 +535,7 @@ class Torrents_Controller extends Base_Controller
 		
 		// Let's get all its labels
 		$labels = array();
-		foreach ($torrent->orderby('name')->labels as $label)
+		foreach ($torrent->where('internal', false)->orderby('name')->labels as $label)
 		{
 			//$labels[$label->id] = $label->as_array();
 			// Only get aruff we need
