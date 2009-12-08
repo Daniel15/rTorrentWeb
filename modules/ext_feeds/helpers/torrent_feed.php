@@ -85,10 +85,7 @@ class torrent_feed
 			'ezrss.it',
 		);
 		
-		if (in_array(parse_url($url, PHP_URL_HOST), $supported_hosts))
-			return true;
-			
-		return false;
+		return in_array(parse_url($url, PHP_URL_HOST), $supported_hosts);
 	}
 }
 ?>

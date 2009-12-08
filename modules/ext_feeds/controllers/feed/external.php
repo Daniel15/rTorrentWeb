@@ -35,7 +35,7 @@ class External_Controller extends Base_Controller
 			
 			if ($feed->validate($post)) // there are no validation errors
 			{
-				if (torrent_feed::_is_feed_supported($this->input->post('feed_url')) || $this->input->post('confirmed')) // we are adding a support feed or if the feed has been confirmed
+				if (torrent_feed::_is_feed_supported($this->input->post('url')) || $this->input->post('confirmed')) // we are adding a support feed or if the feed has been confirmed
 				{
 					$label = ORM::factory('label');
 					$label->name = $feed->name;
@@ -138,7 +138,7 @@ class External_Controller extends Base_Controller
 			
 			if ($feed->validate($post)) // there are no validation errors
 			{
-				if (torrent_feed::_is_feed_supported($this->input->post('feed_url')) || $this->input->post('confirmed')) // we are adding a support feed or if the feed has been confirmed
+				if (torrent_feed::_is_feed_supported($this->input->post('url')) || $this->input->post('confirmed')) // we are adding a support feed or if the feed has been confirmed
 				{
 					$feed->user_id = $this->user->id; // set the feeds owner to the current user
 					$feed->save(); // save the feed
@@ -216,6 +216,7 @@ class External_Controller extends Base_Controller
 		$template->title = 'RSS Entries For : ' . $feed->name;
 		$template->content = new View('feed/external/view');
 		$template->content->feed_id = $id;
+		$template->content->label_id = $feed->label_id;
 		
 		if (count($feed_items) < 1) // are there items in the feed
 		{

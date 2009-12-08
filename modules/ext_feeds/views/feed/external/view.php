@@ -24,7 +24,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <?php
 if(isset($feed_items))
 {
-echo form::open('torrents/add'); ?>
+echo form::open('torrents/add', array(), array('label_id' => $label_id)); ?>
 <input type="hidden" name="type" value="url" />
 
 <table class="feed_items" width="100%" cellpadding="0" cellspacing="0">

@@ -339,6 +339,10 @@ class Torrents_Controller extends Base_Controller
 				// This marks it as our torrent - Adds the torrent->user relation
 				//$torrent->add($this->user);
 				$torrent->user_id = $this->user->id;
+				
+				if ($this->input->post('label_id'))
+					$torrent->add(ORM::factory('label', $this->input->post('label_id')));
+				
 				$torrent->save();
 			}
 			
