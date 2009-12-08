@@ -158,7 +158,7 @@ class External_Controller extends Base_Controller
 			$template->content = new View('feed/external/feed_form');
 			$template->content->name = $feed->name;
 			$template->content->url = $feed->url;
-			$template->content->submit_action = 'Save Feed';
+			$template->content->submit_text = 'Save Feed';
 			$template->render(true);
 		}
 	}			

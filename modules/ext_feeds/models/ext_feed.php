@@ -23,10 +23,24 @@ defined('SYSPATH') OR die('No direct access allowed.');
 
 class Ext_feed_Model extends ORM
 {
-	$array = Validation::factory($array)
-		->add_rules('name', 'required', 'standard_text')
-		->add_rules('url', 'required', 'valid::url_ok');
 	
 	protected $has_one = array('user');
+	
+	/**
+	 * Validates and optionally saves a new ext_feed record from an array.
+	 *
+	 * @param  array    values to check
+	 * @param  boolean  save the record when validation succeeds
+	 * @return boolean
+	 */
+	public function validate(array &$array, $save = false)
+	{
+		// TODO: Validate icon?
+		$array = Validation::factory($array)
+			->add_rules('name', 'required', 'standard_text')
+			->add_rules('url', 'required', 'valid::url_ok');
+
+		return parent::validate($array, $save);
+	}
 }
 ?>

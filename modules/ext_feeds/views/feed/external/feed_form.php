@@ -25,15 +25,13 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 if (isset($hidden_fields))
 {
 	echo form::open(NULL, array(), $hidden_fields);
-	$options = ' disabled="disabled"';
 }
 else
 {
 	echo form::open();
-	$options = '';
 }
 ?>
-	<p><label for="name">Feed Name:</label><?php echo form::input('name',$name,$options); ?></p>
-	<p><label for="url">Feed URL:</label><?php echo form::input('url',$url,$options); ?></p>
+	<p><label for="name">Feed Name:</label><?php echo form::input('name',$name); ?></p>
+	<p><label for="url">Feed URL:</label><?php echo form::input('url',$url); ?></p>
 	<p><?php echo form::submit('submit',$submit_text); ?></p>
 </form>
