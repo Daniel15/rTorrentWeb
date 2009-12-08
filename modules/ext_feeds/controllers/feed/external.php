@@ -59,7 +59,7 @@ class External_Controller extends Base_Controller
 			{
 				$template = new View('template_popup');
 				$template->title = 'Add New Feed';
-				$template->message = 'Some errors where encountered while handling your torrent:
+				$template->message = 'Some errors where encountered while handling your feed:
 				<ul>
 					<li>' . implode('</li>
 					<li>', $post->errors()) . '</li>
@@ -147,6 +147,21 @@ class External_Controller extends Base_Controller
 					$template->content->hidden_fields = array('confirmed' => 'true');
 					$template->render(true);
 				}
+			}
+			else // there are some validation errors
+			{
+				$template = new View('template_popup');
+				$template->title = 'Edit Feed';
+				$template->message = 'Some errors where encountered while handling your feed:
+				<ul>
+					<li>' . implode('</li>
+					<li>', $post->errors()) . '</li>
+				</ul>';
+				$template->content = new View('feed/external/feed_form');
+				$template->content->name = $this->input->post('name');
+				$template->content->url = $this->input->post('url');
+				$template->content->submit_text = 'Save Feed';
+				$template->render(true);				
 			}
 		}
 		else // has the form not been submitted
