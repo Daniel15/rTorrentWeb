@@ -120,11 +120,12 @@ if ($this->auth->logged_in('admin')) :
 						<input id="owner_save" type="button" value="Save" />
 <?php endif; ?><br />
 					</p>
-					<p>
-						Labels: 
-						<ul id="labels">
-							<li>Loading...</li>
-						</ul>
+					<p>Labels:</p>
+					<ul id="labels">
+						<li>Loading...</li>
+					</ul>
+					<p id="no_labels">There are currently no other labels available to attach.</p>
+					<p id="attach_label">
 						Attach a label: 
 						<select id="label_dropdown" name="label_dropdown"></select>
 						<input id="label_add" type="button" value="Add" />

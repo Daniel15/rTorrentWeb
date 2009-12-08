@@ -182,7 +182,7 @@ div#sidebar li.filter
 div#sidebar li.end-section 
 {
 	border-bottom: 1px solid #AAA;
-	margin-bottom: 0.2em;
+	/*margin-bottom: 0.2em;*/
 }
 
 /* All the different icons for the sidebar */
@@ -327,7 +327,9 @@ div#general div
 
 /* Stuff that's only shown when requested */
 select#owner_dropdown,
-input#owner_save
+input#owner_save,
+p#no_labels,
+p#attach_label
 {
 	display: none;
 }

@@ -371,6 +371,7 @@ var List =
 			// Add the filter
 			new Element('li',
 			{
+				'id': 'label_' + label.id,
 				'html': label.name,
 				'class': 'filter',
 				'styles':
@@ -379,16 +380,43 @@ var List =
 				},
 				'events':
 				{
-					'click': function()
-					{
-						alert('TODO: Clicked ' + this.retrieve('id') + ' (' + this.get('html') + ')');
-					}
+					'click': List.label_click
 				}
 			}).store('id', label.id).inject(sidebar_ul);
 		});
 		
 		// Make the "add label" button work
 		$('label_add').addEvent('click', Torrent.add_label);
+	},
+	
+	/**
+	 * The currently selected label
+	 */
+	'label': null,
+	
+	/**
+	 * A label was clicked
+	 */
+	'label_click': function()
+	{
+		var id = this.retrieve('id');
+
+		// If they clicked the label they're already using, deselect it
+		if (id == List.label)
+		{
+			List.label = null;
+			$('label_' + id).removeClass('selected');
+			List.refresh();
+			return;
+		}
+		
+		// Let's set the new label
+		if (List.label != null)
+			$('label_' + List.label).removeClass('selected');
+
+		List.label = id;
+		$('label_' + id).addClass('selected');
+		List.refresh();
 	},
 		
 	/**
@@ -434,9 +462,22 @@ var List =
 		
 		// Cancel the automatic refreshing (for now)
 		$clear(List.refresh_timer);
-		
 		// Send the request
-		List.refresh_request.send();
+		/*List.refresh_request.send({
+			data: Hash.toQueryString({'label': List.label})
+		});*/
+		// If we're getting by label, send the label request. Else send a general refresh
+		if (List.label == null)
+		{
+			List.refresh_request.send({url: base_url + 'torrents/refresh'});
+		}
+		else
+		{
+			List.refresh_request.send({
+				url: base_url + 'torrents/refresh_label',
+				data: Hash.toQueryString({label: List.label})
+			});
+		}
 		
 		// Cancel the event propagation (if the link was clicked)
 		return false;
@@ -460,7 +501,18 @@ var List =
 		}
 		
 		// Get our table
-		var table = $('torrents').getElement('table').getElement('tbody');				
+		var table = $('torrents').getElement('table').getElement('tbody');
+		
+		/* A list of all the torrents we have to remove. Starts with all of them,
+		 * but gets filtered down to only what wasn't returned by the server
+		 */
+		var torrents_to_remove = new Hash();
+		// Start by adding all to the remove list
+		$each(table.rows, function(row)
+		{
+			torrents_to_remove[row.retrieve('hash')] = row;
+		});
+		
 		var data = $H(response.data);	
 		data.each(function(torrent, hash)
 		{
@@ -504,12 +556,19 @@ var List =
 			// All the other details
 			row.store('hash', hash);
 			row.store('data', torrent);
+			// Since we know this is a valid torrent, we're not deleting it.
+			torrents_to_remove.erase(hash);
 		});
 		
 		// Do we have a torrent currently selected? Better update its data
 		if (List.selected != null)
 			List.click.bind(List.selected)();
 		
+		// Remove all the torrents that are no longer available
+		torrents_to_remove.each(function(row, hash)
+		{
+			row.dispose();
+		});
 		// Set the data for the sidebar
 		List.update_filter_counts();
 		// Filter the table
@@ -973,6 +1032,19 @@ var Torrent =
 				}).inject(label_dropdown);
 			}
 		});
+		// Did we end up with 0? Wow, this torrent has got it all!
+		if (label_dropdown.options.length == 0)
+		{
+			$('no_labels').setStyle('display', 'block');
+			$('attach_label').setStyle('display', 'none');
+		}
+		else
+		{
+			$('attach_label').setStyle('display', 'block');
+			$('no_labels').setStyle('display', 'none');
+			// They can add torrents now :D
+			$('label_add').set('value', 'Add').disabled = false;
+		}
 	},
 	
 	/**
@@ -1039,7 +1111,6 @@ var Torrent =
 					return;
 				}
 				
-				$('label_add').set('value', 'Add').disabled = false;
 				// Our label listing is now old!
 				$('tor_' + response.hash).store('labels', null);
 				// TODO: Should just refresh this torrent!!!

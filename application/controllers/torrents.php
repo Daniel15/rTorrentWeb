@@ -73,6 +73,49 @@ class Torrents_Controller extends Base_Controller
 	}
 	
 	/**
+	 * Refresh the torrent listing, based on a label
+	 */
+	public function refresh_label()
+	{
+		if (false === ($torrents = $this->rtorrent->listing()))
+			die(json_encode(array(
+				'error' => true,
+				'message' => $this->rtorrent->error()
+			)));
+		
+		$results = array();
+		
+		// We have to add owner information to all the torrents now...
+		/* Get database stuff
+		 * This assumes that only this user's torrents are there, which should
+		 * be the case - Users are restricted to only adding labels to their own
+		 * torrents
+		 */
+		$rows = ORM::factory('label', $this->input->post('label'))->torrents;
+		foreach ($rows as $row)
+		{
+			// Do we not have this torrent? Missing somehow? O_o
+			if (!isset($torrents[$row->hash]))
+				continue;
+
+			// Just to be safe:
+			// Is it private and not ours?
+			if ($row->private && $row->user_id != $this->user->id)
+				continue;
+			
+			// Add it!
+			$results[$row->hash] = $torrents[$row->hash];
+			$results[$row->hash]['owner']['name'] = $row->user->username;
+			$results[$row->hash]['owner']['id'] = $row->user->id;
+		}
+			
+		echo json_encode(array(
+			'error' => false,
+			'data' => $results,
+		));
+	}
+	
+	/**
 	 * Get a list of the files in a particular torrent
 	 */
 	public function files($hash)
