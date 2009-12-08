@@ -21,7 +21,6 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<script type="text/javascript">window.addEvent('domready', Feeds.init);</script>
 <h2>Current Feeds</h2>
 
 <ul class="feeds">
@@ -32,18 +31,8 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	<li class="feed"><a href="' . url::site('feed/external/view/' . $feed->id) . '">' . $feed->name . '</a>
 	<ul class="feed_options">
 		<li>' . $feed->url . '</li>
-		<li><a href="' . url::site('profile/feeds/edit/' . $feed->id) . '"><img src="res/icons16/feed_edit.png" alt="Edit Feed" title="Edit Feed"/></a></li>
-		<li><a href="' . url::site('profile/feeds/delete/' . $feed->id) . '"><img src="res/icons16/bin_closed.png" alt="Delete Feed" title="Delete Feed"/></a></li>
 	</ul>
 	</li>';
 	}
 	?>
 </ul>
-
-<h2>Add A New Feed</h2>
-
-<?php echo form::open('profile/feeds/add'); ?>
-	<p><label for="name">Feed Name:</label><?php echo form::input('name'); ?></p>
-	<p><label for="url">Feed URL:</label><?php echo form::input('url'); ?></p>
-	<p><?php echo form::submit('submit','Add Feed'); ?></p>
-</form>

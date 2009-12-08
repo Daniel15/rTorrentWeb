@@ -24,6 +24,18 @@ defined('SYSPATH') OR die('No direct access allowed.');
 class External_Controller extends Base_Controller
 {
 	/**
+	 * List feeds
+	 */
+	public function index()
+	{
+		$this->template = new View('template_popup');
+		$this->template->title = 'Feeds';
+		$this->template->content = new View('feed/external/list');
+		$this->template->content->feeds = ORM::factory('ext_feed')->where('user_id', $this->user->id)->find_all();
+		$this->template->render(true);
+	}
+	
+	/**
 	 * View a feeds items
 	 */
 	public function view($id)

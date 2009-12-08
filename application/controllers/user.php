@@ -68,7 +68,7 @@ class User_Controller extends Base_Controller
 		url::redirect('');
 	}
 	
-	/*public function test()
+	public function test()
 	{
 		$user = ORM::factory('user');
 		$user->username = 'admin';
@@ -76,6 +76,6 @@ class User_Controller extends Base_Controller
 		$user->add(ORM::factory('role', 'login'));
 		$user->add(ORM::factory('role', 'admin'));
 		$user->save();
-	}*/
+	}
 }
 ?>
