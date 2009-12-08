@@ -68,6 +68,10 @@ div#container_inner
 	padding: 0.5em
 }
 
+
+/**
+ * Torrent Files View Styles
+ */
 ul.files
 {
 	list-style-type: none;
@@ -90,6 +94,59 @@ ul.files li.dir img.toggle
 	width: 8px;
 }
 
+/**
+ * Shared Action Buttons
+ */
+ul.action_buttons
+{
+	margin-top: .5em;
+	padding: 0;
+	list-style-type: none;
+}
+
+ul.action_buttons li
+{
+	display: inline;
+}
+
+ul.action_buttons li a
+{
+	width: 120px;
+	background-color: #EEE;
+	text-align: center;
+	display: inline-block;
+	padding: 5px;
+	margin-right: .5 em;
+	border: 1px solid #CCC;
+}
+
+ul.action_buttons li a:link, ul.action_buttons li a:visited
+{
+	color: #000;
+	text-decoration: none;
+}
+
+ul.action_buttons li a:hover
+{
+	background-color: #DDD;
+}
+
+/**
+ * Optional Top Message
+ */
+div#top_message
+{
+	background-color: #F99;
+	border: 1px solid #C00;
+	padding: 1em;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+
+/**
+ * Feed styling
+ */
 ul.feeds
 {
 	list-style-type: none;
@@ -129,40 +186,6 @@ ul.feed_options li img
 	vertical-align: middle;
 }
 
-ul.action_buttons
-{
-	margin-top: .5em;
-	padding: 0;
-	list-style-type: none;
-}
-
-ul.action_buttons li
-{
-	display: inline;
-}
-
-ul.action_buttons li a
-{
-	width: 120px;
-	background-color: #EEE;
-	text-align: center;
-	display: inline-block;
-	padding: 5px;
-	margin-right: .5 em;
-	border: 1px solid #CCC;
-}
-
-ul.action_buttons li a:link, ul.action_buttons li a:visited
-{
-	color: #000;
-	text-decoration: none;
-}
-
-ul.action_buttons li a:hover
-{
-	background-color: #DDD;
-}
-
 table.feed_items
 {
 	margin-top: 1em;
@@ -187,13 +210,4 @@ table.feed_items td
 table.feed_items td.add_col
 {
 	text-align: center;
-}
-
-div#top_message
-{
-	background-color: #F99;
-	border: 1px solid #C00;
-	padding: 1em;
-	margin-top: 1em;
-	margin-bottom: 1em;
 }
