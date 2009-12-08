@@ -73,5 +73,5 @@ echo form::open('torrents/add'); ?>
 	<?php
 	echo '
 	<li><a href="' . url::site('feed/external/delete/' . $feed_id) . '">Delete feed</a></li>
-	<li><a href="">Edit feed label</a></li>';
+	<li><a href="' . url::site('feed/external/edit/' . $feed_id) . '">Edit feed</a></li>';
 	?>
