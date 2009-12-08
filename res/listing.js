@@ -924,7 +924,10 @@ var Torrent =
 	{
 		if (!confirm('Are you SURE you want to delete ' + List.selected.retrieve('data').name + '?'))
 			return;
-		Torrent.action(List.selected, 'delete');
+			
+		// Check if they want to delete the files
+		var delete_data = confirm('Do you want to delete the data files as well as the torrent?\n - Click "OK" to delete the data files.\n - Click "Cancel" to just delete the torrent, and keep its data');
+		Torrent.action(List.selected, delete_data ? 'delete_full' : 'delete');
 	},
 	
 	/**

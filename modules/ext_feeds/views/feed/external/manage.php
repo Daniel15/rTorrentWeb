@@ -21,6 +21,7 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
+<script type="text/javascript">window.addEvent('domready', Feeds.init);</script>
 <h2>Current Feeds</h2>
 
 <ul class="feeds">

@@ -178,7 +178,7 @@ class Torrents_Controller extends Base_Controller
 		}
 		// Otherwise, it's something more advanced? It'll have its own function,
 		// let's just point them there.
-		elseif (in_array($action, array('delete')))
+		elseif (in_array($action, array('delete', 'delete_full')))
 		{
 			$this->$action($hash);
 		}
@@ -210,6 +210,42 @@ class Torrents_Controller extends Base_Controller
 			'action' => 'delete',
 			'hash' => $hash
 		));
+	}
+	
+	/**
+	 * Similar to the delete function above, except delete the data as well.
+	 * Might take long time depending on how big teh dataz is :o
+	 */
+	private function delete_full($hash)
+	{
+		// Delete it from rTorrent
+		$this->rtorrent->delete($hash);
+		// Also delete it from the database
+		ORM::factory('torrent', $hash)->delete();
+		
+		// Delete all the files for this torrent
+		/* TODO: This is pretty ugly, but gets the job done. Perhaps make it use
+		 * PHP functions instead?
+		 */
+		$last_line = system('/bin/rm -r ' . escapeshellarg($this->rtorrent->get_directory($hash)), $retval);
+		// Did it fail? :(
+		if ($retval != 0)
+		{
+			echo json_encode(array(
+				'error' => true,
+				'message' => $last_line,
+				'action' => 'delete',
+				'hash' => $hash
+			));
+		}
+		else
+		{
+			echo json_encode(array(
+				'error' => false,
+				'action' => 'delete',
+				'hash' => $hash
+			));
+		}
 	}
 	
 	

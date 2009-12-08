@@ -394,6 +394,14 @@ class Rtorrent_Core
 	}
 	
 	/**
+	 * Get the directory a torrent is stored in
+	 */
+	public function get_directory($hash)
+	{
+		return $this->do_call('d.get_directory', array($hash));
+	}
+	
+	/**
 	 * Add a new torrent
 	 */
 	public function add($torrent, $directory)
