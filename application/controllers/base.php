@@ -39,7 +39,7 @@ abstract class Base_Controller extends Controller
 		$this->config = Config::instance();
 		
 		//  Make sure we're logged in!
-		if (!$this->auth->logged_in() && url::current() != 'user/login' && url::current() != 'user/test')
+		if (!$this->auth->logged_in() && url::current() != 'user/login')
 		{
 			// Not logged in, and it's an AJAX request? Die with an error
 			if (request::is_ajax())
