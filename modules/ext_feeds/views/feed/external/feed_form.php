@@ -30,6 +30,20 @@ else
 {
 	echo form::open();
 }
+
+// Any errors adding a feed?
+if (!empty($add_errors))
+{
+	echo '
+	Could not add feed, the following errors were encountered:
+	<ul>';
+	
+	foreach ($add_errors as $key => $error)
+		echo '
+		<li><strong>', $key, '</strong>: ', $error, '</li>';
+	echo '
+	</ul>';
+}
 ?>
 	<p><label for="name">Feed Name:</label><?php echo form::input('name',$name); ?></p>
 	<p><label for="url">Feed URL:</label><?php echo form::input('url',$url); ?></p>

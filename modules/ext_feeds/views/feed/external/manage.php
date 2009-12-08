@@ -21,6 +21,8 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
+<h2>Current Feeds</h2>
+
 <ul class="feeds">
 	<?php
 	foreach ($feeds as $feed)
@@ -29,8 +31,8 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	<li class="feed"><a href="' . url::site('feed/external/view/' . $feed->id) . '">' . $feed->name . '</a>
 	<ul class="feed_options">
 		<li>' . $feed->url . '</li>
-		<li><a href="' . url::site('feed/external/delete/' . $feed->id) . '"><img src="res/icons16/bin_closed.png" alt="Delete Feed" title="Delete Feed"/></a></li>
-		<li><a href="' . url::site('feed/external/edit/' . $feed->id) . '"><img src="res/icons16/feed_edit.png" alt="Edit Feed" title="Edit Feed"/></a></li>
+		<li><a href="' . url::site('profile/feeds/delete/' . $feed->id) . '"><img src="res/icons16/bin_closed.png" alt="Delete Feed" title="Delete Feed"/></a></li>
+		<li><a href="' . url::site('profile/feeds/edit/' . $feed->id) . '"><img src="res/icons16/feed_edit.png" alt="Edit Feed" title="Edit Feed"/></a></li>
 	</ul>
 	</li>';
 	}
@@ -40,6 +42,6 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <ul class="action_buttons">
 	<?php
 	echo '
-	<li><a href="' . url::site('feed/external/add') . '">Add new feed</a></li>';
+	<li><a href="' . url::site('profile/feeds/add') . '">Add new feed</a></li>';
 	?>
 </ul>

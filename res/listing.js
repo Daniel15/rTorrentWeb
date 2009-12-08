@@ -259,14 +259,6 @@ var List =
 			// Cancel the click.
 			return false;
 		});
-		
-		// Add the rss button
-		$('rss').addEvent('click', function()
-		{
-			window.open(this.href, 'ManageRSSWindow', 'location=no,menubar=no,status=no,titlebar=no,toolbar=no,height=800,width=700');
-			// Cancel the click.
-			return false;
-		});
 	},
 	
 	/**

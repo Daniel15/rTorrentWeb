@@ -42,7 +42,7 @@ foreach ($labels as $label)
 <h2>Add a New Label</h2>
 <?php echo form::open('profile/add_label'); ?>
 <?php
-// Any errors adding a user?
+// Any errors adding a label?
 if (!empty($add_errors))
 {
 	echo '
