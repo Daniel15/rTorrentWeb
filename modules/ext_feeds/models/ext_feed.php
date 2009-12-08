@@ -24,7 +24,7 @@ defined('SYSPATH') OR die('No direct access allowed.');
 class Ext_feed_Model extends ORM
 {
 	
-	protected $has_one = array('user');
+	protected $has_one = array('user','label');
 	
 	/**
 	 * Validates and optionally saves a new ext_feed record from an array.

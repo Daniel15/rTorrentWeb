@@ -68,10 +68,11 @@ CREATE INDEX key_user_id ON user_tokens (
 );
 
 CREATE TABLE ext_feeds (
-	id INTEGER PRIMARY KEY AUTOINCREMENT NULL,
-	user_id INTEGER  NULL,
-	name TEXT  NULL,
-	url TEXT  NULL,
+	id INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT ,
+	user_id INTEGER  NOT NULL,
+	label_id INTEGER  NOT NULL,
+	name TEXT  NOT NULL,
+	url TEXT  NOT NULL,
 	last_seen_guid TEXT  NULL
 );
 

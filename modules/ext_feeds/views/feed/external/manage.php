@@ -29,7 +29,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	<li class="feed"><a href="' . url::site('feed/external/view/' . $feed->id) . '">' . $feed->name . '</a>
 	<ul class="feed_options">
 		<li>' . $feed->url . '</li>
-		<li><a href="' . url::site('feed/external/delete/' . $feed->id) . '"><img src="res/icons16/feed_delete.png" alt="Delete Feed" title="Delete Feed"/></a></li>
+		<li><a href="' . url::site('feed/external/delete/' . $feed->id) . '"><img src="res/icons16/bin_closed.png" alt="Delete Feed" title="Delete Feed"/></a></li>
 		<li><a href="' . url::site('feed/external/edit/' . $feed->id) . '"><img src="res/icons16/feed_edit.png" alt="Edit Feed" title="Edit Feed"/></a></li>
 	</ul>
 	</li>';

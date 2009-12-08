@@ -37,9 +37,17 @@ class External_Controller extends Base_Controller
 			{
 				if (torrent_feed::_is_feed_supported($this->input->post('feed_url')) || $this->input->post('confirmed')) // we are adding a support feed or if the feed has been confirmed
 				{
+					$label = ORM::factory('label');
+					$label->name = $feed->name;
+					$label->internal = true;
+					$label->user_id = $this->user->id;
+					$label->icon = 'feed';
+					$label->save(); // create the new label for the feed
+					
+					$feed->label_id = $label->id;
 					$feed->user_id = $this->user->id; // set the feeds owner to the current user
 					$feed->save(); // save the feed
-					
+
 					url::redirect('/feed/external/manage/'); // redirect back to the feed management page
 				}
 				else // we are adding an unsupported feed and it needs confirmation
@@ -100,7 +108,9 @@ class External_Controller extends Base_Controller
 			die();
 		}
 		
-		ORM::factory('ext_feed', $id)->delete(); // delete the feed
+		$feed = ORM::factory('ext_feed', $id); // get the feed
+		ORM::factory('label', $feed->label_id)->delete(); // delete the label associated wtih the feed
+		$feed->delete(); // delete the feed
 		url::redirect('/feed/external/manage/'); // redirect to the management page
 	}
 	
@@ -132,6 +142,10 @@ class External_Controller extends Base_Controller
 				{
 					$feed->user_id = $this->user->id; // set the feeds owner to the current user
 					$feed->save(); // save the feed
+					
+					$label = ORM::factory('label', $feed->label);
+					$label->name = $feed->name;
+					$label->save();
 					
 					url::redirect('/feed/external/manage/'); // redirect back to the feed management page
 				}
