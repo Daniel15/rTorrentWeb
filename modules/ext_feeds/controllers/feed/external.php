@@ -28,57 +28,57 @@ class External_Controller extends Base_Controller
 	 */
 	public function add()
 	{
-		// Did they actually submit the form?
-		if (isset($_POST['submit']))
+		if (isset($_POST['submit'])) // has a form been submitted
 		{
-			$template = new View('template_popup');
+			$feed = ORM::factory('ext_feed');
+			$post = $_POST;
 			
-			// Validation
-			$post = Validation::factory($_POST)->
-				add_rules('feed_url', 'required', 'valid::url_ok')->
-				add_rules('feed_name', 'required', 'standard_text');
-			
-			if (!$post->validate()) // there are validation errors
+			if ($feed->validate($post)) // there are no validation errors
 			{
+				if (torrent_feed::_is_feed_supported($this->input->post('feed_url')) || $this->input->post('confirmed')) // we are adding a support feed or if the feed has been confirmed
+				{
+					$feed->user_id = $this->user->id; // set the feeds owner to the current user
+					$feed->save(); // save the feed
+					
+					url::redirect('/feed/external/manage/'); // redirect back to the feed management page
+				}
+				else // we are adding an unsupported feed and it needs confirmation
+				{
+					$template = new View('template_popup');
+					$template->title = 'Confirm Adding Unsupported Feed';
+					$template->message = '<strong>WARNING</strong> : The feed you are creating is not supported by RTorrentWeb at this time, the feed may not function as desired. Please go here <!-- TODO : Add url --> to contact us if you wish to have your site added to the supported list.';
+					$template->content = new View('feed/external/feed_form');
+					$template->content->url = $this->input->post('url');
+					$template->content->name = $this->input->post('name');
+					$template->content->submit_text = 'Confirm Feed Details';
+					$template->content->hidden_fields = array('confirmed' => 'true');
+					$template->render(true);
+				}
+			}
+			else // there are some validation errors
+			{
+				$template = new View('template_popup');
 				$template->title = 'Add New Feed';
 				$template->message = 'Some errors where encountered while handling your torrent:
 				<ul>
 					<li>' . implode('</li>
 					<li>', $post->errors()) . '</li>
 				</ul>';
-				
-				$template->message_class = 'error';
-				$template->content = new View('feed/external/add');
-				$template->content->feed_name = $this->input->post('feed_name');
-				$template->content->feed_url = $this->input->post('feed_url');
+				$template->content = new View('feed/external/feed_form');
+				$template->content->name = $this->input->post('name');
+				$template->content->url = $this->input->post('url');
+				$template->content->submit_text = 'Add Feed';
 				$template->render(true);				
 			}
-			elseif (!(torrent_feed::_is_feed_supported($this->input->post('feed_url'))) && !($this->input->post('confirmed'))) // the feed is unsupported and no confirmation is received
-			{
-				$template->title = 'Confirm Adding Unsupported Feed';
-				$template->content = new View('feed/external/add_unsup_confirm');
-				$template->content->feed_url = $this->input->post('feed_url');
-				$template->content->feed_name = $this->input->post('feed_name');
-				$template->render(true);
-			}
-			else // everything is ok
-			{
-				$feed = ORM::factory('ext_feed');
-				$feed->url = $this->input->post('feed_url');
-				$feed->name = $this->input->post('feed_name');
-				$feed->user_id = $this->user->id;
-				$feed->save();
-				
-				url::redirect('/feed/external/manage/'); // TODO : Message options
-			}
 		}
-		else
+		else // no data has been submitted
 		{
 			$template = new View('template_popup');
 			$template->title = 'Add New Feed';
-			$template->content = new View('feed/external/add');
-			$template->content->feed_name = '';
-			$template->content->feed_url = '';
+			$template->content = new View('feed/external/feed_form');
+			$template->content->name = '';
+			$template->content->url = '';
+			$template->content->submit_text = 'Add Feed';
 			$template->render(true);
 		}
 	}
@@ -88,16 +88,80 @@ class External_Controller extends Base_Controller
 	 */
 	public function delete($id)
 	{
-		if (!$this->_check_exists($id))
-			url::redirect(''); // TODO : Proper page
+		if (!$this->_check_exists($id)) // does the feed not exist
+		{
+			$this->_render_error('You cannot delete a feed that doesn\'t exist');
+			die();
+		}
 		
-		if (!$this->_check_owner($id))
-			url::redirect('');
+		if (!$this->_check_owner($id)) // is the logged in user authorised to delete the feed
+		{
+			$this->_render_error('You cannot delete someone elses feed');
+			die();
+		}
 		
-		ORM::factory('ext_feed', $id)->delete();
-		
-		url::redirect('/feed/external/manage/'); // TODO : Ajax Options
+		ORM::factory('ext_feed', $id)->delete(); // delete the feed
+		url::redirect('/feed/external/manage/'); // redirect to the management page
 	}
+	
+	/**
+	 * Edit an RSS feed
+	 */
+	public function edit($id)
+	{
+		if(!$this->_check_exists($id)) // does the feed not exist
+		{
+			$this->_render_error('You cannot edit a feed that doesn\'t exist');
+			die();
+		}
+		
+		if(!$this->_check_owner($id)) // is the logged in user authorised to edit the feed
+		{
+			$this->_render_error('You cannot edit someone elses feed');
+			die();
+		}
+		
+		if (isset($_POST['submit'])) // has the form been submitted
+		{
+			$feed = ORM::factory('ext_feed', $id);
+			$post = $_POST;
+			
+			if ($feed->validate($post)) // there are no validation errors
+			{
+				if (torrent_feed::_is_feed_supported($this->input->post('feed_url')) || $this->input->post('confirmed')) // we are adding a support feed or if the feed has been confirmed
+				{
+					$feed->user_id = $this->user->id; // set the feeds owner to the current user
+					$feed->save(); // save the feed
+					
+					url::redirect('/feed/external/manage/'); // redirect back to the feed management page
+				}
+				else // we are adding an unsupported feed and it needs confirmation
+				{
+					$template = new View('template_popup');
+					$template->title = 'Confirm Adding Unsupported Feed';
+					$template->message = '<strong>WARNING</strong> : The feed you are creating is not supported by RTorrentWeb at this time, the feed may not function as desired. Please go here <!-- TODO : Add url --> to contact us if you wish to have your site added to the supported list.';
+					$template->content = new View('feed/external/feed_form');
+					$template->content->url = $this->input->post('url');
+					$template->content->name = $this->input->post('name');
+					$template->content->submit_text = 'Confirm Feed Details';
+					$template->content->hidden_fields = array('confirmed' => 'true');
+					$template->render(true);
+				}
+			}
+		}
+		else // has the form not been submitted
+		{
+			$feed = ORM::factory('ext_feed', $id);
+			
+			$template = new View('template_popup');
+			$template->title = 'Edit Feed';
+			$template->content = new View('feed/external/feed_form');
+			$template->content->name = $feed->name;
+			$template->content->url = $feed->url;
+			$template->content->submit_action = 'Save Feed';
+			$template->render(true);
+		}
+	}			
 	
 	/**
 	 * View a feeds items
@@ -105,15 +169,18 @@ class External_Controller extends Base_Controller
 	public function view($id)
 	{
 		if (!$this->_check_exists($id))
-			url::redirect(''); // TODO : Proper page
+		{
+			$this->_render_error('You cannot view a feed that doesn\'t exist');
+			die();
+		}
 		
 		if (!$this->_check_owner($id))
-			url::redirect('');
+		{
+			$this->_render_error('You cannot view a feed that you do not own');
+			die();
+		}
 		
-		$feed = ORM::factory('ext_feed', $id);
-		
-		// TODO : Feed Error Checking
-		
+		$feed = ORM::factory('ext_feed', $id);		
 		$feed_items = torrent_feed::get_torrents($feed->url);
 		
 		$template = new View('template_popup');
@@ -123,8 +190,7 @@ class External_Controller extends Base_Controller
 		
 		if (count($feed_items) < 1) // are there items in the feed
 		{
-			$template->message_class = 'message';
-			$template->message = 'There are currently no items in this RSS feed. There may be a problem with your feed provider. Please check the url ' . $feed->url . ' in your browser.';
+			$template->message = 'There are currently no valid items in this RSS feed. There may be a problem with your feed provider. Please check the url ' . $feed->url . ' in your browser.';
 		}
 		else
 		{
@@ -174,6 +240,18 @@ class External_Controller extends Base_Controller
 	{
 		$feed->last_seen_guid = $new_guid;
 		$feed->save();
+	}
+	
+	/**
+	 * Render an error
+	 */
+	private function _render_error($message)
+	{
+		$template = new View('template_popup');
+		$template->title = 'An Error Has Occured';
+		$template->message = $message;
+		$template->content = '';
+		$template->render(true);
 	}
 }
 ?>

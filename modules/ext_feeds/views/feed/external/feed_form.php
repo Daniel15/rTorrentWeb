@@ -21,10 +21,19 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<?php echo form::open_multipart('feed/external/add') ?>
-	<p>
-		<label for="feed_name">Feed Name:</label><?php echo form::input('feed_name',$feed_name); ?><br />
-		<label for="feed_url">Feed URL:</label><?php echo form::input('feed_url',$feed_url); ?><br />
-	</p>
-	<p><?php echo form::submit('submit','Add Feed'); ?></p>
+<?php
+if (isset($hidden_fields))
+{
+	echo form::open(NULL, array(), $hidden_fields);
+	$options = ' disabled="disabled"';
+}
+else
+{
+	echo form::open();
+	$options = '';
+}
+?>
+	<p><label for="name">Feed Name:</label><?php echo form::input('name',$name,$options); ?></p>
+	<p><label for="url">Feed URL:</label><?php echo form::input('url',$url,$options); ?></p>
+	<p><?php echo form::submit('submit',$submit_text); ?></p>
 </form>

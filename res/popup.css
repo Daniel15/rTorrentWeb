@@ -189,25 +189,11 @@ table.feed_items td.add_col
 	text-align: center;
 }
 
-div.message
+div#top_message
 {
-	margin-top: 1em;
-	margin-bottom: 1em;
-	padding: 1em;
-	background-color: #FF9;
-	border: 1px solid #CC0;
-}
-
-div.error
-{
-	margin-top: 1em;
-	margin-bottom: 1em;
-	padding: 1em;
 	background-color: #F99;
 	border: 1px solid #C00;
-}
-
-div.error ul
-{
-	margin-left: 2em;
+	padding: 1em;
+	margin-top: 1em;
+	margin-bottom: 1em;
 }

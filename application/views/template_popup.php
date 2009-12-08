@@ -42,7 +42,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 			if (isset($message))
 			{
 				echo '
-				<div class="' . $message_class . '">' . $message . '</div>';
+				<div id="top_message">' . $message . '</div>';
 			}
 			?>
 			<?php echo $content; ?>

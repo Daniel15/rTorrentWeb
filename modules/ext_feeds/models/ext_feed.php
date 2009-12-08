@@ -23,6 +23,10 @@ defined('SYSPATH') OR die('No direct access allowed.');
 
 class Ext_feed_Model extends ORM
 {
+	$array = Validation::factory($array)
+		->add_rules('name', 'required', 'standard_text')
+		->add_rules('url', 'required', 'valid::url_ok');
+	
 	protected $has_one = array('user');
 }
 ?>
