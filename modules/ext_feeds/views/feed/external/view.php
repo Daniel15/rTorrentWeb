@@ -52,13 +52,13 @@ echo form::open('torrents/add', array(), array('label_id' => $label_id)); ?>
 		
 	?>
 	<tr class="normal">
-		<td><label for="<?php echo ++$i; ?>"><?php echo htmlspecialchars($feed_item['title']); ?>
+		<td><label for="url_<?php echo ++$i; ?>"><?php echo htmlspecialchars($feed_item['title']); ?></label>
 		<?php
 		if ($feed_item_is_new)
 			echo ' - <strong>NEW</strong>';
 		?>
 		</td>
-		<td class="add_col"><input type="checkbox" id="<?php echo $i; ?>" name="torrent_url[]" value="<?php echo htmlspecialchars($feed_item['torrent_url'], ENT_QUOTES); ?>" /></td> 
+		<td class="add_col"><input type="checkbox" id="url_<?php echo $i; ?>" name="torrent_url[]" value="<?php echo htmlspecialchars($feed_item['torrent_url'], ENT_QUOTES); ?>" /></td> 
 	</tr>
 	<?php
 	}
