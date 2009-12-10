@@ -19,25 +19,28 @@
  * You should have received a copy of the GNU General Public License
  * along with rTorrentWeb.  If not, see <http://www.gnu.org/licenses/>.
  */
-defined('SYSPATH') OR die('No direct access allowed.'); ?>
+defined('SYSPATH') OR die('No direct access allowed.'); 
 
-<script type="text/javascript">window.addEvent('domready', Users.init);</script>
-
-<h2>Current Users</h2>
-<ul>
-<?php
-foreach ($users as $user)
+// Any errors?
+if (!empty($errors))
 {
 	echo '
-	<li>
-		<a class="delete" href="', url::site('admin/users/delete/' . $user->id), '"><img src="res/icons16/bin_closed.png" alt="Delete" title="Delete ', $user->username, '" /></a>
-		<a href="', url::site('admin/users/change_password/' . $user->id), '"><img src="res/icons16/key.png" alt="Change Password" title="Change ', $user->username, '\'s password" /></a>
-		', $user->username, '
-	</li>';
+	The following errors were encountered:
+	<ul>';
+	
+	foreach ($errors as $key => $error)
+		echo '
+		<li><strong>', $key, '</strong>: ', $error, '</li>';
+	echo '
+	</ul>';
 }
 ?>
-</ul>
-<h2>Add a new user</h2>
-<?php echo form::open('admin/users/add', array('id' => 'add_user')) ?>
-<?php echo $form; ?>
+
+<?php echo form::open(null, array('id' => 'add_user')) ?>
+	<p>
+		<label for="password">Password:</label> <input type="password" name="password" id="password" /><br />
+		<label for="password_confirm">Confirm Password:</label> <input type="password" name="password_confirm" id="password_confirm" /><br />
+	</p>
+	
+	<p><input type="submit" name="submit" value="Submit" /></p>
 </form>

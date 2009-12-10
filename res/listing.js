@@ -331,6 +331,8 @@ var List =
 		$$('div#tabs li').addEvent('click', List.show_tab);
 		// Set the tab to general (the default)
 		List.show_tab.bind($('tab_general'))();
+		// Hide all the stuff on the general tab by default
+		$$('div#general > div').setStyle('display', 'none');
 	},
 	
 	/**
@@ -556,7 +558,7 @@ var List =
 			// All the other details
 			row.store('hash', hash);
 			row.store('data', torrent);
-			// Since we know this is a valid torrent, we're not deleting it.
+			// Since we know this is a valid torrent, we're not deleting it from the list.
 			torrents_to_remove.erase(hash);
 		});
 		
@@ -935,6 +937,10 @@ var Torrent =
 	 */
 	'general': function()
 	{
+		// Make sure the stuff is showing
+		$$('div#general > div').setStyle('display', '');
+		$('no_torrent').setStyle('display', 'none');
+		
 		var data = this.retrieve('data');
 		var hash = this.retrieve('hash');
 		// Transfer

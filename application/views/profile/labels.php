@@ -31,9 +31,12 @@ if (count($labels) == 0)
 <ul>
 <?php
 foreach ($labels as $label)
-{
+{//<img alt="Label icon" src="res/label_icons/', htmlspecialchars($label->icon), '.png" width="16" height="16" /> 
 	echo '
-	<li><img alt="Label icon" src="res/label_icons/', htmlspecialchars($label->icon), '.png" width="16" height="16" /> ', htmlspecialchars($label->name), '</li>';
+	<li>
+		<a href="', url::site('profile/delete_label/' . $label->id), '"><img alt="Delete" title="Delete ', htmlspecialchars($label->name), '" src="res/icons16/bin_closed.png" /></a>
+		', htmlspecialchars($label->name), '
+	</li>';
 }
 ?>
 

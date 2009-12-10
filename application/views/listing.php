@@ -104,6 +104,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 		</div>
 		<div id="details">
 			<div id="general">
+				<p id="no_torrent">No torrent is currently selected.</p>
 				<div>
 					<h3>General</h3>
 					<p>						

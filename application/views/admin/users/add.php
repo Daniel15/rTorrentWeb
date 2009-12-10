@@ -21,23 +21,6 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
-<script type="text/javascript">window.addEvent('domready', Users.init);</script>
-
-<h2>Current Users</h2>
-<ul>
-<?php
-foreach ($users as $user)
-{
-	echo '
-	<li>
-		<a class="delete" href="', url::site('admin/users/delete/' . $user->id), '"><img src="res/icons16/bin_closed.png" alt="Delete" title="Delete ', $user->username, '" /></a>
-		<a href="', url::site('admin/users/change_password/' . $user->id), '"><img src="res/icons16/key.png" alt="Change Password" title="Change ', $user->username, '\'s password" /></a>
-		', $user->username, '
-	</li>';
-}
-?>
-</ul>
-<h2>Add a new user</h2>
-<?php echo form::open('admin/users/add', array('id' => 'add_user')) ?>
+<?php echo form::open(null, array('id' => 'add_user')) ?>
 <?php echo $form; ?>
 </form>

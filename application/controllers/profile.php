@@ -94,6 +94,24 @@ class Profile_Controller extends Base_Controller
 		
 		url::redirect('profile/labels');
 	}
+	
+	/**
+	 * Delete a label
+	 */
+	public function delete_label($id)
+	{
+		// Better check we own it
+		// TODO: Should the errors be formatted better? They'll rarely be encountered...
+		$label = ORM::factory('label', $id);
+		if ($label->user_id != $this->user->id)
+			die('Error: That\'s not your label!');
+			
+		// Let's go!
+		$name = $label->name;
+		$label->delete();
+		$this->session->set_flash('top_message', 'Deleted label "' . $name. '".');
+		url::redirect('profile/labels');
+	}
 }
 
 ?>

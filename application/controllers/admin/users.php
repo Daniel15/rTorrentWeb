@@ -34,11 +34,22 @@ class Users_Controller extends Admin_Controller
 		$userpage = new View('admin/users/index');
 		$this->template->title = 'User Administration';
 
-		$userpage->add_errors = $this->session->get('add_errors', array());
 		// Get a list of all the current users
 		$userpage->users = ORM::factory('user')->orderby('username')->find_all();
-		// Get a list of all the roles
-		$userpage->roles = ORM::factory('role')->find_all();
+
+		// Here comes the form
+		$userpage->form = new View('includes/admin/user_form');
+		$userpage->form->add_errors = $this->session->get('add_errors', array());
+		// Get a list of all the roles		
+		$userpage->form->roles = ORM::factory('role')->find_all();
+		// Default data
+		$userpage->form->data = array(
+			'username' => '',
+			'email' => '',
+			// By default, the user will only have "login" permission.
+			'roles' => array(ORM::factory('role', 'login')->id),
+		);
+		
 		$this->template->content = $userpage;
 	}
 	
@@ -90,22 +101,74 @@ class Users_Controller extends Admin_Controller
 			}
 			
 			$this->session->set_flash('top_message', $message);
-		}
-		else
-		{
-			$this->session->set_flash('add_errors', $post->errors('user_errors'));
+			url::redirect('admin/users');
 		}
 		
-		url::redirect('admin/users');
+		// Otherwise, if we're here, we have an error :(
+		$page = new View('admin/users/add');
+		$this->template->title = 'Add User';
+		
+		// Here comes the form
+		$page->form = new View('includes/admin/user_form');
+		$page->form->add_errors = $post->errors('user_errors');
+		// Get a list of all the roles		
+		$page->form->roles = ORM::factory('role')->find_all();
+		$page->form->data = $post->as_array();
+		
+		$this->template->content = $page;
+	}
+	
+	/**
+	 * Change a user's password
+	 * @param int User ID of the user to edit	 
+	 */
+	public function change_password($id)
+	{
+		// Load the user 
+		$user = ORM::factory('user', $id);
+			
+		// What? Doesn't exist? O_o
+		if (!$user->loaded)
+			url::redirect('admin/users');
+			
+		$this->template->title = 'Changing ' . $user->username . '\'s password';
+		$page = new View('admin/users/change_password');
+		
+		// Did they post?
+		if (isset($_POST['submit']))
+		{
+			$post = Validation::factory($_POST)
+				->add_rules('password', 'required', 'length[5,42]')
+				->add_rules('password_confirm', 'matches[password]');
+				
+			// Validate!
+			if ($post->validate())
+			{
+				$user->password = $post['password'];
+				$user->save();
+				$this->session->set_flash('top_message', 'Changed password for ' . $user->username);
+				url::redirect('admin/users');
+			}
+			// Otherwise, something is wrong :(
+			else
+			{
+				$page->errors = $post->errors('user_errors');
+			}
+		}
+		
+		$this->template->content = $page;
+		
 	}
 	
 	/**
 	 * Deleting a user
+	 * @param int User ID of the user to delete
 	 */
 	public function delete($id)
 	{
 		// Easy as pie
 		ORM::factory('user', $id)->delete();
+		ORM::factory('label')->where('user_id', $id)->delete();
 		// TODO: Delete their directory?
 		// TODO: Delete their torrents?
 		$this->session->set_flash('top_message', 'Deleted user ' . $id);

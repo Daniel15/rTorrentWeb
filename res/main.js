@@ -29,7 +29,8 @@ var Users =
 		// Attach all the delete handlers
 		$$('a.delete').addEvent('click', function()
 		{
-			return confirm('Are you SURE you want to delete this user?');
+			// TODO: How this is done is a little silly. xD
+			return confirm('Are you SURE you want to ' + this.getElement('img').get('title') + '?');
 		});
 	}
 };

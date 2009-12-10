@@ -29,11 +29,13 @@ $lang = array
 		'length' => 'The username must be between 4 and 32 characters long.',
 		'alpha'    => 'Only alphabetic characters are allowed.',
 		'default'  => 'Invalid username.',
+		'username_available' => 'The username is already in use. Please specify a unique username.',
 	),
 	
 	'email' => array
 	(
 		'required' => 'The email address cannot be blank.',
+		'email_available' => 'The email address is already in use. Please specify a unique email address.',
 		'default' => 'Invalid email address.',
 	),
 	
