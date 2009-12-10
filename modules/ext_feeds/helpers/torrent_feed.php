@@ -59,11 +59,14 @@ class torrent_feed
 		
 		foreach ($raw_feed_items as $raw_feed_item)
 		{
-			$formatted_feed[] = array(
-				'title' => $raw_feed_item['title'],
-				'guid' => $raw_feed_item['guid'],
-				'torrent_url' => $raw_feed_item['enclosure']->attributes()->url,
-			);
+			if (torrent_feed::_is_feed_item_compliant($raw_feed_item))
+			{
+				$formatted_feed[] = array(
+					'title' => $raw_feed_item['title'],
+					'guid' => $raw_feed_item['guid'],
+					'torrent_url' => $raw_feed_item['enclosure']->attributes()->url,
+				);
+			}
 		}
 		
 		return $formatted_feed;
@@ -86,6 +89,14 @@ class torrent_feed
 		);
 		
 		return in_array(parse_url($url, PHP_URL_HOST), $supported_hosts);
+	}
+	
+	/**
+	 * Is an item from an unsupported feed compliant
+	 */
+	private static function _is_feed_item_compliant($feed_item)
+	{
+		return (isset($feed_item['title']) && isset($feed_item['guid']) && isset($feed_item['enclosure']));
 	}
 }
 ?>

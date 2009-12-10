@@ -53,6 +53,7 @@ class External_Controller extends Base_Controller
 		}
 		
 		$feed = ORM::factory('ext_feed', $id);		
+		
 		$feed_items = torrent_feed::get_torrents($feed->url);
 		
 		$template = new View('template_popup');
@@ -63,7 +64,14 @@ class External_Controller extends Base_Controller
 		
 		if (count($feed_items) < 1) // are there items in the feed
 		{
-			$template->message = 'There are currently no valid items in this RSS feed. There may be a problem with your feed provider. Please check the url ' . $feed->url . ' in your browser.';
+			if (torrent_feed::_is_feed_supported($feed->url))
+			{
+				$template->message = 'There are currently no valid items in this RSS feed. There may be a problem with your feed provider. Please check the url ' . $feed->url . ' in your browser.';
+			}
+			else
+			{
+				$template->message = 'This feed has not provided any valid items. For an item to be valid it must have a title, guid, and enclosure attribute. Otherwise it will not be accepted by rTWeb. This feed is not supported by rTorrentWeb.';
+			}
 		}
 		else
 		{
