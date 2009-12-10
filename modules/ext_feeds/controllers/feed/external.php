@@ -64,7 +64,7 @@ class External_Controller extends Base_Controller
 			}
 			else
 			{
-				$this->_render_error('This feed has not provided any valid items. For an item to be valid it must have a title, guid, and enclosure attribute. Otherwise it will not be accepted by rTWeb. This feed is not supported by rTorrentWeb.');
+				$this->_render_error('This feed has not provided any valid items. For an item to be valid it must have a title, guid, and enclosure attribute. Otherwise it will not be accepted by rTorrentWeb. This feed is not supported by rTorrentWeb.');
 				die();
 			}
 		}

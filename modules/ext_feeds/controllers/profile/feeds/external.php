@@ -65,11 +65,11 @@ class External_Controller extends Base_Controller
 					$feed->save(); // save the feed
 					
 					$this->session->set_flash('top_message', 'Added feed "' . $post['name'] . '".');
-					url::redirect('profiles/feeds/external'); // redirect back to the feed management page
+					url::redirect('profile/feeds/external'); // redirect back to the feed management page
 				}
 				else // we are adding an unsupported feed and it needs confirmation
 				{
-					$this->template->top_message = 'The URL you have entered leads to a site not supported by rTorrentWeb at this time. The feed may not work as intended with rTorrentWeb if it is not standards compliant.';
+					$this->template->top_message = 'The URL you have entered leads to a site not supported by rTorrentWeb at this time. The feed may not work as intended with rTorrentWeb if it is not standards compliant. If you want to still try using the feed with rTorrentWeb, please confirm its details, then press the "Confirm Feed Details" button.';
 					
 					$page = View::factory('feed/external/feed_form');
 					$page->url = $this->input->post('url');

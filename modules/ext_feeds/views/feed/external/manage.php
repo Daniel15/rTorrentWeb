@@ -23,7 +23,10 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <script type="text/javascript">window.addEvent('domready', Feeds.init);</script>
 <h2>Current Feeds</h2>
-
+<?php
+if (count($feeds) == 0)
+	echo '<p>You do not currently have any feeds.</p>';
+?>
 <ul class="feeds">
 	<?php
 	foreach ($feeds as $feed)
@@ -43,7 +46,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <h2>Add A New Feed</h2>
 
 <?php echo form::open('profile/feeds/external/add'); ?>
-	<p><label for="name">Feed Name:</label><?php echo form::input('name'); ?></p>
-	<p><label for="url">Feed URL:</label><?php echo form::input('url'); ?></p>
+	<p><label for="name">Feed Name:</label> <?php echo form::input('name'); ?></p>
+	<p><label for="url">Feed URL:</label> <?php echo form::input('url'); ?></p>
 	<p><?php echo form::submit('submit','Add Feed'); ?></p>
 </form>
