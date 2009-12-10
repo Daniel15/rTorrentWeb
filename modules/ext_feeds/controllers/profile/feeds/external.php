@@ -21,7 +21,7 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.');
 
-class Feeds_Controller extends Base_Controller
+class External_Controller extends Base_Controller
 {
 	public $template = 'template';
 	
@@ -65,7 +65,7 @@ class Feeds_Controller extends Base_Controller
 					$feed->save(); // save the feed
 					
 					$this->session->set_flash('top_message', 'Added feed "' . $post['name'] . '".');
-					url::redirect('profile/feeds'); // redirect back to the feed management page
+					url::redirect('profiles/feeds/external'); // redirect back to the feed management page
 				}
 				else // we are adding an unsupported feed and it needs confirmation
 				{
@@ -108,13 +108,13 @@ class Feeds_Controller extends Base_Controller
 		if(!$this->_check_exists($id)) // does the feed not exist
 		{
 			$this->session->set_flash('top_message', 'You cannot edit a feed that doesn\'t exist');
-			url::redirect('profile/feeds');
+			url::redirect('profiles/feeds/external');
 		}
 		
 		if(!$this->_check_owner($id)) // is the logged in user authorised to edit the feed
 		{
 			$this->session->set_flash('top_message', 'You cannot edit someone elses feed');
-			url::redirect('profile/feeds');
+			url::redirect('profiles/feeds/external');
 		}
 		
 		$this->template->title = 'Edit Feed';
@@ -136,7 +136,7 @@ class Feeds_Controller extends Base_Controller
 					$label->save();
 					
 					$this->session->set_flash('top_message', 'Feed "' . $post['name'] . '" saved.');
-					url::redirect('profile/feeds'); // redirect back to the feed management page
+					url::redirect('profiles/feeds/external'); // redirect back to the feed management page
 				}
 				else // we are adding an unsupported feed and it needs confirmation
 				{
@@ -179,13 +179,13 @@ class Feeds_Controller extends Base_Controller
 		if(!$this->_check_exists($id)) // does the feed not exist
 		{
 			$this->session->set_flash('top_message', 'You cannot delete a feed that doesn\'t exist');
-			url::redirect('profile/feeds');
+			url::redirect('profiles/feeds/external');
 		}
 		
 		if(!$this->_check_owner($id)) // is the logged in user authorised to edit the feed
 		{
 			$this->session->set_flash('top_message', 'You cannot delete someone elses feed');
-			url::redirect('profile/feeds');
+			url::redirect('profiles/feeds/external');
 		}
 		
 		$feed = ORM::factory('ext_feed', $id); // get the feed
@@ -193,7 +193,7 @@ class Feeds_Controller extends Base_Controller
 		$feed->delete(); // delete the feed
 		
 		$this->session->set_flash('top_message', 'Feed ' . $feed->name . ' deleted.');
-		url::redirect('profile/feeds'); // redirect to the management page
+		url::redirect('profiles/feeds/external'); // redirect to the management page
 	}
 	
 	/**

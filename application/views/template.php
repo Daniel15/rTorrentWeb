@@ -43,7 +43,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 $menu_items = array(
 	'' => 'Go Back Home',
 	'profile/labels' => 'Labels',
-	'profile/feeds' => 'Feeds'
+	'profile/feeds/external' => 'Feeds'
 );
 
 // Admins are SPECIAL
