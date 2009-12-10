@@ -53,33 +53,31 @@ class External_Controller extends Base_Controller
 		}
 		
 		$feed = ORM::factory('ext_feed', $id);		
-		
 		$feed_items = torrent_feed::get_torrents($feed->url);
+		
+		if (count($feed_items) < 1) // are there items in the feed
+		{
+			if (torrent_feed::_is_feed_supported($feed->url))
+			{
+				$this->_render_error('There are currently no valid items in this RSS feed. There may be a problem with your feed provider. Please check the url ' . $feed->url . ' in your browser.');
+				die();
+			}
+			else
+			{
+				$this->_render_error('This feed has not provided any valid items. For an item to be valid it must have a title, guid, and enclosure attribute. Otherwise it will not be accepted by rTWeb. This feed is not supported by rTorrentWeb.');
+				die();
+			}
+		}
 		
 		$template = new View('template_popup');
 		$template->title = 'RSS Entries For : ' . $feed->name;
 		$template->content = new View('feed/external/view');
 		$template->content->feed_id = $id;
 		$template->content->label_id = $feed->label_id;
-		
-		if (count($feed_items) < 1) // are there items in the feed
-		{
-			if (torrent_feed::_is_feed_supported($feed->url))
-			{
-				$template->message = 'There are currently no valid items in this RSS feed. There may be a problem with your feed provider. Please check the url ' . $feed->url . ' in your browser.';
-			}
-			else
-			{
-				$template->message = 'This feed has not provided any valid items. For an item to be valid it must have a title, guid, and enclosure attribute. Otherwise it will not be accepted by rTWeb. This feed is not supported by rTorrentWeb.';
-			}
-		}
-		else
-		{
-			$template->content->feed_items = $feed_items;
-			$template->content->last_seen_guid = $feed->last_seen_guid;
+		$template->content->feed_items = $feed_items;
+		$template->content->last_seen_guid = $feed->last_seen_guid;
 
-			$this->_reset_seen_guid($feed, $feed_items[0]['guid']);
-		}
+		$this->_reset_seen_guid($feed, $feed_items[0]['guid']);
 		
 		$template->render(true);
 	}
