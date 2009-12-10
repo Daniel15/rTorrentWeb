@@ -108,13 +108,13 @@ class External_Controller extends Base_Controller
 		if(!$this->_check_exists($id)) // does the feed not exist
 		{
 			$this->session->set_flash('top_message', 'You cannot edit a feed that doesn\'t exist');
-			url::redirect('profiles/feeds/external');
+			url::redirect('profile/feeds/external');
 		}
 		
 		if(!$this->_check_owner($id)) // is the logged in user authorised to edit the feed
 		{
 			$this->session->set_flash('top_message', 'You cannot edit someone elses feed');
-			url::redirect('profiles/feeds/external');
+			url::redirect('profile/feeds/external');
 		}
 		
 		$this->template->title = 'Edit Feed';
@@ -136,7 +136,7 @@ class External_Controller extends Base_Controller
 					$label->save();
 					
 					$this->session->set_flash('top_message', 'Feed "' . $post['name'] . '" saved.');
-					url::redirect('profiles/feeds/external'); // redirect back to the feed management page
+					url::redirect('profile/feeds/external'); // redirect back to the feed management page
 				}
 				else // we are adding an unsupported feed and it needs confirmation
 				{
@@ -179,13 +179,13 @@ class External_Controller extends Base_Controller
 		if(!$this->_check_exists($id)) // does the feed not exist
 		{
 			$this->session->set_flash('top_message', 'You cannot delete a feed that doesn\'t exist');
-			url::redirect('profiles/feeds/external');
+			url::redirect('profile/feeds/external');
 		}
 		
 		if(!$this->_check_owner($id)) // is the logged in user authorised to edit the feed
 		{
 			$this->session->set_flash('top_message', 'You cannot delete someone elses feed');
-			url::redirect('profiles/feeds/external');
+			url::redirect('profile/feeds/external');
 		}
 		
 		$feed = ORM::factory('ext_feed', $id); // get the feed
@@ -193,7 +193,7 @@ class External_Controller extends Base_Controller
 		$feed->delete(); // delete the feed
 		
 		$this->session->set_flash('top_message', 'Feed ' . $feed->name . ' deleted.');
-		url::redirect('profiles/feeds/external'); // redirect to the management page
+		url::redirect('profile/feeds/external'); // redirect to the management page
 	}
 	
 	/**

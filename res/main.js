@@ -60,7 +60,7 @@ var Feeds =
 	'init': function()
 	{
 		// Make these pop up
-		$$('li.feed a').addEvent('click', function()
+		$$('li.feed > a').addEvent('click', function()
 		{
 			window.open(this.href, 'ManageRSSWindow', 'location=no,menubar=no,status=no,titlebar=no,toolbar=no,height=800,width=700');
 			// Cancel the click.

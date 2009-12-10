@@ -26,8 +26,11 @@ div#container
 	background: #CCC;
 	width: 40%;
 	
-	margin: 10% auto;
-	padding: 1em;
+	margin: 6% auto;
+	padding: 3em;
+	border-radius: 30px;
+	-moz-border-radius: 30px;
+	-webkit-border-radius: 30px;
 }
 
 h1
@@ -40,4 +43,9 @@ p#error
 {
 	color: red;
 	font-weight: bold;
+}
+
+input, label
+{
+	font-size: 1.2em;
 }

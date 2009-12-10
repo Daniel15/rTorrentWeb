@@ -31,7 +31,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
 <body>
 	<div id="container">
-		<h1>Log in to rTorrent GUI</h1>
+		<h1>Log in to rTorrentWeb</h1>
 		<p id="error"><?php echo $error; ?></p>
 		<form method="post" action="">
 			<label for="username">Username:</label>
