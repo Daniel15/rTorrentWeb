@@ -42,11 +42,44 @@ Number.implement({
  * Our additional date functionality 
  */
 Date.implement({
+	/**
+	 * Check if the current date is valid
+	 */
 	'is_valid': function()
 	{
 		return (this != 'Invalid Date' && this != 'NaN');
 	}
 });
+
+/**
+ * Our additional element functionality
+ */
+Element.implement({
+	/**
+	 * Make sure the specified child element is visible, and scroll to it if necessary
+	 */
+	'scrollToChild': function(child)
+	{
+		var height = this.getSize().y;
+		var childY = child.getPosition(this).y;
+		var childBottom = childY + child.getSize().y;
+		
+		// Is it within our visible area? No need to do anything.
+		if (childY >= 0 && childBottom <= height)
+			return;
+			
+		// Here's where we are right now
+		var scroll = this.getScroll();
+		// Do we have to scroll down?
+		if (childBottom > height)
+			this.scrollTo(scroll.x, scroll.y + (childBottom - height));
+		// Otherwise, goin' up
+		else
+			// ChildY is negative, so we add it to go up.
+			this.scrollTo(scroll.x, scroll.y + childY);
+	}
+});
+
 
 /**
  * Sortable table stuff
@@ -233,6 +266,8 @@ var List =
 		// Other stuff:
 		// Make the "Private change" button do something
 		$('private_change').addEvent('click', Torrent.toggle_private);
+		// Pressing keys in the torrent listing
+		$('torrents').addEvent('keydown', List.keypress);
 	},
 	
 	/**
@@ -411,6 +446,39 @@ var List =
 		
 		// Make the "add label" button work
 		$('label_add').addEvent('click', Torrent.add_label);
+	},
+	
+	/**
+	 * List keypress handler
+	 */
+	'keypress': function(event)
+	{
+		// Going down?
+		if (event.key == 'down')
+		{
+			// Does this have someone under it? (that's what she said)
+			var next_torrent = List.selected.getNext();
+			if (next_torrent != null)
+			{
+				List.click.bind(next_torrent)();
+				$('torrents').scrollToChild(next_torrent);
+			}
+			
+			return false;
+		}
+		// Going up?
+		else if (event.key == 'up')
+		{
+			// A torrent above this one?
+			var prev_torrent = List.selected.getPrevious();
+			if (prev_torrent != null)
+			{
+				List.click.bind(prev_torrent)();
+				$('torrents').scrollToChild(prev_torrent);
+			}
+			
+			return false;
+		}
 	},
 	
 	/**

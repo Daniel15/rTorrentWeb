@@ -75,7 +75,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 			</ul>
 		</div>
 		
-		<div id="torrents">
+		<div id="torrents" tabindex="1">
 			<table width="100%" cellpadding="0" cellspacing="0">
 				<thead>
 					<tr>

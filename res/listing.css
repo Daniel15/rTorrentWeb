@@ -121,7 +121,9 @@ div#toolbar li img
 div#toolbar li img.disabled
 {
 	cursor: default;
-	opacity: 0.4;
+	opacity: 0.2;
+	/* TODO: Move this to an IE stylesheet. :( */
+	filter: alpha(opacity = 20);
 }
 
 div#toolbar li.end-section
