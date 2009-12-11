@@ -18,6 +18,15 @@
  * You should have received a copy of the GNU General Public License
  * along with rTorrentWeb.  If not, see <http://www.gnu.org/licenses/>.
  */
+ 
+// If we're on an unsupported browser (*cough* IE *cough*), tell them immediately
+// IE8 seems to work, so we'll only warn for IE7 and lower
+/*@cc_on
+if (@_jscript_version < 5.8)
+{
+	alert('rTorrentWeb doesn\'t officially support Internet Explorer 7 and below. It is recommended to either upgrade to Internet Explorer 8, or get a better browser (such as Opera, Firefox, or Google Chrome). rTorrentWeb may not work properly otherwise.');
+}
+@*/
 
 /**
  * Our additional number functionality
@@ -435,7 +444,7 @@ var List =
 				'class': 'filter',
 				'styles':
 				{
-					'background-image': 'url(res/label_icons/' + label.icon + '.png)',
+					'background-image': 'url(res/label_icons/' + label.icon + '.png)'
 				},
 				'events':
 				{
