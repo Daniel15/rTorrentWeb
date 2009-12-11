@@ -972,11 +972,40 @@ var Torrent =
 		
 		var data = this.retrieve('data');
 		var hash = this.retrieve('hash');
-		// Transfer
-		$('elapsed').set('html', 'TODO');
-		$('remaining').set('html', 'TODO');
-		$('download_speed').set('html', data.rate.down.format_size());
-		$('upload_speed').set('html', data.rate.up.format_size());
+		// Let's work our how long ago this started
+		var started_at = new Date();
+		started_at.setTime(data.started_at * 1000);
+		$('started').set('html', started_at.timeDiffInWords());
+		$('started').set('title', started_at);
+		
+		// And also how long it's got left
+		// Is it finished?
+		if (data.complete)
+		{
+			$('remaining').set('html', 'Torrent is complete.');
+			$('remaining').set('title', '');
+		}
+		else
+		{
+			// Timestamp for completion = now + (data left / download speed) seconds
+			var completion = new Date();
+			completion.setSeconds(completion.getSeconds() + (data.size - data.done) / data.rate.down);
+			// This feels VERY wrong
+			if (completion == "Invalid Date")
+			{
+				$('remaining').set('html', 'Unknown');
+				$('remaining').set('title', '');
+			}
+			else
+			{
+				$('remaining').set('html', completion.timeDiffInWords());
+				$('remaining').set('title', 'Estimated to complete in ' + (new Date()).timeDiff(completion, ' ') + ' (at ' + completion + ')');
+			}
+		}
+		
+		// Other stuff
+		$('download_speed').set('html', data.rate.down.format_size() + '/s');
+		$('upload_speed').set('html', data.rate.up.format_size() + '/s');
 		$('total_down').set('html', data.done.format_size());
 		$('total_up').set('html', data.total.up.format_size());
 		// General

@@ -28,8 +28,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	<base href="<?php echo url::base(false, 'http'); ?>" />
 	<link rel="stylesheet" href="res/listing.css" type="text/css" />
 	<script type="text/javascript" src="res/mootools-1.2.3-core-yc.js"></script>
-	<!--script type="text/javascript" src="res/mootools-1.2.3-core-nc.js"></script-->
-	<script type="text/javascript" src="res/mootools-1.2.3.1-more.js"></script>
+	<script type="text/javascript" src="res/mootools-1.2.4.2-more.js"></script>
 	<script type="text/javascript" src="<?php echo url::site('profile/get_settings'); ?>"></script>
 	<script type="text/javascript">
 		var base_url = '<?php echo url::base(true); ?>';
@@ -138,7 +137,8 @@ if ($this->auth->logged_in('admin')) :
 				<div>
 					<h3>Transfer</h3>
 					<p>
-						Time: <span id="elapsed"></span> elapsed, <span id="remaining"></span> remaining<br />
+						Started: <span id="started"></span><br />
+						Estimated Completion: <span id="remaining"></span><br />
 						Speed: <span id="download_speed"></span> down, <span id="upload_speed"></span> up<br />
 						Totals: <span id="total_down"></span> downloaded, <span id="total_up"></span> uploaded<br />
 					</p>

@@ -125,10 +125,10 @@ class Rtorrent_Core
 			'd.is_active=',
 			'd.is_hash_checking=',
 			'd.get_ratio=',
-			
 			'd.get_chunk_size=',
 			'd.get_size_chunks=',
-			'd.get_completed_chunks='
+			'd.get_completed_chunks=',
+			'd.get_state_changed=',
 		))))
 		{
 			return false;
@@ -180,6 +180,10 @@ class Rtorrent_Core
 				),
 				'ratio' => $torrentInfo['d.get_ratio='] / 1000,
 				'complete' => $size == $done,
+				/* Not quite correct - This stores the date the torrent's state
+				 * was last modified. It'll do for now, though.
+				 */
+				'started_at' => $torrentInfo['d.get_state_changed='],
 				// We set the state below
 				'state' => 'unknown'
 			);
