@@ -60,11 +60,17 @@ a img
 	border: 0;
 }
 
-p#top_message
+p#top_message,
+div.errors
 {
 	background-color: #F0CCCC;
 	border: 1px solid #C00;
 	padding: 1em;
+}
+
+div.errors
+{
+	margin: 1em 0;
 }
 
 div#container

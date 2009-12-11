@@ -117,12 +117,21 @@ var SortTable =
 			return;
 		}
 		
-		// Try to work out the type (and hence how we have to sort it) based on the first value
-		var sorter = SortTable.sorters.case_insensitive;
-		if (SortTable.sorters.filesize_regex.test(temp[0][0]))
+		/* Try to work out the type (and hence how we have to sort it) based on the first value
+		 * However, the name might screw up if it has a number at the start, so we explicitly
+		 * check for that.
+		 */
+		
+		var sorter;
+		if (head_cells[sorted_by].get('text').trim() == 'Name')
+			sorter = SortTable.sorters.case_insensitive;
+		else if (SortTable.sorters.filesize_regex.test(temp[0][0]))
 			sorter = SortTable.sorters.filesize;
 		else if (!isNaN(parseFloat(temp[0][0])))
 			sorter = SortTable.sorters.numeric;
+		// Default to case insensitive
+		else
+			sorter = SortTable.sorters.case_insensitive;
 		
 		temp.sort(sorter);
 		// Are we sorting in reverse order? If so, reverse it

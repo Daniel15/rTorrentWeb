@@ -28,6 +28,7 @@ $lang = array
 		'url_ok' => 'The URL was invalid.',
 		'torrent_exists' => 'This torrent already exist on the server.',
 		'torrent_invalid' => 'Torrent appears to be invalid.',
+		'type' => 'The file type is invalid.',
 	),
 );
 

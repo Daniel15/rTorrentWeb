@@ -25,14 +25,16 @@ defined('SYSPATH') OR die('No direct access allowed.');
 if (!empty($add_errors))
 {
 	echo '
-	The following errors were encountered:
-	<ul>';
+	<div class="errors">
+		The following errors were encountered:
+		<ul>';
 	
 	foreach ($add_errors as $key => $error)
 		echo '
-		<li><strong>', $key, '</strong>: ', $error, '</li>';
+			<li><strong>', $key, '</strong>: ', $error, '</li>';
 	echo '
-	</ul>';
+		</ul>
+	</div>';
 }
 ?>
 	<p>

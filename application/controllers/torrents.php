@@ -347,12 +347,15 @@ class Torrents_Controller extends Base_Controller
 			// Do we not have any torrents left? O_o
 			if (count($torrents) == 0)
 			{
-				echo 'None of the torrents you uploaded could be added:<br />
+				$template = new View('template_popup');
+				$template->title = 'Add New Torrent';
+				$template->content = 'None of the torrents you uploaded could be added:<br />
 	<ul>
-		<li>', implode('</li>
-		<li>', $all_errors), '</li>
+		<li>' . implode('</li>
+		<li>', $all_errors) . '</li>
 	</ul>';
-				die();
+				$template->render(true);
+				return;
 			}
 			
 			// Now let's go through all our torrents
