@@ -267,7 +267,7 @@ var List =
 		$('stop').addEvent('click', Torrent.stop);
 		$('add').addEvent('click', function()
 		{
-			window.open(this.href, 'AddTorrentWindow', 'location=no,menubar=no,status=no,titlebar=no,toolbar=no,height=400,width=500');
+			Utils.popup(this.href, 400, 500);
 			// Cancel the click.
 			return false;
 		});
@@ -275,7 +275,7 @@ var List =
 		// Add the rss button
 		$('rss').addEvent('click', function()
 		{
-			window.open(this.href, 'ManageRSSWindow', 'location=no,menubar=no,status=no,titlebar=no,toolbar=no,height=800,width=700');
+			Utils.popup(this.href, 800, 700);
 			// Cancel the click.
 			return false;
 		});
@@ -1563,6 +1563,43 @@ var Admin =
 				List.filter();*/			
 			}
 		}).send();
+	}
+};
+
+/**
+ * Utilities that don't really fit anywhere else
+ */
+var Utils = 
+{
+	/**
+	 * Current window reference for the popup
+	 */
+	'popup_window': null,
+	/**
+	 * Open a popup
+	 */
+	'popup': function(url, height, width)
+	{	
+		// Do we already have a popup with this URL? Need to focus on it
+		if (Utils.popup_window != null && !Utils.popup_window.closed && Utils.popup_window.location == url)
+		{
+			Utils.popup_window.focus();
+		}
+		// Otherwise, need to overwrite the URL, or open a new window
+		else
+		{
+			if (Utils.popup_window != null)
+				Utils.popup_window.close();
+				
+			Utils.popup_window = window.open(url, 'rTorrentPopup', 'location=no,menubar=no,status=no,titlebar=no,toolbar=no,height=' + height + ',width=' + width);
+			
+			if (Utils.popup_window == null)
+			{
+				alert('Please disable your popup blocker to use this feature.');
+			}
+			else
+				Utils.popup_window.focus();
+		}
 	}
 };
 
