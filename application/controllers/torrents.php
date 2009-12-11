@@ -60,6 +60,8 @@ class Torrents_Controller extends Base_Controller
 			// Otherwise, we have to add its owners name
 			else
 			{
+				// "Private" is a reserved word in JavaScript, so I've used "priv".
+				$torrents[$row->hash]['private'] = $row->private != 0;
 				$torrents[$row->hash]['owner']['name'] = $row->user->username;
 				$torrents[$row->hash]['owner']['id'] = $row->user->id;
 			}
@@ -105,6 +107,7 @@ class Torrents_Controller extends Base_Controller
 			
 			// Add it!
 			$results[$row->hash] = $torrents[$row->hash];
+			$results[$row->hash]['priv'] = $row->private != 0;
 			$results[$row->hash]['owner']['name'] = $row->user->username;
 			$results[$row->hash]['owner']['id'] = $row->user->id;
 		}
@@ -158,14 +161,8 @@ class Torrents_Controller extends Base_Controller
 	public function action($action, $hash)
 	{
 		//Check that this user owns this torrent before we allow this!
-		if (!$this->_check_owner($hash))
-		{
-			die(json_encode(array(
-				'error' => true,
-				'message' => 'You don\'t own that torrent!',
-				'hash' => $hash,
-			)));
-		}
+		$this->_check_owner($hash, true);
+		
 		// The really simple ones with no return values. We just call directly
 		// through to the rTorrent library
 		if (in_array($action, array('pause', 'start', 'stop')))
@@ -518,14 +515,7 @@ class Torrents_Controller extends Base_Controller
 	public function labels($hash)
 	{
 		// Check that this user owns this torrent before we allow this!
-		if (!$this->_check_owner($hash))
-		{
-			die(json_encode(array(
-				'error' => true,
-				'message' => 'You don\'t own that torrent!',
-				'hash' => $hash,
-			)));
-		}
+		$this->_check_owner($hash, true);
 		
 		$torrent = ORM::factory('torrent', $hash);
 		// No torrent?
@@ -561,13 +551,7 @@ class Torrents_Controller extends Base_Controller
 	public function del_label()
 	{
 		// Check that this user owns this torrent before we allow this!
-		if (!$this->_check_owner($this->input->post('hash')))
-		{
-			die(json_encode(array(
-				'error' => true,
-				'message' => 'You don\'t own that torrent!'
-			)));
-		}
+		$this->_check_owner($this->input->post('hash'), true);
 		
 		// Get the torrent
 		$torrent = ORM::factory('torrent', $this->input->post('hash'));
@@ -588,13 +572,7 @@ class Torrents_Controller extends Base_Controller
 	public function add_label()
 	{
 		// Check that this user owns this torrent before we allow this!
-		if (!$this->_check_owner($this->input->post('hash')))
-		{
-			die(json_encode(array(
-				'error' => true,
-				'message' => 'You don\'t own that torrent!'
-			)));
-		}
+		$this->_check_owner($this->input->post('hash'), true);
 		
 		// Get the torrent
 		$torrent = ORM::factory('torrent', $this->input->post('hash'));
@@ -610,9 +588,31 @@ class Torrents_Controller extends Base_Controller
 	}
 	
 	/**
-	 * Check if we own a torrent
+	 * Change whether a torrent is private
 	 */
-	private function _check_owner($hash)
+	public function change_private()
+	{
+		$this->_check_owner($this->input->post('hash'), true);
+		// Get the torrent
+		$torrent = ORM::factory('torrent', $this->input->post('hash'));
+		// Better change this
+		$torrent->private = (bool)$this->input->post('private');
+		$torrent->save();
+		
+		echo json_encode(array(
+			'error' => false,
+			'hash' => $this->input->post('hash'),
+			'private' => (bool)$this->input->post('private'),
+		));
+	}
+	
+	/**
+	 * Check if we own a torrent
+	 * @param string Hash of the torrent
+	 * @param bool If true, throw an error. If false, returns true or false
+	 * @return bool True if we own the torrent, false otherwise
+	 */
+	private function _check_owner($hash, $throw_error = false)
 	{
 		// Admins can do ANYTHING :o
 		if ($this->auth->logged_in('admin'))
@@ -625,7 +625,27 @@ class Torrents_Controller extends Base_Controller
 		if (!$torrent->loaded)
 			return true;
 
-		return $torrent->user_id == $this->user->id;
+		$mine = $torrent->user_id == $this->user->id;
+		// Are we just returning?
+		if (!$throw_error)
+			return $mine;
+		
+		// Otherwise, throw an error
+		if (!$mine)
+		{
+			if (request::is_ajax())
+			{
+				die(json_encode(array(
+					'error' => true,
+					'message' => 'You don\'t own that torrent!',
+					'hash' => $hash,
+				)));
+			}
+			else
+			{
+				die('Error: You don\'t own that torrent');
+			}
+		}
 	}
 	
 	/**

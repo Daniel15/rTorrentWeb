@@ -120,6 +120,7 @@ if ($this->auth->logged_in('admin')) :
 						<input id="owner_change" type="button" value="Change" />
 						<input id="owner_save" type="button" value="Save" />
 <?php endif; ?><br />
+						Private: <span id="private">no</span> <input id="private_change" type="button" value="Change" /><br />
 					</p>
 					<p>Labels:</p>
 					<ul id="labels">

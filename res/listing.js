@@ -220,6 +220,9 @@ var List =
 		SortTable.init($('torrents').getElement('table'));
 		// And if they're an admin, they have special things!
 		Admin.init();
+		// Other stuff:
+		// Make the "Private change" button do something
+		$('private_change').addEvent('click', Torrent.toggle_private);
 	},
 	
 	/**
@@ -962,6 +965,9 @@ var Torrent =
 		// General
 		$('hash').set('html',  hash);
 		$('owner').set('html', data.owner ? data.owner.name : '[unknown]');
+		$('private').set('html', data.private ? 'Yes' : 'No');
+		// Only show the "change private" button if we're the owner
+		$('private_change').setStyle('display', (data.owner && (data.owner.id == current_user)) ? '' : 'none');
 		
 		// Now to update the labels
 		$('labels').empty();
@@ -1321,6 +1327,40 @@ var Torrent =
 			new Element('td', {'html': peer.up_total.format_size()}).inject(row);
 			new Element('td', {'html': peer.is_seeder}).inject(row);
 		});
+	},
+	
+	/**
+	 * Toggle whether a torrent is private or not
+	 */
+	'toggle_private': function()
+	{
+		$('private_change').set('value', 'Changing...').disabled = true;
+		var data = List.selected.retrieve('data');
+		var hash = List.selected.retrieve('hash');
+		Log.write('Changing private status of ' + data.name + '...');
+		
+		// Actually send the change request
+		var myRequest = new Request({
+			method: 'post',
+			url: base_url + 'torrents/change_private',
+			data: Hash.toQueryString({'hash': hash, 'private': data.private ? 0 : 1}),
+			onSuccess: function(data_text)
+			{
+				var response = JSON.decode(data_text);
+				// Was there an error?
+				if (response.error)
+				{
+					Log.write('An error occurred: ' + response.message);
+					alert('An error occurred: ' + response.message);
+					return;
+				}
+				
+				// All done.
+				$('private_change').set('value', 'Change').disabled = false;
+				$('private').set('html', response.private ? 'Yes' : 'No');
+				List.refresh();
+			}
+		}).send();
 	}
 };
 
