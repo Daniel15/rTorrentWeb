@@ -194,7 +194,8 @@ li#sidebar_stopped { background-image: url(icons16/control_stop.png); }
 
 .selected
 {
-	background-color: #CFDEEF;
+	/* !important is to override the zebra row backgrounds */
+	background-color: #CFDEEF !important;
 }
 
 div#torrents
@@ -225,6 +226,21 @@ div#torrents table tr td
 	border-bottom: 1px solid #DDD;
 	border-right: 1px solid #EEE;
 	padding: 0.2em;
+}
+
+div#torrents table tr:nth-child(even)
+{
+	background-color: #EEE;
+}
+
+div#torrents table tr.not-mine td.name
+{
+	color: #650000;
+}
+
+div#torrents table tr.no-owner td.name
+{
+	color: #AA0000;
 }
 
 div#torrents span.sorted

@@ -552,6 +552,23 @@ var List =
 				row.inject(table);
 			}
 			
+			// Style this row based on some stuff
+			// Clear the current status
+			row.set('class', '');
+			// Add a class depending on owner
+			// No owner?
+			if (!torrent.owner)
+			{
+				row.addClass('not-mine');
+				row.addClass('no-owner');
+			}
+			else if (torrent.owner.id != current_user)
+				row.addClass('not-mine');
+			else
+				row.addClass('mine');
+			// Also add a class based on state
+			row.addClass('status-' + torrent.state);
+			
 			// Make sure these are integers
 			torrent.size = parseInt(torrent.size);
 			torrent.done = parseInt(torrent.done);
@@ -652,7 +669,7 @@ var List =
 		{
 			var data = row.retrieve('data');
 			// Are we only showing *our* torrents?
-			if ($('only_mine').checked && data.owner.id != current_user)
+			if ($('only_mine').checked && (!$defined(data.owner) || data.owner.id != current_user))
 				return;
 			
 			cnt_all++;
@@ -704,7 +721,7 @@ var List =
 				show_this = false;
 			// Are we only showing our torrents, but it's not ours?
 			// Note: current_user is defined in listing.php view file (in the head of the page).
-			if ($('only_mine').checked && data.owner.id != current_user)
+			if ($('only_mine').checked && (!$defined(data.owner) || data.owner.id != current_user))
 				show_this = false;
 			
 			row.setStyle('display', show_this ? '' : 'none');
