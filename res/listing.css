@@ -91,11 +91,18 @@ div#bottom_pane
 	overflow: hidden;
 }
 
+div#top_bar
+{
+	height: 37px;
+	overflow: hidden;
+}
+
 div#toolbar
 {
 	height: 32px;
 	margin-bottom: 5px;
 	margin-left: 185px;
+	float: left;
 }
 
 div#toolbar li
@@ -125,7 +132,7 @@ div#toolbar li.end-section
 
 #toolbar_status
 {
-	float: right;
+	text-align: right;
 	height: 32px;
 	line-height: 32px;
 	overflow: hidden;

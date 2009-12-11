@@ -45,21 +45,23 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <body>
 	<h1>rTorrentWeb</h1>
 	<div id="top_pane">
-		<p id="toolbar_status">
-			<span id="toolbar_message">Status</span> <span id="refresh_count"></span> <a id="disable_auto" href="#">Disable automatic refreshing</a> <a id="enable_auto" href="#">Enable automatic refreshing</a> <img id="loading" src="res/loading.gif" alt="Loading..." title="Loading..." />
-		</p>
-		<div id="toolbar">
-			<ul>
-				<li><img id="refresh" src="res/icons/refresh.png" alt="Refresh" title="Refresh" class="disabled" /></li>
-				<li><a id="add" href="<?php echo url::site('torrents/add'); ?>"><img src="res/icons/add.png" alt="Add New Torrent" title="Add New Torrent" /></a></li>
-				<li class="end-section"><a id="rss" href="<?php echo url::site('feed/external/'); ?>"><img src="res/icons/rss.png" alt="View RSS" title="View RSS" /></a></li>
-				<li><img id="start" src="res/icons/play.png" alt="Start Torrent" title="Start Torrent" class="disabled" /></li>
-				<li><img id="pause" src="res/icons/pause.png" alt="Pause Torrent" title="Pause Torrent" class="disabled" /></li>
-				<li><img id="stop" src="res/icons/stop.png" alt="Stop Torrent" title="Stop Torrent" class="disabled" /></li>
-				<li class="end-section"><img id="delete" src="res/icons/trash.png" alt="Delete Torrent" title="Delete Torrent" class="disabled" /></li>
-				<li class="end-section"><a href="<?php echo url::site('profile'); ?>"><img src="res/icons/admin.png" alt="Administration" title="Administration" /></a></li>
-				<li><a href="<?php echo url::site('user/logout'); ?>"><img src="res/icons/logout.png" alt="Log Out" title="Log Out" /></a></li>
-			</ul>
+		<div id="top_bar">
+			<div id="toolbar">
+				<ul>
+					<li><img id="refresh" src="res/icons/refresh.png" alt="Refresh" title="Refresh" class="disabled" /></li>
+					<li><a id="add" href="<?php echo url::site('torrents/add'); ?>"><img src="res/icons/add.png" alt="Add New Torrent" title="Add New Torrent" /></a></li>
+					<li class="end-section"><a id="rss" href="<?php echo url::site('feed/external/'); ?>"><img src="res/icons/rss.png" alt="View RSS" title="View RSS" /></a></li>
+					<li><img id="start" src="res/icons/play.png" alt="Start Torrent" title="Start Torrent" class="disabled" /></li>
+					<li><img id="pause" src="res/icons/pause.png" alt="Pause Torrent" title="Pause Torrent" class="disabled" /></li>
+					<li><img id="stop" src="res/icons/stop.png" alt="Stop Torrent" title="Stop Torrent" class="disabled" /></li>
+					<li class="end-section"><img id="delete" src="res/icons/trash.png" alt="Delete Torrent" title="Delete Torrent" class="disabled" /></li>
+					<li class="end-section"><a href="<?php echo url::site('profile'); ?>"><img src="res/icons/admin.png" alt="Administration" title="Administration" /></a></li>
+					<li><a href="<?php echo url::site('user/logout'); ?>"><img src="res/icons/logout.png" alt="Log Out" title="Log Out" /></a></li>
+				</ul>
+			</div>
+			<p id="toolbar_status">
+				<span id="toolbar_message">Status</span> <span id="refresh_count"></span> <a id="disable_auto" href="#">Disable automatic refreshing</a> <a id="enable_auto" href="#">Enable automatic refreshing</a> <img id="loading" src="res/loading.gif" alt="Loading..." title="Loading..." />
+			</p>
 		</div>
 		
 		<div id="sidebar">

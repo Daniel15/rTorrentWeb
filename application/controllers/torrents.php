@@ -215,6 +215,8 @@ class Torrents_Controller extends Base_Controller
 	 */
 	private function delete_full($hash)
 	{
+		// Better get its directory BEFORE deleting it!
+		$directory = $this->rtorrent->get_directory($hash);
 		// Delete it from rTorrent
 		$this->rtorrent->delete($hash);
 		// Also delete it from the database
@@ -223,14 +225,15 @@ class Torrents_Controller extends Base_Controller
 		// Delete all the files for this torrent
 		/* TODO: This is pretty ugly, but gets the job done. Perhaps make it use
 		 * PHP functions instead?
-		 */
-		$last_line = system('/bin/rm -r ' . escapeshellarg($this->rtorrent->get_directory($hash)), $retval);
+		 */	
+		$rm_output = array();
+		exec('/bin/rm -r ' . escapeshellarg($directory) .  ' 2>&1', $rm_output, $retval);
 		// Did it fail? :(
 		if ($retval != 0)
 		{
 			echo json_encode(array(
 				'error' => true,
-				'message' => $last_line,
+				'message' => implode("\n", $rm_output),
 				'action' => 'delete',
 				'hash' => $hash
 			));
