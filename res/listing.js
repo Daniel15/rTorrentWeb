@@ -39,6 +39,16 @@ Number.implement({
 });
 
 /**
+ * Our additional date functionality 
+ */
+Date.implement({
+	'is_valid': function()
+	{
+		return (this != 'Invalid Date' && this != 'NaN');
+	}
+});
+
+/**
  * Sortable table stuff
  */
 var SortTable = 
@@ -990,8 +1000,7 @@ var Torrent =
 			// Timestamp for completion = now + (data left / download speed) seconds
 			var completion = new Date();
 			completion.setSeconds(completion.getSeconds() + (data.size - data.done) / data.rate.down);
-			// This feels VERY wrong
-			if (completion == "Invalid Date")
+			if (!completion.is_valid())
 			{
 				$('remaining').set('html', 'Unknown');
 				$('remaining').set('title', '');
