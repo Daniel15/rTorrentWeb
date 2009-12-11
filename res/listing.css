@@ -245,6 +245,17 @@ div#torrents tr.loading.selected td.name
 	background-image: url(loadingselected16.gif);
 }
 
+/* Classes are added to the torrent ratio depending on if it is >=1 or not */
+div#torrents tr td.good-ratio
+{
+	color: green;
+}
+
+div#torrents tr td.bad-ratio
+{
+	color: red;
+}
+
 
 div#details
 {

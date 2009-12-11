@@ -562,7 +562,7 @@ var List =
 			new Element('td', {'html': (torrent.done / torrent.size * 100).toFixed(2) + "%"}).inject(row);
 			new Element('td', {'html': torrent.rate.down.format_size() + '/s'}).inject(row);
 			new Element('td', {'html': torrent.rate.up.format_size() + '/s'}).inject(row);
-			new Element('td', {'html': torrent.ratio, 'styles': {'color': (torrent.ratio >= 1) ? 'green' : 'red'}}).inject(row);
+			new Element('td', {'html': torrent.ratio, 'class': (torrent.ratio >= 1) ? 'good-ratio' : 'bad-ratio'}).inject(row);
 
 			// All the other details
 			row.store('hash', hash);
