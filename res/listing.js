@@ -562,21 +562,7 @@ var List =
 			new Element('td', {'html': (torrent.done / torrent.size * 100).toFixed(2) + "%"}).inject(row);
 			new Element('td', {'html': torrent.rate.down.format_size() + '/s'}).inject(row);
 			new Element('td', {'html': torrent.rate.up.format_size() + '/s'}).inject(row);
-			
-			// Set the color of the ratio before adding it
-			if (torrent.ratio >= 1)
-			{
-				new Element('td', {
-					'html': torrent.ratio,
-					'styles': {'color': 'green'}
-				}).inject(row);
-			} else {
-				new Element('td', {
-					'html': torrent.ratio,
-					'styles': {'color': 'red'}
-				}).inject(row);
-			}
-			
+			new Element('td', {'html': torrent.ratio, 'styles': {'color': (torrent.ratio >= 1) ? 'green' : 'red'}}).inject(row);
 
 			// All the other details
 			row.store('hash', hash);
