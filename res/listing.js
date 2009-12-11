@@ -987,18 +987,35 @@ var Torrent =
 		$('private_change').setStyle('display', (data.owner && (data.owner.id == current_user)) ? '' : 'none');
 		
 		// Now to update the labels
+		Torrent.get_labels.bind(this)();
+	},
+	
+	/**
+	 * Get the labels for the current torrent
+	 */
+	'get_labels': function()
+	{
 		$('labels').empty();
-		new Element('li', {'html': 'Loading...'}).inject($('labels'));
 		
-		var labels = this.retrieve('labels');
 		// Do we have some already? Awesome
-		if (labels != null)
+		if (this.retrieve('labels') != null)
 		{
 			Torrent.show_labels();
 			return;
 		}
 		
+		var hash = this.retrieve('hash');
+		var data = this.retrieve('data');
+		// Do we not own this torrent?
+		if (!$defined(data.owner) || (data.owner.id != current_user))
+		{
+			new Element('li', {'html': 'You don\'t own this torrent, so can\'t modify its labels.'}).inject($('labels'));
+			$('attach_label').setStyle('display', 'none');
+			return;
+		}
+		
 		// Otherwise, need to get them
+		new Element('li', {'html': 'Loading...'}).inject($('labels'));
 		// Send the request
 		var myRequest = new Request({
 			method: 'post',
