@@ -18,8 +18,6 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with rTorrentWeb.  If not, see <http://www.gnu.org/licenses/>.
- *
- * TODO: Installer should generate some config setting files
  */
  
 defined('SYSPATH') OR die('No direct access allowed.');
@@ -29,8 +27,7 @@ defined('SYSPATH') OR die('No direct access allowed.');
  * then a full URL will be used, eg: http://localhost/kohana/. If it only includes
  * the path, and a site_protocol is specified, the domain will be auto-detected.
  */
-$config['site_domain'] = dirname($_SERVER['SCRIPT_NAME']);
-//$config['site_domain'] = '/rtorrent/';
+$config['site_domain'] = '%site_domain%';
 
 /**
  * Force a default protocol to be used by the site. If no site_protocol is
@@ -142,11 +139,6 @@ $config['extension_prefix'] = 'MY_';
  */
 $config['modules'] = array
 (
-	 MODPATH.'auth',      // Authentication
+	 MODPATH.'auth',        // Authentication
 	 MODPATH.'ext_feeds',	// Handling torrent website feeds
-	// MODPATH.'kodoc',     // Self-generating documentation
-	// MODPATH.'gmaps',     // Google Maps integration
-	// MODPATH.'archive',   // Archive utility
-	// MODPATH.'payment',   // Online payments
-	// MODPATH.'unit_test', // Unit testing
 );

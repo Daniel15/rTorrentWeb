@@ -51,25 +51,53 @@ class Installer
 	 */
 	public function run()
 	{
-		echo ' === rTorrentWeb ', VERSION, " Installer ===\n";
+		/* This heading will be centered. Spacing contains the number of spaces
+		 * needed to push the heading to the centre.
+		 */
+		$head = 'rTorrentWeb ' . VERSION . ' Installer';
+		$spacing = str_repeat(' ', floor((80 - strlen($head)) / 2));
+		
+		echo $spacing, $head, '
+', $spacing, str_repeat('=', strlen($head)), '
+
+Welcome to the rTorrentWeb installer! This installer will help you get
+rTorrentWeb up and running. First, we\'ll check that your environment is
+alright for running rTorrentWeb.
+';
 		$this->check_php_environment();
 		$this->check_environment();
+		echo 
+'
+--------------------------------------------------------------------------------
+Now, just a few questions about how you want to install it. To accept the
+default value (which is indicated in brackets, and should be fine for most
+answers), simply press ENTER when prompted.
+
+';
 		$settings = $this->get_settings();
-		$this->copy_web_files($settings['wwwdir']);
 		$this->copy_core_files($settings['coredir']);
+		$this->copy_web_files($settings['wwwdir']);
 		
 		// Create the directories we need
 		@mkdir($settings['torrentdir'], 0755, true);
-		@mkdir($settings['metadir'], 0755, true);
-		// If they're root, we have to chown metadir to the web user
+		@mkdir($settings['datadir'], 0777, true);
+		@mkdir(dirname($settings['db']), 0755, true);
+		// If they're root, we have to chown stuff to the web user
 		if ($this->is_root)
-			chown($settings['metadir'], $this->webuser);
+		{
+			chown($settings['coredir'] . 'application/cache/', $this->webuser);
+			chown($settings['coredir'] . 'application/logs/', $this->webuser);
+			chown(dirname($settings['db']), $this->webuser);
+		}
+		
+		$this->write_config($settings);
+		$this->create_db($settings['db']);
 		
 		echo '
 ================================================================================
-The first stage of the rTorrentWeb installation is complete. To continue the
-installation, please point your web browser to:
-[todo: install URL]
+rTorrentWeb installation is completed! You may access your new rTorrentWeb 
+installation at:
+', $settings['url'], '
 ';
 	}
 	
@@ -100,11 +128,14 @@ installation, please point your web browser to:
 				=> !function_exists('spl_autoload_register'),
 			
 			// rTorrentWeb checks
+			'The PHP POSIX functions are not enabled. These are REQUIRED by the installer!'
+				=> !function_exists('posix_geteuid'),
 			'The PHP XMLRPC extension is not installed. On a Debian based system, you may install it by typing "apt-get install php5-xmlrpc"'
 				=> !function_exists('xmlrpc_encode_request'),
-			'PDO SQLite isn\'t installed'
+			'PHP PDO isn\'t installed'
 				=> !class_exists('PDO'),
-			
+			'The PHP SQLite extension is not installed. On a Debian based system, you may install it by typing "apt-get install php5-sqlite"'
+				=> !extension_loaded('pdo_sqlite'),
 		);
 		
 		// Did none of the checks fail?
@@ -125,8 +156,8 @@ installation, please point your web browser to:
 		}
 		echo '
 Do you still want to try installation? It might fail, so it is recommended that
-you fix these issues before installation';
-		$this->continue_or_abort();
+you abort installation now, fix these issues, and then retry installation.';
+		self::continue_or_abort();
 	}
 	
 	/**
@@ -166,28 +197,28 @@ please re-run this script as root.
 			$settings = array(
 				'wwwdir'     => $homedir . '/public_html/rtorrentweb/',
 				'coredir'    => $homedir . '/rtorrentweb/',
-				'torrentdir' => $homedir . '/rtorrentweb/torrents/',
-				'metadir'    => $homedir . '/rtorrentweb/metadata/',
+				'datadir'    => $homedir . '/rtorrentweb/',
+				'url'        => 'http://' . Utils::get_ip() . '/~' . posix_getlogin() . '/rtorrentweb/'
 			);
 		}
-		// Hozzah, root!
+		// Huzzah, root!
 		else
 		{
 			$settings = array(
 				'wwwdir'     => is_dir('/var/www/html') ? '/var/www/html/rtorrentweb/' : '/var/www/rtorrentweb/',
 				// TODO: Is this FHS compliant?
 				'coredir'    => '/usr/local/share/rtorrentweb/',
-				'torrentdir' => '/var/local/rtorrentweb/torrents/',
-				'metadir'    => '/var/local/rtorrentweb/metadata/',
+				'datadir'    => '/var/local/rtorrentweb/',
+				'url'        => 'http://' . Utils::get_ip() . '/rtorrentweb/',
 			);
 			
 		}
 		
-		echo "To accept the default value, press ENTER when prompted\n";
-		$settings['wwwdir']     = Console::readLine('WWW directory', $settings['wwwdir']);
+		$settings['wwwdir']     = Console::readLine('Web directory', $settings['wwwdir']);
 		$settings['coredir']    = Console::readLine('rTorrentWeb directory', $settings['coredir']);
-		$settings['torrentdir'] = Console::readLine('Torrent directory', $settings['torrentdir']);
-		$settings['metadir']    = Console::readLine('Metadata directory', $settings['metadir']);
+		$settings['datadir']    = Console::readLine('Data directory', $settings['datadir']);
+		$settings['url']        = Console::readLine('URL to WWW dir', $settings['url']);
+
 		$this->webuser = null;
 		// If we are root, we also can chown to a web server user, so we have to
 		// know that. Let's try find it.
@@ -208,6 +239,9 @@ please re-run this script as root.
 			$this->webuser = Console::readLine('Web server username', $this->webuser);			
 		}
 		
+		// TODO: Maybe this shouldn't be hard-coded?
+		$settings['db'] = $settings['datadir'] . 'db/rtorrent.db';
+		
 		echo "\n";
 		return $settings;
 	}
@@ -219,10 +253,8 @@ please re-run this script as root.
 	{
 		echo 'Copying web files... ';
 		$this->copy_files(array(
-			'index.php',
+			'index.php.template',
 			'res',
-			// TODO: Is this necessary?
-			'rtorrent.sql',
 		), $dest);
 		echo "Done. \n";
 	}
@@ -264,6 +296,110 @@ please re-run this script as root.
 			// This is a bit messy, but it works :P
 			passthru('cp -r ' . escapeshellarg($file) . ' ' . escapeshellarg($dest));
 		}
+	}
+	
+	/**
+	 * Write configuration files for rTorrentWeb
+	 */
+	private function write_config($settings)
+	{
+		$appdir = $settings['coredir'] . 'application/';
+		$configdir = $appdir . 'config/';
+		$systemdir = $settings['coredir'] . 'system/';
+		$modulesdir = $settings['coredir'] . 'modules/';
+		
+		echo 'Creating configuration files... ';
+		// Here's our config stuff
+		$config = array(
+			'%site_domain%' => parse_url($settings['url'], PHP_URL_PATH),
+			'%db_file%'     => $settings['db'],
+			'%salt_pattern%'=> Utils::gen_salt_pattern(),
+			'%appdir%'      => $appdir,
+			'%modulesdir%'  => $modulesdir,
+			'%systemdir%'   => $systemdir,
+		);		
+		
+		// Split the config into two arrays - Keys, and values.
+		$keys = array_keys($config);
+		$values = array_values($config);
+		
+		// Here we go!
+		$this->write_config_file($configdir . 'config.php', $keys, $values);
+		$this->write_config_file($configdir . 'database.php', $keys, $values);
+		$this->write_config_file($configdir . 'auth.php', $keys, $values);
+		// Index file :o
+		$this->write_config_file($settings['wwwdir'] . 'index.php', $keys, $values);
+		echo "Done.\n";
+	}
+	
+	/**
+	 * Write a configuration file
+	 */
+	private function write_config_file($filename, $keys, $values)
+	{
+		if (file_exists($filename))
+		{
+			echo 'Not creating ', basename($filename), ", it already exists!\n";
+			return;
+		}
+		
+		$file = file_get_contents($filename . '.template');
+		$file = str_replace($keys, $values, $file);
+		file_put_contents($filename, $file);
+	}
+	
+	/**
+	 * Create the database
+	 */
+	private function create_db($filename)
+	{
+		// Does the database already exist?
+		if (is_file($filename))
+		{
+			echo "Not creating database, it already exists!\n";
+			return;
+		}
+		echo 'Creating database... ';
+		/* TODO: Should this use Kohana's database functionality? It seems 
+		 * kinda silly repeating Kohana's stuff here. We could use the "sqlite3"
+		 * command-line utility, but it's not guaranteed to be the same version
+		 * as in PHP, so might not be compatible =[
+		 */
+		try
+		{
+			$db = new PDO('sqlite:' . $filename);
+		}
+		catch (PDOException $ex)
+		{
+			echo 'ERROR creating database: ' . $ex->getMessage() . "\n";
+			echo "Installation aborted. \n";
+			exit(2);
+		}
+		
+		$query = '';
+		// Read the database file
+		foreach (file('rtorrent.sql') as $line)
+		{
+			// Skip it if it's a comment
+			if (substr($line, 0, 2) == '--' || $line == '')
+				continue;
+				
+			// Add this line to the current segment
+			$query .= $line;
+			// If it has a semicolon at the end, it's the end of the query
+			if (substr(trim($line), -1, 1) == ';')
+			{
+				// Perform the query. Did it not work? :(
+				if ($db->exec($query) === false)
+				{
+					$error = $db->errorInfo();
+					echo 'Error: ' . $error[2] . "\n";
+				}
+				$query = '';
+			}
+		}
+		
+		echo "Done.\n";
 	}
 	
 	/**
@@ -311,6 +447,40 @@ class Console
 		$response = trim(fgets(STDIN, 128));
 		return ($response == '') ? $default : $response;
 			
+	}
+}
+
+/**
+ * General utilities
+ */
+class Utils
+{
+	/**
+	 * Get the IP of the local host
+	 */
+	public static function get_ip()
+	{
+		// TODO: This is messy and might not work all the time :(
+		return trim(`/sbin/ifconfig | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{print $1}'`);
+	}
+	
+	/**
+	 * Make a salt offset, as defined at http://docs.kohanaphp.com/addons/auth#configuration
+	 */
+	public static function gen_salt_pattern()
+	{
+		// Make a salt pattern
+		//1, 3, 5, 9, 14, 15, 20, 21, 28, 30
+		$salt_pattern = array();
+		$curr_pos = mt_rand(1, 4);
+		$nums = 0;
+		do
+		{
+			$salt_pattern[] = $curr_pos;
+			$curr_pos += mt_rand(1, 8);
+		} while ($curr_pos < 40 && $nums < 20);
+		
+		return implode(', ', $salt_pattern);
 	}
 }
 ?>

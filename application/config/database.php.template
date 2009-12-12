@@ -34,7 +34,7 @@ $config['default'] = array
 		'socket'   => null,
 		'user'     => null,
 		'pass'     => null,
-		'database' => APPPATH . 'rtorrent.db'
+		'database' => '%db_file%'
 	),
 	'character_set' => 'utf8',
 	'table_prefix'  => '',
