@@ -268,8 +268,11 @@ var List =
 		List.init_sidebar();
 		List.init_resize();
 		List.init_labels();
-		// Make the table sortable
+		// Make the tables sortable
 		SortTable.init($('torrents').getElement('table'));
+		SortTable.init($('peers').getElement('table'));
+		SortTable.init($('files').getElement('table'));
+		
 		// And if they're an admin, they have special things!
 		Admin.init();
 		// Other stuff:

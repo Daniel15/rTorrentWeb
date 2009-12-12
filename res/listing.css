@@ -68,19 +68,58 @@ h1
 	text-shadow: 0 -1px #FFF, 1px 0 #FFF, 0 1px #FFF, -1px 0 #FFF, 2px 2px 3px #999;
 }
 
+/* Tables */
+table
+{
+	width: 100%;
+}
+
+table th
+{
+	text-align: left;
+	padding-left: 5px;
+	border-bottom: 1px solid black;
+	border-right: 1px solid black;
+}
+
+table tr td
+{
+	border-bottom: 1px solid #DDD;
+	border-right: 1px solid #EEE;
+	padding: 0.2em;
+}
+
+thead
+{
+	background-color: #EEE;
+}
+
+/* CSS3 - Zebra-striped tables :) */
+table tr:nth-child(even)
+{
+	background-color: #EEE;
+}
+
+/* Little sort arrow for sortable tables */
+table span.sorted
+{
+	float: right;
+	font-weight: bold;
+}
+
 img.icon
 {
 	cursor: pointer;
 }
 
+/* Top section of the screen - Contains the toolbar, sidebar, and main torrent listing */
 div#top_pane
 {
 	height: 64%;
-	/*position: absolute;
-	width: 100%;*/
 	overflow: hidden;
 }
 
+/* Bottom section of the screen - Contains the bottom tabs */
 div#bottom_pane
 {
 	height: 35%;
@@ -91,12 +130,14 @@ div#bottom_pane
 	overflow: hidden;
 }
 
+/* Top bar - Contains the toolbar, and status message (on the right) */
 div#top_bar
 {
 	height: 37px;
 	overflow: hidden;
 }
 
+/* The toolbar */
 div#toolbar
 {
 	height: 32px;
@@ -132,6 +173,7 @@ div#toolbar li.end-section
 	padding-right: 3px;
 }
 
+/* The status message */
 #toolbar_status
 {
 	text-align: right;
@@ -140,22 +182,20 @@ div#toolbar li.end-section
 	overflow: hidden;
 }
 
+/* The loading "throbber" */
 img#loading
 {
 	vertical-align: middle;
 }
 
+/* Hide these by default */
 img#loading,
-a#refresh
-{
-	display: none;
-}
-
 a#enable_auto
 {
 	display: none;
 }
 
+/* Sidebar - Contains the filters list, and the labels list */
 div#sidebar
 {
 	background-color: white;
@@ -191,7 +231,6 @@ div#sidebar li.filter
 div#sidebar li.end-section 
 {
 	border-bottom: 1px solid #AAA;
-	/*margin-bottom: 0.2em;*/
 }
 
 /* All the different icons for the sidebar */
@@ -200,63 +239,28 @@ li#sidebar_seeding { background-image: url(icons16/control_play_blue.png); }
 li#sidebar_paused { background-image: url(icons16/control_pause.png); }
 li#sidebar_stopped { background-image: url(icons16/control_stop.png); }
 
-
-.selected
+/* Selected... something. Torrent, filter, label, etc. */
+tr.selected
 {
 	/* !important is to override the zebra row backgrounds */
 	background-color: #CFDEEF !important;
 }
 
+/* Torrent DIV - Contains the torrents table */
 div#torrents
 {
 	background-color: white;
 	border: 1px solid #AAA;
-	
-	/*margin-left: 120px;*/
 	overflow: auto;
 	height: 100%;
 }
 
-div#torrents thead
-{
-	background-color: #EEE;
-}
-
-div#torrents table th
-{
-	text-align: left;
-	padding-left: 5px;
-	border-bottom: 1px solid black;
-	border-right: 1px solid black;
-}
-
-div#torrents table tr td
-{
-	border-bottom: 1px solid #DDD;
-	border-right: 1px solid #EEE;
-	padding: 0.2em;
-}
-
-div#torrents table tr:nth-child(even)
-{
-	background-color: #EEE;
-}
-
-div#torrents table tr.not-mine td.name
-{
-	color: #650000;
-}
-
-div#torrents table tr.no-owner td.name
-{
-	color: #AA0000;
-}
-
-div#torrents span.sorted
-{
-	float: right;
-	font-weight: bold;
-}
+/* Custom colours depending on torrent status
+ * Classes like .status-seeding, .status-download, etc. exist too. But at the moment,
+ * they're not styled. :)
+ */
+div#torrents table tr.not-mine td.name { color: #650000; }
+div#torrents table tr.no-owner td.name { color: #AA0000; }
 
 /* Class is set to "loading" when this torrent is loading something */
 div#torrents tr.loading td.name
@@ -281,7 +285,7 @@ div#torrents tr td.bad-ratio
 	color: red;
 }
 
-
+/* Bottom DIV, under the tab bar */
 div#details
 {
 	background-color: white;
@@ -293,6 +297,7 @@ div#details
 	padding: 0.2em;
 }
 
+/* The tab bar itself */
 div#tabs
 {
 	padding: 3px 0 2px 0;
@@ -303,6 +308,7 @@ div#tabs ul
 	height: 17px;
 }
 
+/* Tabs */
 div#tabs li
 {
 	cursor: pointer;
@@ -339,6 +345,7 @@ div#tabs li.disabled
 	background-color: #AAA;
 }
 
+/* The log */
 div#log ul
 {
 	list-style-type: none;
@@ -370,27 +377,7 @@ p#attach_label
 	display: none;
 }
 
-div#files table
-{
-	width: 100%;
-}
-
-div#files table th
-{
-	text-align: left;
-	padding-left: 5px;
-	border-bottom: 1px solid black;
-	border-right: 1px solid black;
-}
-
-div#files table tr td
-{
-	border-bottom: 1px solid #DDD;
-	border-right: 1px solid #EEE;
-	padding: 0.2em;
-}
-
-/* There must be a better way to do this... */
+/* Indenting file levels. There must be a better way to do this... */
 div#files tr.level-0 td.filename { padding-left: 0 }
 div#files tr.level-1 td.filename { padding-left: 1em }
 div#files tr.level-2 td.filename { padding-left: 2em }
@@ -401,23 +388,3 @@ div#files tr.level-6 td.filename { padding-left: 6em }
 div#files tr.level-7 td.filename { padding-left: 7em }
 div#files tr.level-8 td.filename { padding-left: 8em }
 div#files tr.level-9 td.filename { padding-left: 9em }
-
-div #peers table
-{
-	width: 100%;
-}
-
-div#peers table th
-{
-	text-align: left;
-	padding-left: 5px;
-	border-bottom: 1px solid black;
-	border-right: 1px solid black;
-}
-
-div#peers table tr td
-{
-	border-bottom: 1px solid #DDD;
-	border-right: 1px solid #EEE;
-	padding: 0.2em;
-}

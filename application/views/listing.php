@@ -170,7 +170,6 @@ if ($this->auth->logged_in('admin')) :
 							<th>Up Rate</th>
 							<th>Down Total</th>
 							<th>Up Total</th>
-							<th>Seeder/Leacher</th>
 						</tr>
 					</thead>
 					<tbody>

@@ -143,9 +143,14 @@ class Torrents_Controller extends Base_Controller
 	public function peers($hash)
 	{
 		if (!($results = $this->rtorrent->peers($hash)))
-			die(json_encode(array(
+			/*die(json_encode(array(
 				'error' => true,
 				'message' => $this->rtorrent->error()
+			)));*/
+			die(json_encode(array(
+				'error' => false,
+				'hash' => $hash,
+				'peers' => array(),
 			)));
 		
 		echo json_encode(array(
@@ -160,7 +165,7 @@ class Torrents_Controller extends Base_Controller
 	 */
 	public function action($action, $hash)
 	{
-		//Check that this user owns this torrent before we allow this!
+		// Check that this user owns this torrent before we allow this!
 		$this->_check_owner($hash, true);
 		
 		// The really simple ones with no return values. We just call directly
