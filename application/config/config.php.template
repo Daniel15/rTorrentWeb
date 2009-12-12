@@ -139,6 +139,9 @@ $config['extension_prefix'] = 'MY_';
  */
 $config['modules'] = array
 (
-	 MODPATH.'auth',        // Authentication
-	 MODPATH.'ext_feeds',	// Handling torrent website feeds
+	MODPATH.'auth',        // Authentication
+	MODPATH.'ext_feeds',	// Handling torrent website feeds
+	
+	MODPATH.'install',	// Stuff that's only needed during installation. It is a BIG
+	                    // SECURITY RISK to have this uncommented in a live install!!
 );

@@ -79,25 +79,57 @@ answers), simply press ENTER when prompted.
 		$this->copy_web_files($settings['wwwdir']);
 		
 		// Create the directories we need
-		@mkdir($settings['torrentdir'], 0755, true);
-		@mkdir($settings['datadir'], 0777, true);
-		@mkdir(dirname($settings['db']), 0755, true);
+		mkdir($settings['datadir'], 0777, true);
+		mkdir($settings['datadir'] . 'torrent_data', 0755, true);
+		mkdir($settings['datadir'] . 'torrents', 0755, true);
+		mkdir(dirname($settings['db']), 0755, true);
 		// If they're root, we have to chown stuff to the web user
 		if ($this->is_root)
 		{
+			chown(dirname($settings['db']), $this->webuser);
 			chown($settings['coredir'] . 'application/cache/', $this->webuser);
 			chown($settings['coredir'] . 'application/logs/', $this->webuser);
-			chown(dirname($settings['db']), $this->webuser);
 		}
 		
 		$this->write_config($settings);
+		
+		/* Now that we've done everything we have to do as the installing user,
+		 * we can switch to the web user. This ensures that we don't have any
+		 * odd problems with ownership of the database.
+		 */
+		if ($this->is_root)
+		{
+			$userinfo = posix_getpwnam($this->webuser);
+			posix_seteuid($userinfo['uid']);
+			posix_setegid($userinfo['gid']);
+		}
+		
 		$this->create_db($settings['db']);
+		$this->save_settings($settings);
+		$admin_user = $this->create_admin($settings);
+		
+		// Time to switch back
+		if ($this->is_root)
+		{
+			posix_seteuid(posix_getuid());
+			posix_setegid(posix_getgid());
+		}
+		
+		// Now that installation is complete, we can disable the install module
+		$file = file_get_contents($settings['coredir'] . 'application/config/config.php');
+		$file = str_replace('MODPATH.\'install\'', '//MODPATH.\'install\'', $file);
+		file_put_contents($settings['coredir'] . 'application/config/config.php', $file);
 		
 		echo '
 ================================================================================
 rTorrentWeb installation is completed! You may access your new rTorrentWeb 
 installation at:
 ', $settings['url'], '
+Username: ', $admin_user['username'], '
+Password: ', $admin_user['password'], '
+
+You may change your password after you log in. Thank you for using
+rTorrentWeb :)
 ';
 	}
 	
@@ -214,6 +246,7 @@ please re-run this script as root.
 			
 		}
 		
+		// TODO: Data validation
 		$settings['wwwdir']     = Console::readLine('Web directory', $settings['wwwdir']);
 		$settings['coredir']    = Console::readLine('rTorrentWeb directory', $settings['coredir']);
 		$settings['datadir']    = Console::readLine('Data directory', $settings['datadir']);
@@ -236,6 +269,7 @@ please re-run this script as root.
 			}
 			
 			// And verify it from the user.
+			// TODO: Validate the username
 			$this->webuser = Console::readLine('Web server username', $this->webuser);			
 		}
 		
@@ -301,7 +335,7 @@ please re-run this script as root.
 	/**
 	 * Write configuration files for rTorrentWeb
 	 */
-	private function write_config($settings)
+	private function write_config(&$settings)
 	{
 		$appdir = $settings['coredir'] . 'application/';
 		$configdir = $appdir . 'config/';
@@ -335,7 +369,7 @@ please re-run this script as root.
 	/**
 	 * Write a configuration file
 	 */
-	private function write_config_file($filename, $keys, $values)
+	private function write_config_file($filename, &$keys, &$values)
 	{
 		if (file_exists($filename))
 		{
@@ -400,6 +434,32 @@ please re-run this script as root.
 		}
 		
 		echo "Done.\n";
+	}
+	
+	/**
+	 * Send the settings to Kohana to save
+	 */
+	private function save_settings(&$settings)
+	{
+		echo 'Saving settings to database... ';
+		//passthru('php ' . escapeshellarg($settings['wwwdir'] . 'index.php') . ' install/save_settings');
+		$handle = popen('php ' . escapeshellarg($settings['wwwdir'] . 'index.php') . ' install/save_settings', 'w');
+		fwrite($handle, serialize($settings));
+		pclose($handle);
+		echo "Done.\n";
+	}
+	
+	/**
+	 * Create a default administration user
+	 */
+	private function create_admin(&$settings)
+	{
+		echo 'Creating default admin user... ';
+		$handle = popen('php ' . escapeshellarg($settings['wwwdir'] . 'index.php') . ' install/create_admin', 'r');
+		$user_data = unserialize(fread($handle, 8192));
+		pclose($handle);
+		echo "Done.\n";	
+		return $user_data;
 	}
 	
 	/**

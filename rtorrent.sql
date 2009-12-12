@@ -55,7 +55,7 @@ CREATE TABLE user_tokens (
 
 CREATE TABLE users (
 	id INTEGER  PRIMARY KEY AUTOINCREMENT NULL,
-	email text  UNIQUE NOT NULL,
+	email text  UNIQUE NULL,
 	username text UNIQUE NOT NULL,
 	password text NULL,
 	logins INTEGER NULL,
