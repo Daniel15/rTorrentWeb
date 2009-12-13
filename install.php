@@ -81,7 +81,7 @@ answers), simply press ENTER when prompted.
 		// Create the directories we need
 		mkdir($settings['datadir'], 0777, true);
 		mkdir($settings['datadir'] . 'torrent_data', 0755, true);
-		mkdir($settings['datadir'] . 'torrents', 0755, true);
+		mkdir($settings['datadir'] . 'torrents/admin', 0775, true);
 		mkdir(dirname($settings['db']), 0755, true);
 		// If they're root, we have to chown stuff to the web user
 		if ($this->is_root)
@@ -89,6 +89,13 @@ answers), simply press ENTER when prompted.
 			chown(dirname($settings['db']), $this->webuser);
 			chown($settings['coredir'] . 'application/cache/', $this->webuser);
 			chown($settings['coredir'] . 'application/logs/', $this->webuser);
+			chown($settings['datadir'] . 'torrent_data', $this->webuser);
+			// This is so the web user can delete torrents
+			chgrp($settings['datadir'] . 'torrents', $this->webuser);
+			chgrp($settings['datadir'] . 'torrents/admin', $this->webuser);
+			// Set sticky GUID, so files created are owned by the web user's group.
+			chmod($settings['datadir'] . 'torrents', 02775);
+			chmod($settings['datadir'] . 'torrents/admin', 02775);
 		}
 		
 		$this->write_config($settings);

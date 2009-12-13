@@ -95,7 +95,7 @@ class Users_Controller extends Admin_Controller
 			
 			// Create a directory for this user. If there's an error, tell the admin.
 			// TODO: Security?
-			if (!@mkdir($user->homedir, null, true))
+			if (!@mkdir($user->homedir, 0775, true))
 			{
 				$message .= 'The directory ' . $user->homedir . ' could not be created automatically. Please create it manually, otherwise this user will not be able to start any downloads!';
 			}
