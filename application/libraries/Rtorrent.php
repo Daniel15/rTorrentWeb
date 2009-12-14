@@ -165,7 +165,7 @@ class Rtorrent_Core
 			
 			$torrent = array(
 				//'hash' => $torrentInfo[0],
-				'name' => $torrentInfo['d.get_name='],
+				'name' => utf8_encode($torrentInfo['d.get_name=']),
 				'size' => $size,
 				'done' => $done,
 				'rate' => array(
@@ -233,17 +233,18 @@ class Rtorrent_Core
 			'f.get_priority=',
 		))))
 			return false;
-			
+		
 		$results = array();
 		foreach ($response as $file)
 		{
 			$results[] = array(
-				'name' => $file['f.get_path='],
+				'name' => utf8_encode($file['f.get_path=']),
 				'total_chunks' => $file['f.get_size_chunks='],
 				'done_chunks' => $file['f.get_completed_chunks='],
 				'priority' => $file['f.get_priority='],
 			);
 		}
+
 		// Sort them by filename
 		uasort($results, array($this, 'file_sort'));
 		

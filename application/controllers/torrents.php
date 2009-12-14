@@ -137,7 +137,7 @@ class Torrents_Controller extends Base_Controller
 				'error' => true,
 				'message' => $this->rtorrent->error()
 			)));
-			
+		
 		echo json_encode(array(
 			'error' => false,
 			'hash' => $hash,
