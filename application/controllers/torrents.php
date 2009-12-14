@@ -33,6 +33,8 @@ class Torrents_Controller extends Base_Controller
 		//new View('index');
 		$listing = View::factory('listing');
 		$listing->has_rss = $this->user->ext_feeds->count();
+		$listing->free_space = round(@disk_free_space($this->user->homedir) / 1073741824, 2);
+		$listing->used_space = round(@disk_total_space($this->user->homedir) / 1073741824, 2) - $listing->free_space;
 		$listing->render(true);
 	}
 	
@@ -69,10 +71,15 @@ class Torrents_Controller extends Base_Controller
 			}
 			
 		}
-			
+		
+		// Here so we only call it once
+		$free_space = @disk_free_space($this->user->homedir);
+		
 		echo json_encode(array(
 			'error' => false,
 			'data' => $torrents,
+			'free_space' => $free_space,
+			'used_space' => @disk_total_space($this->user->homedir) - $free_space
 		));
 	}
 	

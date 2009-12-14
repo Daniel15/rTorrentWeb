@@ -728,6 +728,10 @@ var List =
 			if (first_row != null)
 				List.click.bind(first_row)();
 		}
+		
+		// Update the numbers in the status bar
+		$('used_space').set('html', response.used_space.format_size());
+		$('free_space').set('html', response.free_space.format_size());
 
 		$('loading').setStyle('display', 'none');
 		$('toolbar_message').set('html', '');
@@ -921,7 +925,9 @@ var List =
 		var top_height = $('top_pane').getSize().y - $('toolbar').getSize().y - 10;
 		$('torrents').setStyle('height', top_height);
 		$('sidebar').setStyle('height', top_height);
-		$('details').setStyle('height', $('bottom_pane').getSize().y - $('tabs').getSize().y - 10);
+		//$('details').setStyle('height', $('bottom_pane').getSize().y - $('tabs').getSize().y - 10);
+		// Leave space for the statusbar
+		$('details').setStyle('height', $('bottom_pane').getSize().y - $('tabs').getSize().y - 40);
 	},
 	
 	'current_tab': null,

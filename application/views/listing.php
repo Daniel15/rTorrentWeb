@@ -59,7 +59,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 				</ul>
 			</div>
 			<p id="toolbar_status">
-				<span id="toolbar_message">Status</span> <span id="refresh_count"></span> <a id="disable_auto" href="#">Disable automatic refreshing</a> <a id="enable_auto" href="#">Enable automatic refreshing</a> <img id="loading" src="res/loading.gif" alt="Loading..." title="Loading..." />
+				<a id="disable_auto" href="#">Disable automatic refreshing</a> <a id="enable_auto" href="#">Enable automatic refreshing</a> <img id="loading" src="res/loading.gif" alt="Loading..." title="Loading..." />
 			</p>
 		</div>
 		
@@ -180,6 +180,16 @@ if ($this->auth->logged_in('admin')) :
 				<ul>
 				</ul>
 			</div>
+		</div>
+		<div id="statusbar">
+			<p id="serverinfo">
+				Server statistics:
+				<span id="used_space"><?php echo $used_space; ?> GB</span> used, <span id="free_space"><?php echo $free_space; ?> GB</span> available.
+			</p>
+			<p id="statusinfo">
+				<span id="toolbar_message">Status</span>
+				<span id="refresh_count"></span>
+			</p>
 		</div>
 	</div>
 </body>

@@ -292,9 +292,35 @@ div#details
 	border: 1px solid #AAA;
 	
 	overflow: auto;
-	width: 99.5%;
+	/*width: 99.5%;*/
 	height: 100%;
 	padding: 0.2em;
+}
+
+
+/* The status bar */
+div#statusbar
+{
+	border: 1px solid #AAAAAA;
+	margin-top: 5px;
+	padding: 0.1em;
+	overflow: hidden;
+	height: 20px;
+	line-height: 20px;
+	background-color: white;
+}
+
+p#serverinfo
+{
+	width: 49%;
+	float: left;
+}
+
+p#statusinfo
+{
+	text-align: right;
+	width: 49%;
+	float: right;
 }
 
 /* The tab bar itself */
