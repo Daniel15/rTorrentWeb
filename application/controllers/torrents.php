@@ -31,7 +31,9 @@ class Torrents_Controller extends Base_Controller
 	public function index()
 	{
 		//new View('index');
-		View::factory('listing')->render(true);
+		$listing = View::factory('listing');
+		$listing->has_rss = $this->user->ext_feeds->count();
+		$listing->render(true);
 	}
 	
 	/**

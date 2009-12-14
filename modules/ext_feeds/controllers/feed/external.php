@@ -31,7 +31,7 @@ class External_Controller extends Base_Controller
 		$this->template = new View('template_popup');
 		$this->template->title = 'Feeds';
 		$this->template->content = new View('feed/external/list');
-		$this->template->content->feeds = ORM::factory('ext_feed')->where('user_id', $this->user->id)->find_all();
+		$this->template->content->feeds = $this->user->ext_feeds;
 		$this->template->render(true);
 	}
 	

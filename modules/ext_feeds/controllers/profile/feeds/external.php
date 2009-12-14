@@ -32,7 +32,7 @@ class External_Controller extends Base_Controller
 	{
 		$this->template->title = 'Feeds';
 		$page = View::factory('feed/external/manage');
-		$page->feeds = ORM::factory('ext_feed')->where('user_id', $this->user->id)->find_all();
+		$page->feeds = $this->user->ext_feeds;
 		$this->template->content = $page;
 	}
 	
