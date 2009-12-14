@@ -26,12 +26,67 @@ class Profile_Controller extends Base_Controller
 	public $template = 'template';
 	
 	/**
-	 * TODO: General settings?
+	 * General settings
 	 */
 	public function index()
 	{
-		url::redirect('profile/labels');
+		$this->template->title = 'User Profile';
+		$page = View::factory('profile/settings');
+		
+		// Did they submit?
+		if ($this->input->post('submit'))
+		{
+			// Validate their settings
+			$post = Validation::factory($_POST)
+				->pre_filter('trim')
+				->add_rules('autorefresh_interval', 'required', 'numeric');
+				
+			// Are they all valid?
+			if ($post->validate())
+			{
+				// Fix some stuff
+				unset($post['submit']);
+				$post['autorefresh'] = !empty($post['autorefresh']);
+				// Save the settings
+				$this->user->settings = $post->as_array();
+				$this->user->save();
+				$this->template->top_message = 'Your settings were saved.';
+			}
+			// Not valid? :(
+			else
+			{
+				$page->errors = $post->errors();
+			}
+			$page->settings = $post;
+		}
+		// Not submitted
+		else
+		{
+			$page->settings = $this->user->settings;
+			$page->errors = $this->session->get('errors', array());
+		}
+		
+		$this->template->content = $page;
 	}
+	
+	/**
+	 * Change the password
+	 */
+	public function password()
+	{
+		$post = $_POST;
+		if ($this->user->change_password($post, true))
+		{
+			$this->session->set_flash('top_message', 'Your password was changed');
+			url::redirect('profile');
+		}
+		else
+		{
+			$this->session->set_flash('errors', $post->errors('user_errors'));
+			url::redirect('profile');
+		}
+	}
+	
 	
 	/**
 	 * Load the user's settings
@@ -39,12 +94,33 @@ class Profile_Controller extends Base_Controller
 	public function get_settings()
 	{
 		$this->template = View::factory('profile/settings_js');
+		$this->template->settings = $this->user->settings;
 
 		// Get the labels
 		$this->template->labels = array();
 		$label_rows = $this->user->orderby('name')->labels;
 		foreach ($label_rows as $label)
 			$this->template->labels[$label->id] = $label->as_array();
+	}
+	
+	/**
+	 * Save a setting
+	 */
+	public function save_setting()
+	{
+		if (!request::is_ajax())
+			die();
+		
+		// Settings we can set via JavaScript
+		if (!in_array($this->input->post('variable'), array('only_mine', 'sidebar_width')))
+			die('Invalid setting');
+			
+		// Set it!
+		$settings = $this->user->settings;
+		$settings[$this->input->post('variable')] = $this->input->post('value');
+		$this->user->settings = $settings;
+		$this->user->save();
+		die();
 	}
 	
 	/**

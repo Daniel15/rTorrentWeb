@@ -216,7 +216,7 @@ div#sidebar li
 {
 	/* Padding on the left is for the icon */
 	padding: 0.1em;
-	height: 18px;
+	min-height: 18px;
 	background-position: 1px center;
 	background-repeat: no-repeat;
 }

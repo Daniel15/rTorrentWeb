@@ -263,6 +263,7 @@ var List =
 		List.refresh();
 		// Initialise some stuff
 		List.refresh_count = Settings.autorefresh_interval;
+		List.init_settings();
 		List.init_toolbar();
 		List.init_tabs();
 		List.init_sidebar();
@@ -280,6 +281,18 @@ var List =
 		$('private_change').addEvent('click', Torrent.toggle_private);
 		// Pressing keys in the torrent listing
 		$('torrents').addEvent('keydown', List.keypress);
+	},
+	
+	/**
+	 * Load some settings
+	 * Note: These are defined in /profile/get_settings
+	 */
+	'init_settings': function()
+	{
+		// Set the "only mine" tickbox depending on the setting
+		$('only_mine').checked = Settings.only_mine;
+		// Sidebar width
+		$('sidebar').setStyle('width', Settings.sidebar_width);
 	},
 	
 	/**
@@ -362,7 +375,11 @@ var List =
 		}).inject(sidebar, 'top');
 		sidebar.makeResizable({
 			'handle': sidebarResizer,
-			'modifiers': {'x': 'width', 'y': null}
+			'modifiers': {'x': 'width', 'y': null},
+			'onComplete': function()
+			{
+				Utils.save_setting('sidebar_width', $('sidebar').getStyle('width')); 
+			}
 		});
 		
 		// Add the resize handle for the panes
@@ -419,13 +436,7 @@ var List =
 		});
 		
 		// If they toggle the "only my torrents" tickbox, we have to re-filter the list
-		$('only_mine').addEvent('click', function()
-		{
-			// Update the filter counts
-			List.update_filter_counts();
-			// And actually update the filter
-			List.filter();
-		});
+		$('only_mine').addEvent('click', List.only_mine);
 	},
 	
 	/**
@@ -491,6 +502,19 @@ var List =
 			
 			return false;
 		}
+	},
+	
+	/**
+	 * The "Only mine" tickbox was clicked
+	 */
+	'only_mine': function()
+	{
+		// Update the filter counts
+		List.update_filter_counts();
+		// And actually update the filter
+		List.filter();
+		// Save the setting		
+		Utils.save_setting('only_mine', $('only_mine').checked ? 1 : 0); 
 	},
 	
 	/**
@@ -1718,6 +1742,25 @@ var Utils =
 			else
 				Utils.popup_window.focus();
 		}
+	},
+	
+	/**
+	 * Save a setting to the server
+	 */
+	'save_setting': function(variable, val)
+	{
+		// Save the setting
+		var myRequest = new Request({
+			method: 'post',
+			url: base_url + 'profile/save_setting',
+			data: Hash.toQueryString({'variable': variable, 'value': val}),
+			onSuccess: function(data)
+			{
+				// It's assumed that any message is an error.
+				if (data && data != '')
+					alert(data);
+			}
+		}).send();
 	}
 };
 

@@ -60,7 +60,8 @@ CREATE TABLE users (
 	password text NULL,
 	logins INTEGER NULL,
 	last_login INTEGER NULL,
-	homedir text NOT NULL
+	homedir text NOT NULL,
+	settings text NULL
 );
 
 CREATE INDEX key_user_id ON user_tokens (

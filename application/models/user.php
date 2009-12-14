@@ -24,5 +24,44 @@ defined('SYSPATH') OR die('No direct access allowed.');
 class User_Model extends Auth_User_Model
 {
 	protected $has_many = array('user_tokens', 'torrents', 'feeds', 'labels');
+	
+	public function __get($key)
+	{
+		if ($key === 'settings')
+		{
+			$defaults = array(
+					'autorefresh' => false,
+					'autorefresh_interval' => 10,
+					'only_mine' => false,
+					'sidebar_width' => '',
+				);
+				
+			// Let's try get the settings
+			try
+			{
+				$settings = unserialize(parent::__get('settings'));
+			}
+			catch (Exception $ex)
+			{
+				$settings = null;
+			}
+			
+			// No settings? We ONLY need defaults
+			if ($settings == null)
+				return $defaults;
+				
+			// Otherwise, we have defaults for only the settings we don't have.
+			return arr::merge($defaults, $settings);
+		}
+		return parent::__get($key);
+	}
+	
+	public function __set($key, $value)
+	{
+		if ($key === 'settings')
+			$value = serialize($value);
+
+		parent::__set($key, $value);
+	}
 }
 ?>

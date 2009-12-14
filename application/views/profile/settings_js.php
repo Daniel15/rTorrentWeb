@@ -26,12 +26,10 @@ header('Cache-Control: no-store, no-cache, must-revalidate');
 ?>
 var Settings = 
 {
-	// TODO: Make these configurable
-	// Is auto-refresh enabled?
-	'autorefresh': false,
-	// How many seconds before auto refreshing?
-	'autorefresh_interval': 10,
-	
+	'only_mine': <?php echo !empty($settings['only_mine']) ? 'true' : 'false'; ?>,
+	'autorefresh': <?php echo !empty($settings['autorefresh']) ? 'true' : 'false'; ?>,
+	'autorefresh_interval': <?php echo $settings['autorefresh_interval']; ?>,
+	'sidebar_width': '<?php echo $settings['sidebar_width']; ?>',
 	'labels': new Hash(<?php echo json_encode($labels); ?>)
 
 };

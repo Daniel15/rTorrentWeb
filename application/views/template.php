@@ -42,6 +42,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 // Here comes the menu
 $menu_items = array(
 	'' => 'Go Back Home',
+	'profile' => 'User Profile',
 	'profile/labels' => 'Labels',
 	'profile/feeds/external' => 'Feeds'
 );
