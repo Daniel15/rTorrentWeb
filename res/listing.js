@@ -272,7 +272,8 @@ var List =
 		// Make the tables sortable
 		SortTable.init($('torrents').getElement('table'));
 		SortTable.init($('peers').getElement('table'));
-		SortTable.init($('files').getElement('table'));
+		// Sorting screws up the file listing
+		//SortTable.init($('files').getElement('table'));
 		
 		// And if they're an admin, they have special things!
 		Admin.init();
@@ -1327,6 +1328,11 @@ var Torrent =
 	},
 	
 	/**
+	 * The last torrent we refreshed the information for
+	 */
+	'last_refreshed': null,
+	
+	/**
 	 * Get a list of files in the torrent
 	 */
 	'files': function()
@@ -1428,7 +1434,7 @@ var Torrent =
 			Torrent.files_process(contents, level + 1);
 		});
 	},
-		
+	
 	/**
 	 * Get a list of peers for the torrent
 	 */
@@ -1438,12 +1444,10 @@ var Torrent =
 		var hash = this.retrieve('hash');
 		var data = this.retrieve('data');
 		
-		// Hide the table initially.
-		$('peers').getElement('table').setStyle('display', 'none');
-		
-		// If we aren't dowlnoading, or uploading there can be no peers can there :P
+		// If we aren't downloading, or uploading there can be no peers can there :P
 		if (data.state != 'seeding' && data.state != 'downloading')
 		{
+			$('peers').getElement('table').setStyle('display', 'none');
 			$('peers').getElement('span').set('html', data.name + ' is stopped');
 			return;
 		}
@@ -1451,7 +1455,12 @@ var Torrent =
 		$('loading').setStyle('display', 'inline');
 		Log.write('Retrieving peer listing for ' + data.name + '...');
 		
-		$('peers').getElement('span').set('html', 'Loading peer listing for ' +  data.name + '...');
+		// If they're just refreshing the listing, don't show the "loading" text
+		if (hash != Torrent.last_refreshed)
+		{
+			$('peers').getElement('table').setStyle('display', 'none');
+			$('peers').getElement('span').set('html', 'Loading peer listing for ' +  data.name + '...');
+		}
 		
 		// Send the request
 		var myRequest = new Request({
@@ -1468,7 +1477,7 @@ var Torrent =
 					$(document.body).setStyle('cursor', 'default');
 					$('peers').getElement('span').set('html', 'An error occured while retrieving peer listing for ' + data.name + ', it is possible your rTorrent build doesn\'t support this feature.');
 					return;
-					}
+				}
 				
 				// Actually process the peers now. 
 				// Is this torrent still selected (they could have changed torrent by the time we get the reply)?
@@ -1489,27 +1498,37 @@ var Torrent =
 	
 	/**
 	 * Process a listing of peers
-	 * @param hash The directory data (a hash containing "peers")
+	 * @param hash The peers data
 	 */
 	'peers_process': function(data)
-	{
-		var tbody = $('peers').getElement('tbody');
+	{		
+		// Better set this.
+		Torrent.last_refreshed = data.hash;
 		
-		$('peers').getElement('tbody').empty();		
+		var peers = $('peers').getElement('table');
+		var tbody = peers.getElement('tbody');
+		
+		tbody.empty();		
 		
 		// Go through all the peers
 		data.peers.each(function(peer)
 		{
+			/* TODO: This is pretty lazy, it should really convert the IP to its
+			 * longint equivalent. Still, this works for now.
+			 */
+			//var row_id = 'peer_' + peer.address.replace(/\./g, '');
 			// Add this peer
-			var row = new Element('tr').inject(tbody);
+			var row = new Element('tr'/*, {'id': row_id}*/).inject(tbody);
 			new Element('td', {'html': peer.address}).inject(row);
 			new Element('td', {'html': peer.client_version}).inject(row);
 			new Element('td', {'html': peer.down_rate.format_size() + '/s'}).inject(row);
 			new Element('td', {'html': peer.up_rate.format_size() + '/s'}).inject(row);
 			new Element('td', {'html': peer.down_total.format_size()}).inject(row);
 			new Element('td', {'html': peer.up_total.format_size()}).inject(row);
-			new Element('td', {'html': peer.is_seeder}).inject(row);
 		});
+		
+		// Better make sure we redo the sort
+		peers.sort();
 	},
 	
 	/**
