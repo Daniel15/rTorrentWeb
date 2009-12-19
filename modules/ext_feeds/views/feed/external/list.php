@@ -21,6 +21,7 @@
  */
 defined('SYSPATH') OR die('No direct access allowed.'); ?>
 
+<script type="text/javascript">window.addEvent('domready', FeedList.init);</script>
 <h2>Current Feeds</h2>
 
 <ul class="feeds">
@@ -31,6 +32,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 	<li class="feed"><a href="' . url::site('feed/external/view/' . $feed->id) . '">' . $feed->name . '</a>
 	<ul class="feed_options">
 		<li>' . $feed->url . '</li>
+		<li><a class="edit" href="' . url::site('profile/feeds/external/edit/' . $feed->id) . '"><img src="res/icons16/feed_edit.png" alt="Edit Feed" title="Edit Feed"/></a></li>
 	</ul>
 	</li>';
 	}

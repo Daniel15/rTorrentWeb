@@ -171,3 +171,20 @@ var AddFiles =
 		});
 	}
 };
+
+/**
+ * The feed listing
+ */
+var FeedList = 
+{
+	'init': function()
+	{
+		// The "Edit" links should open in the main window
+		$$('a.edit').addEvent('click', function()
+		{
+			window.opener.location = this.href;
+			window.opener.focus();
+			return false;
+		});
+	}
+};

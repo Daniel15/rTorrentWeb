@@ -43,6 +43,11 @@ body
 	background: #AAA;
 }
 
+a img
+{
+	border: 0;
+}
+
 p
 {
 	margin: 0.2em;

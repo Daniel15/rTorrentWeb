@@ -74,6 +74,8 @@ class Torrents_Controller extends Base_Controller
 		
 		// Here so we only call it once
 		$free_space = @disk_free_space($this->user->homedir);
+		if ($free_space === false)
+			$free_space = 0;
 		
 		echo json_encode(array(
 			'error' => false,
