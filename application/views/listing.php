@@ -136,9 +136,11 @@ if ($this->auth->logged_in('admin')) :
 				</div>
 				<div>
 					<h3>Transfer</h3>
-					<p>
+					<p id="times">
 						Started: <span id="started"></span><br />
 						Estimated Completion: <span id="remaining"></span><br />
+					</p>
+					<p>
 						Speed: <span id="download_speed"></span> down, <span id="upload_speed"></span> up<br />
 						Totals: <span id="total_down"></span> downloaded, <span id="total_up"></span> uploaded<br />
 					</p>

@@ -1092,21 +1092,21 @@ var Torrent =
 		
 		var data = this.retrieve('data');
 		var hash = this.retrieve('hash');
-		// Let's work our how long ago this started
-		var started_at = new Date();
-		started_at.setTime(data.started_at * 1000);
-		$('started').set('html', started_at.timeDiffInWords());
-		$('started').set('title', started_at);
 		
-		// And also how long it's got left
-		// Is it finished?
-		if (data.complete)
+		// Is the torrent finished or stopped?
+		if (data.complete || data.state == 'stopped' || data.state == 'paused')
 		{
-			$('remaining').set('html', 'Torrent is complete.');
-			$('remaining').set('title', '');
+			$('times').setStyle('display', 'none');
 		}
 		else
 		{
+			// Let's work our how long ago this started
+			var started_at = new Date();
+			started_at.setTime(data.started_at * 1000);
+			$('started').set('html', started_at.timeDiffInWords());
+			$('started').set('title', started_at);
+			
+			// And also how long it's got left
 			// Timestamp for completion = now + (data left / download speed) seconds
 			var completion = new Date();
 			completion.setSeconds(completion.getSeconds() + (data.size - data.done) / data.rate.down);
@@ -1120,6 +1120,7 @@ var Torrent =
 				$('remaining').set('html', completion.timeDiffInWords());
 				$('remaining').set('title', 'Estimated to complete in ' + (new Date()).timeDiff(completion, ' ') + ' (at ' + completion + ')');
 			}
+			$('times').setStyle('display', '');
 		}
 		
 		// Other stuff
