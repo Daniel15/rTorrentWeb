@@ -528,7 +528,12 @@ class Utils
 	public static function get_ip()
 	{
 		// TODO: This is messy and might not work all the time :(
-		return trim(`/sbin/ifconfig | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{print $1}'`);
+		$ip = `/sbin/ifconfig | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{print $1}'`;
+		// Only get the first one, if we have more than one
+		if (($newline = strpos($ip, "\n")) !== false)
+			$ip = substr($ip, 0, $newline);
+		
+		return $ip;
 	}
 	
 	/**
