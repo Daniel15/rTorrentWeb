@@ -240,7 +240,7 @@ li#sidebar_paused { background-image: url(icons16/control_pause.png); }
 li#sidebar_stopped { background-image: url(icons16/control_stop.png); }
 
 /* Selected... something. Torrent, filter, label, etc. */
-tr.selected
+.selected
 {
 	/* !important is to override the zebra row backgrounds */
 	background-color: #CFDEEF !important;

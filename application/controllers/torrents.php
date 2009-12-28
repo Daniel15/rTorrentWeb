@@ -122,10 +122,18 @@ class Torrents_Controller extends Base_Controller
 			$results[$row->hash]['owner']['name'] = $row->user->username;
 			$results[$row->hash]['owner']['id'] = $row->user->id;
 		}
-			
+		
+		// Todo: Remove the code duplication between this and the above function
+		// Here so we only call it once
+		$free_space = @disk_free_space($this->user->homedir);
+		if ($free_space === false)
+			$free_space = 0;
+		
 		echo json_encode(array(
 			'error' => false,
 			'data' => $results,
+			'free_space' => $free_space,
+			'used_space' => @disk_total_space($this->user->homedir) - $free_space
 		));
 	}
 	

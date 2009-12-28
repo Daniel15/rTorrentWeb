@@ -29,7 +29,7 @@ if (isset($_SERVER['HTTP_HOST']))
  * rTorrentWeb version information
  * TDOO: install.php and index.php should read this from the same place
  */
-define('VERSION', '0.1 Alpha');
+define('VERSION', '1.0 Beta');
 // Let's get this party started... :D
 chdir(dirname(__FILE__));
 error_reporting(E_ALL);
@@ -45,6 +45,8 @@ class Installer
 	private $is_root = false;
 	// The user the web server runs under
 	private $webuser = null;
+	// The user rTorrent runs under
+	private $rtuser = null;
 	
 	/**
 	 * Run the installer! :D
@@ -90,8 +92,10 @@ answers), simply press ENTER when prompted.
 			chown($settings['coredir'] . 'application/cache/', $this->webuser);
 			chown($settings['coredir'] . 'application/logs/', $this->webuser);
 			chown($settings['datadir'] . 'torrent_data', $this->webuser);
+			chown($settings['datadir'] . 'torrents', $this->rtuser);
 			// This is so the web user can delete torrents
 			chgrp($settings['datadir'] . 'torrents', $this->webuser);
+			chown($settings['datadir'] . 'torrents/admin', $this->rtuser);
 			chgrp($settings['datadir'] . 'torrents/admin', $this->webuser);
 			// Set sticky GUID, so files created are owned by the web user's group.
 			chmod($settings['datadir'] . 'torrents', 02775);
@@ -277,7 +281,9 @@ please re-run this script as root.
 			
 			// And verify it from the user.
 			// TODO: Validate the username
-			$this->webuser = Console::readLine('Web server username', $this->webuser);			
+			$this->webuser = Console::readLine('Web server username', $this->webuser);
+			// Also get the rTorrent user
+			$this->rtuser = Console::readLine('rTorrent username', 'root');
 		}
 		
 		// TODO: Maybe this shouldn't be hard-coded?
