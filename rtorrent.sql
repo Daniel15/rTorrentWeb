@@ -72,6 +72,7 @@ CREATE TABLE ext_feeds (
 	id INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT ,
 	user_id INTEGER  NOT NULL,
 	label_id INTEGER  NOT NULL,
+	auto_start BOOLEAN DEFAULT '0' NOT NULL,
 	name TEXT  NOT NULL,
 	url TEXT  NOT NULL,
 	last_seen_guid TEXT  NULL

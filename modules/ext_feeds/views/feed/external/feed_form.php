@@ -47,5 +47,6 @@ if (!empty($add_errors))
 ?>
 	<p><label for="name">Feed Name:</label><?php echo form::input('name',$name); ?></p>
 	<p><label for="url">Feed URL:</label><?php echo form::input('url',$url); ?></p>
+	<p><label for="auto_start">Automatically Start Torrents By Default:</label><?php echo form::checkbox('auto_start', 'true', $auto_start); ?></p>
 	<p><?php echo form::submit('submit',$submit_text); ?></p>
 </form>

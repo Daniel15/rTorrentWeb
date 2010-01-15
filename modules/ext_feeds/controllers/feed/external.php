@@ -76,7 +76,12 @@ class External_Controller extends Base_Controller
 		$template->content->label_id = $feed->label_id;
 		$template->content->feed_items = $feed_items;
 		$template->content->last_seen_guid = $feed->last_seen_guid;
-
+		$template->content->auto_start = true;
+		
+		// check to ensure auto start is required
+		if ($feed->auto_start == 1)
+			$template->content->auto_start = false;
+		
 		$this->_reset_seen_guid($feed, $feed_items[0]['guid']);
 		
 		$template->render(true);

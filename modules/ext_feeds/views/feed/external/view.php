@@ -36,7 +36,7 @@ echo form::open('torrents/add', array(), array('label_id' => $label_id)); ?>
 	</thead>
 	<tfoot>
 		<tr>
-			<td>&nbsp;</td>
+			<td><?php echo form::checkbox('start', 'start', $auto_start); ?> <label for="start">Start Torrent(s)?</label> <small>(untick this if you don't want to start the torrent after adding it)</small></td>
 			<td class="add_col"><input type="submit" name="submit" value="Add Torrents" /></td>
 		</tr>
 	</tfoot>

@@ -62,6 +62,7 @@ class External_Controller extends Base_Controller
 					
 					$feed->label_id = $label->id;
 					$feed->user_id = $this->user->id; // set the feeds owner to the current user
+					$feed->auto_start = !empty($post['auto_start']);
 					$feed->save(); // save the feed
 					
 					$this->session->set_flash('top_message', 'Added feed "' . $post['name'] . '".');
@@ -129,6 +130,7 @@ class External_Controller extends Base_Controller
 				if (torrent_feed::_is_feed_supported($this->input->post('url')) || $this->input->post('confirmed')) // we are adding a support feed or if the feed has been confirmed
 				{
 					$feed->user_id = $this->user->id; // set the feeds owner to the current user
+					$feed->auto_start = !empty($post['auto_start']);
 					$feed->save(); // save the feed
 					
 					$label = ORM::factory('label', $feed->label_id);
@@ -145,6 +147,7 @@ class External_Controller extends Base_Controller
 					$page = View::factory('feed/external/feed_form');
 					$page->url = $this->input->post('url');
 					$page->name = $this->input->post('name');
+					$page->auto_start = $this->input->post('auto_start');
 					$page->submit_text = 'Confirm Feed Details';
 					$page->hidden_fields = array('confirmed' => 'true');
 					$this->template->content = $page;
@@ -155,6 +158,7 @@ class External_Controller extends Base_Controller
 				$page = View::factory('feed/external/feed_form');
 				$page->url = $this->input->post('url');
 				$page->name = $this->input->post('name');
+				$page->auto_start = $this->input->post('auto_start');
 				$page->submit_text = 'Save Feed';
 				$page->add_errors = $post->errors();
 				$this->template->content = $page;
@@ -165,6 +169,7 @@ class External_Controller extends Base_Controller
 			$page = View::factory('feed/external/feed_form');
 			$page->url = $feed->url;
 			$page->name = $feed->name;
+			$page->auto_start = $feed->auto_start;
 			$page->submit_text = 'Save Feed';
 		}
 		

@@ -48,5 +48,6 @@ if (count($feeds) == 0)
 <?php echo form::open('profile/feeds/external/add'); ?>
 	<p><label for="name">Feed Name:</label> <?php echo form::input('name'); ?></p>
 	<p><label for="url">Feed URL:</label> <?php echo form::input('url'); ?></p>
+	<p><label for="auto_start">Automatically Start Torrents By Default:</label><?php echo form::checkbox('auto_start', 'true', TRUE); ?></p>
 	<p><?php echo form::submit('submit','Add Feed'); ?></p>
 </form>
