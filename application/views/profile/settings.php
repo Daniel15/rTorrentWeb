@@ -50,6 +50,11 @@ if (!empty($errors))
 		<input type="text" name="autorefresh_interval" id="autorefresh_interval" size="2" value="<?php echo html::specialchars($settings['autorefresh_interval']); ?>" /> seconds<br />
 		<small>If "Automatically refresh" is enabled, this defines how often refreshing occurs</small>
 	</p>
+	<p>
+		<label for="customstatus">Custom status line:</label>
+		<input type="text" name="customstatus_line" id="customstatus_line" size="70" value="<?php echo html::specialchars($settings['customstatus_line']); ?>" /><br />
+		<small>The line displayed at the bottom of the torrent listing. {dsu} = Disk Space Used, {dsf} = Disk Space Free, {bwu} = Total Rate Up, {bwd} = Total Rate Down</small>
+	</p>	
 	
 	<p><input type="submit" name="submit" value="Submit" /></p>
 </form>

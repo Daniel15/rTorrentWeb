@@ -39,7 +39,8 @@ class Profile_Controller extends Base_Controller
 			// Validate their settings
 			$post = Validation::factory($_POST)
 				->pre_filter('trim')
-				->add_rules('autorefresh_interval', 'required', 'numeric');
+				->add_rules('autorefresh_interval', 'required', 'numeric')
+				->add_rules('customstatus_line', 'required');
 				
 			// Are they all valid?
 			if ($post->validate())

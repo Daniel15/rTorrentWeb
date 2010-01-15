@@ -69,7 +69,6 @@ class Torrents_Controller extends Base_Controller
 				$torrents[$row->hash]['owner']['name'] = $row->user->username;
 				$torrents[$row->hash]['owner']['id'] = $row->user->id;
 			}
-			
 		}
 		
 		// Here so we only call it once
@@ -81,7 +80,7 @@ class Torrents_Controller extends Base_Controller
 			'error' => false,
 			'data' => $torrents,
 			'free_space' => $free_space,
-			'used_space' => @disk_total_space($this->user->homedir) - $free_space
+			'used_space' => @disk_total_space($this->user->homedir) - $free_space,
 		));
 	}
 	

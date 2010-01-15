@@ -186,7 +186,7 @@ if ($this->auth->logged_in('admin')) :
 		<div id="statusbar">
 			<p id="serverinfo">
 				Server statistics:
-				<span id="used_space"><?php echo $used_space; ?> GB</span> used, <span id="free_space"><?php echo $free_space; ?> GB</span> available.
+				Loading.
 			</p>
 			<p id="statusinfo">
 				<span id="toolbar_message">Status</span>

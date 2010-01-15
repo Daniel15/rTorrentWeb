@@ -642,6 +642,10 @@ var List =
 			torrents_to_remove[row.retrieve('hash')] = row;
 		});
 		
+		// Initialise bandwidth totals in the Status_Line
+		var total_rate_up = 0;
+		var total_rate_down = 0;
+		
 		var data = $H(response.data);	
 		data.each(function(torrent, hash)
 		{
@@ -698,12 +702,16 @@ var List =
 			new Element('td', {'html': torrent.rate.down.format_size() + '/s'}).inject(row);
 			new Element('td', {'html': torrent.rate.up.format_size() + '/s'}).inject(row);
 			new Element('td', {'html': torrent.ratio, 'class': (torrent.ratio >= 1) ? 'good-ratio' : 'bad-ratio'}).inject(row);
-
+			
 			// All the other details
 			row.store('hash', hash);
 			row.store('data', torrent);
 			// Since we know this is a valid torrent, we're not deleting it from the list.
 			torrents_to_remove.erase(hash);
+			
+			// Increment the rate up and down in the status line
+			total_rate_up += torrent.rate.up;
+			total_rate_down += torrent.rate.down;
 		});
 		
 		// Do we have a torrent currently selected? Better update its data
@@ -730,9 +738,12 @@ var List =
 				List.click.bind(first_row)();
 		}
 		
-		// Update the numbers in the status bar
-		$('used_space').set('html', response.used_space.format_size());
-		$('free_space').set('html', response.free_space.format_size());
+		// Update the status bar
+		Status_Line.bwu = total_rate_up;
+		Status_Line.bwd = total_rate_down;
+		Status_Line.dsu = response.used_space;
+		Status_Line.dsf = response.free_space;
+		$('serverinfo').set('html', Status_Line.get());
 
 		$('loading').setStyle('display', 'none');
 		$('toolbar_message').set('html', '');
@@ -755,6 +766,7 @@ var List =
 	 * The timer for auto-refreshing, in case we have to cancel it
 	 */
 	'refresh_timer': null,
+	
 	/**
 	 * Start the auto-refresh, and if it gets to 0, do it!
 	 */
@@ -1819,5 +1831,31 @@ var Log =
 		// If it's not only for the log, put it in the status too
 		if (!$defined(logonly) || !logonly)
 			$('toolbar_message').set('html', text);
+	}
+};
+
+/**
+ * Status line management
+ */
+var Status_Line =
+{
+	'bwu': null,
+	'bwd': null,
+	'dsu': null,
+	'dsf': null,
+	
+	/**
+	 * Get the status line for display at the bottom of the page
+	 */
+	'get': function()
+	{
+		var line = Settings.customstatus_line;
+		
+		line = line.replace("{dsu}", Status_Line.dsu.format_size());
+		line = line.replace("{dsf}", Status_Line.dsf.format_size());
+		line = line.replace("{bwu}", Status_Line.bwu.format_size() + '/s');
+		line = line.replace("{bwd}", Status_Line.bwd.format_size() + '/s');
+		
+		return line;
 	}
 };

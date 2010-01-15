@@ -30,6 +30,6 @@ var Settings =
 	'autorefresh': <?php echo !empty($settings['autorefresh']) ? 'true' : 'false'; ?>,
 	'autorefresh_interval': <?php echo $settings['autorefresh_interval']; ?>,
 	'sidebar_width': '<?php echo $settings['sidebar_width']; ?>',
-	'labels': new Hash(<?php echo json_encode($labels); ?>)
-
+	'labels': new Hash(<?php echo json_encode($labels); ?>),
+	'customstatus_line' : "<?php echo $settings['customstatus_line']; ?>"
 };
