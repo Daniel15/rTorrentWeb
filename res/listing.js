@@ -1,7 +1,7 @@
 /*
- * rTorrentWeb version 0.1 prerelease
+ * rTorrentWeb version version 1.1 Beta
  * $Id$
- * Copyright (C) 2009, Daniel Lo Nigro (Daniel15) <daniel at d15.biz>
+ * Copyright (C) 2009-2010, Daniel Lo Nigro (Daniel15) <daniel at d15.biz>
  * 
  * This file is part of rTorrentWeb.
  * 
