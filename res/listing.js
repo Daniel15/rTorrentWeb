@@ -1531,7 +1531,7 @@ var Torrent =
 			//var row_id = 'peer_' + peer.address.replace(/\./g, '');
 			// Add this peer
 			var row = new Element('tr'/*, {'id': row_id}*/).inject(tbody);
-			new Element('td', {'html': peer.address}).inject(row);
+			new Element('td', {'html': peer.address + ' ' + peer.country_image}).inject(row);
 			new Element('td', {'html': peer.client_version}).inject(row);
 			new Element('td', {'html': peer.down_rate.format_size() + '/s'}).inject(row);
 			new Element('td', {'html': peer.up_rate.format_size() + '/s'}).inject(row);
