@@ -25,7 +25,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <head>
 	<title>rTorrentWeb - Logged in as <?php echo $this->user->username; ?></title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-	<base href="<?php echo url::base(false, 'http'); ?>" />
+	<base href="<?php echo url::base(false, true); ?>" />
 	<link rel="stylesheet" href="res/listing.css" type="text/css" />
 	<script type="text/javascript" src="res/mootools-1.2.3-core-yc.js"></script>
 	<script type="text/javascript" src="res/mootools-1.2.4.2-more.js"></script>

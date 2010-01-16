@@ -1,8 +1,8 @@
 <?php
 /*
- * rTorrentWeb version 0.1 prerelease
+ * rTorrentWeb version 1.1 Beta
  * $Id$
- * Copyright (C) 2009, Daniel Lo Nigro (Daniel15) <daniel at d15.biz>
+ * Copyright (C) 2009-2010, Daniel Lo Nigro (Daniel15) <daniel at d15.biz>
  * 
  * This file is part of rTorrentWeb.
  * 
@@ -25,7 +25,7 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <head>
 	<title><?php echo $title ?> &mdash; rTorrentWeb</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-	<base href="<?php echo url::base(false, 'http'); ?>" />
+	<base href="<?php echo url::base(false, true); ?>" />
 	<link rel="stylesheet" href="res/main.css" type="text/css" />
 	<script type="text/javascript" src="res/mootools-1.2.3-core-yc.js"></script>
 	<script type="text/javascript">
