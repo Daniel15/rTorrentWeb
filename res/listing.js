@@ -739,10 +739,10 @@ var List =
 		}
 		
 		// Update the status bar
-		Status_Line.bwu = total_rate_up;
-		Status_Line.bwd = total_rate_down;
-		Status_Line.dsu = response.used_space;
-		Status_Line.dsf = response.free_space;
+		Status_Line.total_rate_up = total_rate_up;
+		Status_Line.total_rate_down = total_rate_down;
+		Status_Line.disk_space_used = response.used_space;
+		Status_Line.disk_space_free = response.free_space;
 		$('serverinfo').set('html', Status_Line.get());
 
 		$('loading').setStyle('display', 'none');
@@ -1839,22 +1839,25 @@ var Log =
  */
 var Status_Line =
 {
-	'bwu': null,
-	'bwd': null,
-	'dsu': null,
-	'dsf': null,
+	'total_rate_up': null,
+	'total_rate_down': null,
+	'disk_space_used': null,
+	'disk_space_free': null,
 	
 	/**
 	 * Get the status line for display at the bottom of the page
 	 */
 	'get': function()
 	{
-		var line = Settings.customstatus_line;
+		var line = Settings.custom_status_line;
 		
-		line = line.replace("{dsu}", Status_Line.dsu.format_size());
-		line = line.replace("{dsf}", Status_Line.dsf.format_size());
-		line = line.replace("{bwu}", Status_Line.bwu.format_size() + '/s');
-		line = line.replace("{bwd}", Status_Line.bwd.format_size() + '/s');
+		var fields = {
+			dsu: Status_Line.disk_space_used.format_size(),
+			dsf: Status_Line.disk_space_free.format_size(),
+			bwu: Status_Line.total_rate_up.format_size() + '/s',
+			bwd: Status_Line.total_rate_down.format_size() + '/s'}
+		
+		line = line.substitute(fields);
 		
 		return line;
 	}

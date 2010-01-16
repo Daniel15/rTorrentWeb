@@ -51,8 +51,8 @@ if (!empty($errors))
 		<small>If "Automatically refresh" is enabled, this defines how often refreshing occurs</small>
 	</p>
 	<p>
-		<label for="customstatus">Custom status line:</label>
-		<input type="text" name="customstatus_line" id="customstatus_line" size="70" value="<?php echo html::specialchars($settings['customstatus_line']); ?>" /><br />
+		<label for="custom_status_line">Custom status line:</label>
+		<input type="text" name="custom_status_line" id="custom_status_line" size="70" value="<?php echo html::specialchars($settings['custom_status_line']); ?>" /><br />
 		<small>The line displayed at the bottom of the torrent listing. {dsu} = Disk Space Used, {dsf} = Disk Space Free, {bwu} = Total Rate Up, {bwd} = Total Rate Down</small>
 	</p>	
 	

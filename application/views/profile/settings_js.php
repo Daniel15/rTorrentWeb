@@ -31,5 +31,5 @@ var Settings =
 	'autorefresh_interval': <?php echo $settings['autorefresh_interval']; ?>,
 	'sidebar_width': '<?php echo $settings['sidebar_width']; ?>',
 	'labels': new Hash(<?php echo json_encode($labels); ?>),
-	'customstatus_line' : "<?php echo $settings['customstatus_line']; ?>"
+	'custom_status_line' : "<?php echo addslashes($settings['custom_status_line']); ?>"
 };
