@@ -352,7 +352,7 @@ class Rtorrent_Core
 		{
 			$results[] = array(
 				'address' => $peer['p.get_address='],
-				'country_image' => $this->_get_ip_flag($peer['p.get_address=']),
+				'country_code' => $this->_get_country($peer['p.get_address=']),
 				'client_version' => $peer['p.get_client_version='],
 				'down_rate' => $peer['p.get_down_rate='],
 				'down_total' => $peer['p.get_down_total='],
@@ -363,19 +363,6 @@ class Rtorrent_Core
 		}
 		
 		return $results;
-	}
-	
-	/**
-	 * Get a country image line for an IP
-	 */
-	private function _get_ip_flag($ip)
-	{
-		$code = $this->_get_country($ip);
-		
-		if ($code)
-			return '<img src="res/flags16/' . strtolower($code) . '.png" title="' . $code . '" />';
-			
-		return ' ';
 	}
 	
 	/**
