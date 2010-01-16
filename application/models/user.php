@@ -34,7 +34,7 @@ class User_Model extends Auth_User_Model
 					'autorefresh_interval' => 10,
 					'only_mine' => false,
 					'sidebar_width' => '',
-					'custom_status_line' => 'Server statistics: {dsu} used, {dsf} available.',
+					'custom_status_line' => 'Server statistics: {used} used, {free} available.',
 				);
 				
 			// Let's try get the settings

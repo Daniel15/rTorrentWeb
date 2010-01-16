@@ -655,10 +655,6 @@ var List =
 			torrents_to_remove[row.retrieve('hash')] = row;
 		});
 		
-		// Initialise bandwidth totals in the Status_Line
-		var total_rate_up = 0;
-		var total_rate_down = 0;
-		
 		var data = $H(response.data);	
 		data.each(function(torrent, hash)
 		{
@@ -721,10 +717,6 @@ var List =
 			row.store('data', torrent);
 			// Since we know this is a valid torrent, we're not deleting it from the list.
 			torrents_to_remove.erase(hash);
-			
-			// Increment the rate up and down in the status line
-			total_rate_up += torrent.rate.up;
-			total_rate_down += torrent.rate.down;
 		});
 		
 		// Do we have a torrent currently selected? Better update its data
@@ -750,8 +742,8 @@ var List =
 		}
 		
 		// Update the status bar
-		Status_Line.total_rate_up = total_rate_up;
-		Status_Line.total_rate_down = total_rate_down;
+		Status_Line.total_rate_up = response.total_rate_up;
+		Status_Line.total_rate_down = response.total_rate_down;
 		Status_Line.disk_space_used = response.used_space;
 		Status_Line.disk_space_free = response.free_space;
 		$('serverinfo').set('html', Status_Line.get());
@@ -1866,10 +1858,10 @@ var Status_Line =
 		var line = Settings.custom_status_line;
 		
 		var fields = {
-			dsu: Status_Line.disk_space_used.format_size(),
-			dsf: Status_Line.disk_space_free.format_size(),
-			bwu: Status_Line.total_rate_up.format_size() + '/s',
-			bwd: Status_Line.total_rate_down.format_size() + '/s'}
+			free: Status_Line.disk_space_used.format_size(),
+			used: Status_Line.disk_space_free.format_size(),
+			up_rate: Status_Line.total_rate_up.format_size() + '/s',
+			down_rate: Status_Line.total_rate_down.format_size() + '/s'}
 		
 		line = line.substitute(fields);
 		

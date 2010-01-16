@@ -79,6 +79,8 @@ class Torrents_Controller extends Base_Controller
 			'data' => $torrents,
 			'free_space' => $free_space,
 			'used_space' => @disk_total_space($this->user->homedir) - $free_space,
+			'total_rate_up' => $this->rtorrent->do_call('get_up_rate', ''),
+			'total_rate_down' => $this->rtorrent->do_call('get_down_rate', ''),
 		));
 	}
 	
