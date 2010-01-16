@@ -67,9 +67,9 @@ defined('SYSPATH') OR die('No direct access allowed.');
 			// Validate the form
 			$post = Validation::factory($_POST)
 				->pre_filter('trim')
-				->add_rules('rpcurl', 'required', 'standard_text')
-				->add_rules('metadata_dir', 'required', 'standard_text')
-				->add_rules('torrent_dir', 'required', 'standard_text')
+				->add_rules('rpcurl', 'required', 'url')
+				->add_rules('metadata_dir', 'required', 'is_dir')
+				->add_rules('torrent_dir', 'required', 'is_dir')
 				->add_rules('down_rate', 'required', 'digit')
 				->add_rules('up_rate', 'required', 'digit');
 			
