@@ -177,8 +177,8 @@ div#toolbar li.end-section
 #toolbar_status
 {
 	text-align: right;
-	height: 32px;
-	line-height: 32px;
+	height: 37px;
+	line-height: 37px;
 	overflow: hidden;
 }
 
@@ -193,6 +193,15 @@ img#loading,
 a#enable_auto
 {
 	display: none;
+}
+
+/* The search box */
+input#search
+{
+	margin-left: 3em;
+	background: white url(icons16/magnifier.png) no-repeat 2px center;
+	padding-left: 20px;
+	height: 20px;
 }
 
 /* Sidebar - Contains the filters list, and the labels list */

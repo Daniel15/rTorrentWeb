@@ -350,6 +350,9 @@ var List =
 			// Cancel the click.
 			return false;
 		});
+		
+		// The search box!
+		$('search').addEvent('keyup', List.search);
 	},
 	
 	/**
@@ -510,12 +513,22 @@ var List =
 	 */
 	'only_mine': function()
 	{
-		// Update the filter counts
-		List.update_filter_counts();
-		// And actually update the filter
+		// Update the filter
 		List.filter();
 		// Save the setting		
 		Utils.save_setting('only_mine', $('only_mine').checked ? 1 : 0); 
+	},
+	
+	/**
+	 * A new search keyword was entered
+	 */
+	'search': function()
+	{
+		// Set the new search term
+		// TODO: Is this bad, creating a new object each time?
+		List.search_regex = new RegExp(this.value, 'i'),
+		// Better update the filtering
+		List.filter();
 	},
 	
 	/**
@@ -723,8 +736,6 @@ var List =
 		{
 			row.dispose();
 		});
-		// Set the data for the sidebar
-		List.update_filter_counts();
 		// Filter the table
 		List.filter();
 		// Sort the table
@@ -782,11 +793,16 @@ var List =
 	},
 	
 	/**
-	 * Update torrent counts for the sidebar filters
+	 * Regular expression for the current search
 	 */
-	'update_filter_counts': function()
+	'search_regex': null,
+	
+	/**
+	 * Filter the table based on the selected view
+	 */
+	'filter': function()
 	{
-		// Start with 0 rows
+		// Start with 0 rows (for the counts)
 		var cnt_all = 0;
 		var cnt_seed = 0;
 		var cnt_down = 0;
@@ -799,31 +815,46 @@ var List =
 		rows.each(function(row)
 		{
 			var data = row.retrieve('data');
-			// Are we only showing *our* torrents?
+			// By default, assume we should show it
+			var show_this = true;
+			// Are we only showing our torrents, but it's not ours?
+			// Note: current_user is defined in listing.php view file (in the head of the page).
 			if ($('only_mine').checked && (!$defined(data.owner) || data.owner.id != current_user))
-				return;
-			
-			cnt_all++;
-			
-			// Add it to our counts
-			switch (data.state)
+				show_this = false;
+			// Do we have a search, and this torrent doesn't match it?
+			if (List.search_regex != null && !data.name.match(List.search_regex))
+				show_this = false;
+				
+			// If we're showing it at this point, we can add it to the counts.
+			if (show_this)
 			{
-				case 'seeding':
-					cnt_seed++;
-					break;
-				case 'downloading':
-					cnt_down++;
-					break;
-				case 'finished':
-					cnt_fin++;
-					break;
-				case 'stopped':
-					cnt_stop++;
-					break;
-				case 'paused':
-					cnt_paused++;
-					break;
+				cnt_all++;
+				// Add it to our counts
+				switch (data.state)
+				{
+					case 'seeding':
+						cnt_seed++;
+						break;
+					case 'downloading':
+						cnt_down++;
+						break;
+					case 'finished':
+						cnt_fin++;
+						break;
+					case 'stopped':
+						cnt_stop++;
+						break;
+					case 'paused':
+						cnt_paused++;
+						break;
+				}
 			}
+			
+			// Are we showing based on a certain view, and it's not in that view?
+			if (List.view != 'all' && data.state != List.view)
+				show_this = false;
+			
+			row.setStyle('display', show_this ? '' : 'none');
 		});
 		
 		// Set the data for the sidebar
@@ -833,30 +864,6 @@ var List =
 		$('sidebar_finished').getElement('span').set('html', cnt_fin);
 		$('sidebar_stopped').getElement('span').set('html', cnt_stop);
 		$('sidebar_paused').getElement('span').set('html', cnt_paused);
-	},
-	
-	/**
-	 * Filter the table based on the selected view
-	 */
-	'filter': function()
-	{
-		var rows = $A($('torrents').getElement('table').tBodies[0].rows);
-		
-		rows.each(function(row)
-		{
-			var data = row.retrieve('data');
-			// By default, assume we should show it
-			var show_this = true;
-			// Are we showing based on a certain view, and it's not in that view?
-			if (List.view != 'all' && data.state != List.view)
-				show_this = false;
-			// Are we only showing our torrents, but it's not ours?
-			// Note: current_user is defined in listing.php view file (in the head of the page).
-			if ($('only_mine').checked && (!$defined(data.owner) || data.owner.id != current_user))
-				show_this = false;
-			
-			row.setStyle('display', show_this ? '' : 'none');
-		});
 	},
 	
 	/**

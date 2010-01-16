@@ -60,6 +60,8 @@ defined('SYSPATH') OR die('No direct access allowed.'); ?>
 			</div>
 			<p id="toolbar_status">
 				<a id="disable_auto" href="#">Disable automatic refreshing</a> <a id="enable_auto" href="#">Enable automatic refreshing</a> <img id="loading" src="res/loading.gif" alt="Loading..." title="Loading..." />
+				
+				<input id="search" type="text" title="Type here to search for torrents" />
 			</p>
 		</div>
 		
